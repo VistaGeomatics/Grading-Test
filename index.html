@@ -133,6 +133,7 @@
       justify-content:space-between;
       gap: 12px;
       background: linear-gradient(180deg, #ffffff, #fbfdff);
+      flex-wrap: wrap;
     }
     .card-h h2{
       margin:0;
@@ -274,15 +275,7 @@
     .summary .k{ font-size: 12px; color: var(--text-muted); }
     .summary .v{ font-weight: 800; font-size: 14px; }
 
-    /* Photos UI */
-    .photoBar{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      justify-content:space-between;
-      margin-bottom:10px;
-    }
+    /* Photos */
     .thumbGrid{
       display:grid;
       grid-template-columns: repeat(6, 1fr);
@@ -339,24 +332,68 @@
       min-height: 30px;
     }
 
-    /* Print / export layout */
+    /* Notes templates */
+    .templateGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    @media (max-width: 680px){
+      .templateGrid{ grid-template-columns: 1fr; }
+    }
+    .checkRow{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 10px;
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      background:#fbfdff;
+    }
+    .checkRow input{ width:auto; margin-top: 2px; }
+    .checkRow .t{
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    .checkRow .t b{ display:block; font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+
+    /* Chips */
+    .chipBar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top: 6px;
+    }
+    .chip{
+      border: 1px solid var(--border-soft);
+      background:#f6fafc;
+      color: #0b3045;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip:active{ transform: translateY(1px); }
+
+    /* Print photos */
     @media print{
       body{ background:#fff; }
       .wrap{ max-width:none; margin:0; padding:0; }
       .no-print, .btnbar, .hint{ display:none !important; }
       .card{ box-shadow:none; }
       .topbar{ border-radius:0; }
-
       .printPhotos{ display:block !important; }
+
       .printPhotos h3{
         margin: 18px 0 10px;
         font-family:"Montserrat", sans-serif;
         font-size: 14px;
         color:#0b3045;
       }
-      .photoPage{
-        page-break-before: always;
-      }
+      .photoPage{ page-break-before: always; }
       .photoGridPrint{
         display:grid;
         grid-template-columns: 1fr 1fr;
@@ -380,8 +417,6 @@
         background:#fafcff;
       }
     }
-
-    /* hidden print photos container (enabled only for print) */
     .printPhotos{ display:none; }
   </style>
 </head>
@@ -396,7 +431,7 @@
 
         <div class="brand">
           <p class="title">VISTA GEOMATICS</p>
-          <p class="subtitle">Survey Grading Check, Plot Plan vs Field, Elevations & Slopes</p>
+          <p class="subtitle">Survey Grading Check, Plot Plan vs Field, Elevations, Slopes, Photos</p>
         </div>
 
         <div class="pill">
@@ -474,25 +509,52 @@
           </div>
 
           <div class="hint">
-            Default file name uses Job Number, Crew Chief, and today’s date.
+            Download/Share creates a self-contained report file named using Job Number, Crew Chief, and today’s date.
           </div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-h">
-          <h2>Notes</h2>
+          <h2>Office Summary</h2>
+          <div class="btnbar no-print">
+            <button class="btn ghost" id="btnGenSummary" type="button">Generate</button>
+            <button class="btn primary" id="btnCopySummary" type="button">Copy</button>
+            <button class="btn ghost" id="btnPrint" type="button">Print / PDF</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <label>Auto-generated summary for office & drafters</label>
+          <textarea id="officeSummary" placeholder="Click Generate to build a consistent summary..."></textarea>
+          <div class="hint">
+            Generated from tolerance selection, fails, worst deltas, slopes, templates, notes, and photo count.
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-h">
+          <h2>Notes (Fast, Consistent)</h2>
           <div class="btnbar no-print">
             <button class="btn ghost" id="btnAddDefaults" type="button">Add Default Points</button>
           </div>
         </div>
         <div class="card-b">
           <label>General Notes / Crew Notes</label>
-          <textarea id="notes" placeholder="Add notes, issues, hold points, or rework comments..."></textarea>
+          <textarea id="notes" placeholder="Optional free text, templates below will help keep notes consistent..."></textarea>
+
+          <div class="hint" style="margin-top:10px;">
+            Templates below build consistent, office-ready notes.
+          </div>
+
+          <div id="templateGrid" class="templateGrid"></div>
+
+          <div class="hint">
+            Tip: In the table, use one-click chips for point notes (Low/High/Regrade/etc.).
+          </div>
         </div>
       </div>
 
-      <!-- Photos -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
           <h2>Site Photos</h2>
@@ -505,14 +567,11 @@
           </div>
         </div>
         <div class="card-b">
-          <div class="photoBar">
-            <div class="hint" style="margin:0;">
-              Thumbnails show on the form. Export includes larger photos, 4 per page.
-            </div>
+          <div class="hint" style="margin-top:0;">
+            Thumbnails show here. Print / PDF includes larger photos, 4 per page. Click a thumbnail to add a caption.
           </div>
-          <div id="thumbGrid" class="thumbGrid"></div>
-          <div class="hint">
-            Note: Photos are stored on this device (autosave). Very large photo sets can exceed browser storage, keep it reasonable.
+          <div style="margin-top:12px;">
+            <div id="thumbGrid" class="thumbGrid"></div>
           </div>
         </div>
       </div>
@@ -540,7 +599,7 @@
                   <th style="min-width:160px;">Field Elev</th>
                   <th style="min-width:120px;">Δ (cm)</th>
                   <th style="min-width:110px;">Status</th>
-                  <th style="min-width:220px;">Point Notes</th>
+                  <th style="min-width:280px;">Point Notes (use chips)</th>
                 </tr>
               </thead>
               <tbody id="elevBody"></tbody>
@@ -584,15 +643,34 @@
 
     </div>
 
-    <!-- PRINT ONLY: Photo pages (built at export time) -->
     <div id="printPhotos" class="printPhotos"></div>
-
   </div>
 
   <script>
-    const STORAGE_KEY = "vista_grading_check_v3";
+    const STORAGE_KEY = "vista_grading_check_v4";
 
     const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
+
+    const NOTE_CHIPS = [
+      "Low, requires fill",
+      "High, requires cut",
+      "Regrade and shape to drain",
+      "Swale not defined, re-shape",
+      "Tie-in required, verify match",
+      "Hold, builder review required",
+      "Recheck after regrade",
+      "As-built matches design"
+    ];
+
+    const NOTE_TEMPLATES = [
+      { id:"tpl_access", title:"Access / Site Condition", text:"Site accessible, no major obstructions impacting shots." },
+      { id:"tpl_obstruct", title:"Access / Site Condition", text:"Obstructions present on site, some shots limited, see photos and point notes." },
+      { id:"tpl_snow", title:"Weather / Surface", text:"Snow/ice present, measurements taken with caution and limited surface visibility in areas." },
+      { id:"tpl_wet", title:"Weather / Surface", text:"Soft/wet soil conditions observed, expect potential settlement/adjustment after compaction." },
+      { id:"tpl_equip", title:"Construction Activity", text:"Builder equipment/materials on site during survey, access constraints noted." },
+      { id:"tpl_recheck", title:"Follow-up", text:"Recheck required after regrade/adjustment, see out-of-tolerance items." },
+      { id:"tpl_hold", title:"Hold", text:"Hold pending builder correction/confirmation, office to review before drafting." }
+    ];
 
     const state = {
       meta: {
@@ -603,23 +681,21 @@
         address: "",
         lotBlockPlan: "",
         crewChief: "",
-        notes: ""
+        notes: "",
+        templates: {}
       },
       elevRows: [],
       slopeRows: [],
-      photos: [] // { id, name, type, dataUrl, caption, ts }
+      photos: []
     };
 
-    // --- Helpers ---
+    // ---------- Helpers ----------
     function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
     function fmt(n, decimals=2){ if (!Number.isFinite(n)) return "—"; return Number(n).toFixed(decimals); }
     function escapeHtml(s){
       return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
 
     function normalizeElevToMeters(v){
@@ -627,7 +703,7 @@
       if (!s) return null;
       const n = Number(s.replace(",", "."));
       if (!Number.isFinite(n)) return null;
-      return n > 1000 ? n / 100 : n;
+      return n > 1000 ? n / 100 : n; // 9221 -> 92.21 support
     }
     function calcDeltaCm(fieldM, designM){
       if (!Number.isFinite(fieldM) || !Number.isFinite(designM)) return null;
@@ -666,7 +742,12 @@
       return `${job}_${crew}_${date}.${ext}`;
     }
 
-    // --- Elements ---
+    function areaLabel(){
+      const v = state.meta.area;
+      return v ? (v.charAt(0).toUpperCase() + v.slice(1)) : "Area";
+    }
+
+    // ---------- Elements ----------
     const areaSelect = document.getElementById("areaSelect");
     const tolLabel = document.getElementById("tolLabel");
 
@@ -677,6 +758,7 @@
     const lotBlockPlan = document.getElementById("lotBlockPlan");
     const crewChief = document.getElementById("crewChief");
     const notes = document.getElementById("notes");
+    const officeSummary = document.getElementById("officeSummary");
 
     const elevBody = document.getElementById("elevBody");
     const slopeBody = document.getElementById("slopeBody");
@@ -691,17 +773,24 @@
     const btnAddDefaults = document.getElementById("btnAddDefaults");
     const btnAddSlope = document.getElementById("btnAddSlope");
     const btnRemoveSlopeSelected = document.getElementById("btnRemoveSlopeSelected");
+
     const btnSave = document.getElementById("btnSave");
     const btnReset = document.getElementById("btnReset");
     const btnDownload = document.getElementById("btnDownload");
     const btnShare = document.getElementById("btnShare");
+    const btnPrint = document.getElementById("btnPrint");
+
+    const btnGenSummary = document.getElementById("btnGenSummary");
+    const btnCopySummary = document.getElementById("btnCopySummary");
+
+    const templateGrid = document.getElementById("templateGrid");
 
     const photoInput = document.getElementById("photoInput");
     const btnClearPhotos = document.getElementById("btnClearPhotos");
     const thumbGrid = document.getElementById("thumbGrid");
     const printPhotos = document.getElementById("printPhotos");
 
-    // --- Renderers ---
+    // ---------- Rendering ----------
     function renderTolerance(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
       tolLabel.textContent = `±${tol} cm`;
@@ -715,6 +804,40 @@
         if (!seen.has(n)){ uniq.push(n); seen.add(n); }
       }
       return uniq;
+    }
+
+    function renderTemplates(){
+      templateGrid.innerHTML = "";
+      for (const t of NOTE_TEMPLATES){
+        const checked = !!state.meta.templates[t.id];
+        const div = document.createElement("div");
+        div.className = "checkRow";
+        div.innerHTML = `
+          <input type="checkbox" data-tpl="${t.id}" ${checked ? "checked":""} />
+          <div class="t">
+            <b>${escapeHtml(t.title)}</b>
+            ${escapeHtml(t.text)}
+          </div>
+        `;
+        templateGrid.appendChild(div);
+      }
+    }
+
+    function applyTemplatesToNotes(){
+      const chosen = NOTE_TEMPLATES
+        .filter(t => state.meta.templates[t.id])
+        .map(t => t.text);
+
+      const manual = (notes.value || "").trim();
+      const manualLines = manual ? manual.split("\n").map(s => s.trim()).filter(Boolean) : [];
+
+      const all = [...manualLines];
+      for (const line of chosen){
+        if (!all.includes(line)) all.push(line);
+      }
+
+      notes.value = all.join("\n");
+      state.meta.notes = notes.value;
     }
 
     function renderElevations(){
@@ -732,6 +855,10 @@
 
         const deltaClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
         const statusClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
+
+        const chipsHtml = NOTE_CHIPS.map(ch =>
+          `<span class="chip" data-action="chip" data-id="${row.id}" data-chip="${escapeHtml(ch)}">${escapeHtml(ch)}</span>`
+        ).join("");
 
         tr.innerHTML = `
           <td class="no-print"><input type="checkbox" data-id="${row.id}" class="rowSel" /></td>
@@ -760,8 +887,9 @@
           </td>
           <td>
             <input class="mini" value="${escapeHtml(row.note)}"
-              placeholder="Optional"
+              placeholder="Point note (or click chips)"
               data-k="note" data-id="${row.id}" />
+            <div class="chipBar no-print">${chipsHtml}</div>
           </td>
         `;
         elevBody.appendChild(tr);
@@ -898,7 +1026,7 @@
       sumPhotos.textContent = String(state.photos.length);
     }
 
-    // --- Photos ---
+    // ---------- Photos ----------
     function renderThumbs(){
       thumbGrid.innerHTML = "";
       for (const p of state.photos){
@@ -937,7 +1065,6 @@
             const ctx = canvas.getContext("2d", { alpha:false });
             ctx.drawImage(img, 0, 0, cw, ch);
 
-            // use jpeg to keep size reasonable
             const out = canvas.toDataURL("image/jpeg", quality);
             resolve(out);
           };
@@ -957,7 +1084,6 @@
           state.photos.push({
             id: uid(),
             name: f.name || "photo",
-            type: "image/jpeg",
             dataUrl,
             caption: "",
             ts: Date.now()
@@ -983,7 +1109,6 @@
       saveToStorage();
     }
 
-    // Build print-only photo pages: 4 images per page
     function buildPrintPhotoPages(){
       printPhotos.innerHTML = "";
       if (state.photos.length === 0) return;
@@ -1020,20 +1145,12 @@
       }
     }
 
-    // --- Export / Download / Share ---
-    // We generate a “print view” using window.print(). For “Download” we create an HTML file snapshot.
-    // For “Share” on mobile (and some desktops), Web Share API shares the HTML file. If not supported, it downloads.
-
+    // ---------- Export / Download / Share ----------
     function buildHtmlSnapshot(){
-      // Clone current document and ensure print photo pages are populated
       buildPrintPhotoPages();
 
-      // Create a full HTML snapshot so crews can send/share a self-contained report.
-      // This embeds images as data URLs, so it remains portable.
       const doc = document.documentElement.cloneNode(true);
 
-      // Ensure form values are in attributes for snapshot readability
-      // (inputs already hold values, but HTML export relies on outerHTML; we can set attributes for safety)
       function setValueAttr(id){
         const el = document.getElementById(id);
         const cloneEl = doc.querySelector("#" + CSS.escape(id));
@@ -1045,32 +1162,30 @@
           }
         }
       }
+
       ["jobNo","jobDate","community","address","lotBlockPlan","crewChief"].forEach(setValueAttr);
+
       const notesClone = doc.querySelector("#notes");
       if (notesClone) notesClone.textContent = notes.value || "";
 
-      // Set area dropdown selected
+      const sumClone = doc.querySelector("#officeSummary");
+      if (sumClone) sumClone.textContent = officeSummary.value || "";
+
       const areaClone = doc.querySelector("#areaSelect");
       if (areaClone){
         const val = areaSelect.value;
         Array.from(areaClone.options).forEach(o => o.selected = (o.value === val));
       }
 
-      // Remove file input for snapshot safety
       const pi = doc.querySelector("#photoInput");
       if (pi) pi.remove();
 
-      // Put a small banner in snapshot so people know it’s a report
-      const subtitle = doc.querySelector(".brand .subtitle");
-      if (subtitle){
-        subtitle.textContent = "Survey Grading Check Report (shareable snapshot)";
-      }
-
-      // Ensure print photo pages exist in snapshot
       const snapPrint = doc.querySelector("#printPhotos");
       if (snapPrint) snapPrint.innerHTML = printPhotos.innerHTML;
 
-      // Return full HTML
+      const subtitle = doc.querySelector(".brand .subtitle");
+      if (subtitle) subtitle.textContent = "Survey Grading Check Report (shareable snapshot)";
+
       return "<!DOCTYPE html>\n" + doc.outerHTML;
     }
 
@@ -1099,7 +1214,6 @@
       const blob = new Blob([snapshot], { type: "text/html" });
       const file = new File([blob], name, { type: "text/html" });
 
-      // Web Share (mobile + some desktop browsers)
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
         try{
           await navigator.share({
@@ -1109,22 +1223,20 @@
           });
           return;
         }catch(e){
-          // user cancelled or share failed: fall back to download
+          // user cancelled or share failed
         }
       }
 
-      // Fallback (PC + unsupported): download
       downloadFile(name, snapshot, "text/html");
       alert("Share isn't available in this browser, the report was downloaded instead.");
     }
 
-    // Print/PDF export (uses browser print dialog). Photos appear 4 per page.
     function exportToPrint(){
       buildPrintPhotoPages();
       window.print();
     }
 
-    // --- Storage ---
+    // ---------- Storage ----------
     function saveToStorage(showToast=false){
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -1176,7 +1288,173 @@
       }
     }
 
-    // --- Events ---
+    // ---------- Office Summary ----------
+    function getOutOfToleranceList(){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+      const out = [];
+
+      for (const r of state.elevRows){
+        const designM = normalizeElevToMeters(r.designElev);
+        const fieldM  = normalizeElevToMeters(r.fieldElev);
+        const dCm = calcDeltaCm(fieldM, designM);
+        if (!Number.isFinite(dCm)) continue;
+        if (Math.abs(dCm) > tol){
+          out.push({
+            point: (r.pointName || "").trim() || "Unnamed point",
+            deltaCm: dCm,
+            note: (r.note || "").trim()
+          });
+        }
+      }
+
+      // Sort by worst first
+      out.sort((a,b) => Math.abs(b.deltaCm) - Math.abs(a.deltaCm));
+      return out;
+    }
+
+    function getSlopeIssues(){
+      // Not pass/fail, just highlights biggest delta slopes if present
+      const out = [];
+      for (const s of state.slopeRows){
+        const from = state.elevRows.find(r => (r.pointName || "").trim() === (s.fromPoint || "").trim());
+        const to   = state.elevRows.find(r => (r.pointName || "").trim() === (s.toPoint || "").trim());
+        const runM = Number(String(s.distanceM || "").trim().replace(",", "."));
+        const designSlope = slopePercent(normalizeElevToMeters(from?.designElev), normalizeElevToMeters(to?.designElev), runM);
+        const fieldSlope  = slopePercent(normalizeElevToMeters(from?.fieldElev), normalizeElevToMeters(to?.fieldElev), runM);
+        const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
+
+        if (Number.isFinite(deltaSlope)){
+          out.push({
+            segment: (s.segment || "").trim() || `${(s.fromPoint||"")} → ${(s.toPoint||"")}`,
+            delta: deltaSlope,
+            field: fieldSlope,
+            design: designSlope
+          });
+        }
+      }
+      out.sort((a,b) => Math.abs(b.delta) - Math.abs(a.delta));
+      return out;
+    }
+
+    function generateOfficeSummary(){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+
+      let pointsChecked = 0;
+      let fails = 0;
+      let worstSigned = null;
+      let worstAbs = null;
+      let worstPoint = null;
+
+      for (const r of state.elevRows){
+        const designM = normalizeElevToMeters(r.designElev);
+        const fieldM  = normalizeElevToMeters(r.fieldElev);
+        const dCm = calcDeltaCm(fieldM, designM);
+        if (!Number.isFinite(dCm)) continue;
+
+        pointsChecked++;
+        if (Math.abs(dCm) > tol) fails++;
+
+        const abs = Math.abs(dCm);
+        if (worstAbs === null || abs > worstAbs){
+          worstAbs = abs;
+          worstSigned = dCm;
+          worstPoint = (r.pointName || "").trim() || "Unnamed point";
+        }
+      }
+
+      const outTol = getOutOfToleranceList();
+      const slopeIssues = getSlopeIssues();
+
+      const metaBits = [];
+      if (state.meta.jobNo) metaBits.push(`Job ${state.meta.jobNo}`);
+      if (state.meta.community) metaBits.push(state.meta.community);
+      if (state.meta.address) metaBits.push(state.meta.address);
+      if (state.meta.lotBlockPlan) metaBits.push(state.meta.lotBlockPlan);
+      if (state.meta.crewChief) metaBits.push(`Crew: ${state.meta.crewChief}`);
+
+      const header = `${areaLabel()} (±${tol} cm). ${metaBits.length ? metaBits.join(", ") + ". " : ""}`.trim();
+
+      const stats = `${pointsChecked} point${pointsChecked===1?"":"s"} checked, ${fails} out of tolerance.`;
+      const worst = (worstSigned === null)
+        ? `Largest variance: —.`
+        : `Largest variance: ${fmt(worstSigned,1)} cm at ${worstPoint}.`;
+
+      const outLine = outTol.length
+        ? `Out of tolerance items: ${outTol.slice(0,6).map(x => `${x.point} (${fmt(x.deltaCm,1)} cm)`).join(", ")}${outTol.length>6 ? ", plus additional items." : "."}`
+        : `All checked points within tolerance.`;
+
+      const slopeLine = slopeIssues.length
+        ? `Slope check: largest Δ slope ${fmt(slopeIssues[0].delta,2)}% on ${slopeIssues[0].segment}.`
+        : `Slope check: not recorded.`;
+
+      const photoLine = `${state.photos.length} site photo${state.photos.length===1?"":"s"} attached.`;
+
+      // Templates included (for consistency)
+      const templateLines = NOTE_TEMPLATES
+        .filter(t => state.meta.templates[t.id])
+        .map(t => t.text);
+
+      const manualNotes = (notes.value || "").trim();
+      const noteBlock = [];
+      if (templateLines.length){
+        noteBlock.push("Notes:");
+        for (const l of templateLines) noteBlock.push(`- ${l}`);
+      }
+      if (manualNotes){
+        noteBlock.push(templateLines.length ? "Additional crew notes:" : "Notes:");
+        for (const line of manualNotes.split("\n").map(s=>s.trim()).filter(Boolean)){
+          noteBlock.push(`- ${line}`);
+        }
+      }
+
+      const pointNotes = outTol
+        .filter(x => x.note)
+        .slice(0,6)
+        .map(x => `- ${x.point}: ${x.note}`);
+
+      const pointNoteBlock = pointNotes.length ? ["Point notes (key):", ...pointNotes] : [];
+
+      const final = [
+        header,
+        stats,
+        worst,
+        outLine,
+        slopeLine,
+        photoLine,
+        "",
+        ...noteBlock,
+        ...(noteBlock.length ? [""] : []),
+        ...pointNoteBlock
+      ].join("\n").trim();
+
+      officeSummary.value = final;
+      saveToStorage();
+    }
+
+    async function copyOfficeSummary(){
+      const text = (officeSummary.value || "").trim();
+      if (!text){
+        alert("Nothing to copy. Click Generate first.");
+        return;
+      }
+      try{
+        await navigator.clipboard.writeText(text);
+        btnCopySummary.textContent = "Copied";
+        setTimeout(() => btnCopySummary.textContent = "Copy", 900);
+      }catch(e){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        btnCopySummary.textContent = "Copied";
+        setTimeout(() => btnCopySummary.textContent = "Copy", 900);
+      }
+    }
+
+    // ---------- Events ----------
     areaSelect.addEventListener("change", () => {
       state.meta.area = areaSelect.value;
       renderTolerance();
@@ -1184,11 +1462,35 @@
       saveToStorage();
     });
 
-    [jobNo, jobDate, community, address, lotBlockPlan, crewChief, notes].forEach(el => {
+    function bindMetaInput(el, key){
       el.addEventListener("input", () => {
-        state.meta[el.id] = el.value;
+        state.meta[key] = el.value;
         saveToStorage();
       });
+    }
+
+    bindMetaInput(jobNo, "jobNo");
+    bindMetaInput(jobDate, "jobDate");
+    bindMetaInput(community, "community");
+    bindMetaInput(address, "address");
+    bindMetaInput(lotBlockPlan, "lotBlockPlan");
+    bindMetaInput(crewChief, "crewChief");
+
+    notes.addEventListener("input", () => {
+      state.meta.notes = notes.value;
+      saveToStorage();
+    });
+
+    officeSummary.addEventListener("input", () => saveToStorage());
+
+    templateGrid.addEventListener("change", (e) => {
+      const t = e.target;
+      if (!t || t.type !== "checkbox") return;
+      const id = t.dataset.tpl;
+      if (!id) return;
+      state.meta.templates[id] = t.checked;
+      applyTemplatesToNotes();
+      saveToStorage();
     });
 
     elevBody.addEventListener("input", (e) => {
@@ -1206,8 +1508,34 @@
       if (k === "designElev" || k === "fieldElev"){
         updateElevationComputed(id);
       } else if (k === "pointName"){
+        // Rebuild slope dropdown options (but keep focus on current input)
+        const active = document.activeElement;
         renderSlopes(true);
+        if (active && active.focus) active.focus();
       }
+      saveToStorage();
+    });
+
+    elevBody.addEventListener("click", (e) => {
+      const chip = e.target.closest(".chip");
+      if (!chip) return;
+      const rowId = chip.dataset.id;
+      const text = chip.dataset.chip || "";
+      const row = state.elevRows.find(r => r.id === rowId);
+      if (!row) return;
+
+      const current = (row.note || "").trim();
+      if (!current){
+        row.note = text;
+      } else if (!current.includes(text)){
+        row.note = current + ", " + text;
+      }
+
+      // Update the input without rerendering whole table
+      const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(rowId)}"]`);
+      const noteInput = tr?.querySelector('input[data-k="note"]');
+      if (noteInput) noteInput.value = row.note;
+
       saveToStorage();
     });
 
@@ -1292,21 +1620,23 @@
     btnReset.addEventListener("click", () => {
       if (!confirm("Clear this grading check from this device?")) return;
       localStorage.removeItem(STORAGE_KEY);
-      state.meta = { area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"", notes:"" };
+
+      state.meta = { area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"", notes:"", templates:{} };
       state.elevRows = [];
       state.slopeRows = [];
       state.photos = [];
+      officeSummary.value = "";
+
       initDefaults();
       syncMetaToUI();
+      renderTemplates();
       renderTolerance();
       renderElevations();
       renderThumbs();
       saveToStorage();
     });
 
-    // Download / Share buttons
     btnDownload.addEventListener("click", async () => {
-      // First, also offer a print/PDF option by default on download long-press? Keep simple:
       await handleDownload();
     });
 
@@ -1314,12 +1644,17 @@
       await handleShare();
     });
 
+    btnPrint.addEventListener("click", () => exportToPrint());
+
+    btnGenSummary.addEventListener("click", () => generateOfficeSummary());
+    btnCopySummary.addEventListener("click", () => copyOfficeSummary());
+
     // Photos
     photoInput.addEventListener("change", async (e) => {
       const files = e.target.files;
       if (!files || files.length === 0) return;
       await addPhotosFromFiles(files);
-      photoInput.value = ""; // allow re-adding same file
+      photoInput.value = "";
     });
 
     thumbGrid.addEventListener("click", (e) => {
@@ -1327,11 +1662,11 @@
       const card = t.closest(".thumb");
       if (!card) return;
       const pid = card.dataset.pid;
+
       if (t.dataset.action === "remove"){
         removePhoto(pid);
         return;
       }
-      // click thumbnail: prompt caption edit
       const photo = state.photos.find(p => p.id === pid);
       if (!photo) return;
       const cap = prompt("Photo caption (optional):", photo.caption || "");
@@ -1344,7 +1679,7 @@
 
     btnClearPhotos.addEventListener("click", () => clearPhotos());
 
-    // --- Storage ---
+    // ---------- Init ----------
     function saveToStorageSafe(){
       saveToStorage();
     }
@@ -1353,19 +1688,19 @@
       loadFromStorage();
       state.meta.area = state.meta.area || "calgary";
       if (!state.meta.jobDate) state.meta.jobDate = todayISO();
+
       initDefaults();
       syncMetaToUI();
+
+      renderTemplates();
       renderTolerance();
       renderElevations();
       renderThumbs();
+
       saveToStorageSafe();
     }
 
-    // --- Init ---
     loadAndInit();
-
-    // Optional: allow quick “Export to PDF” via Ctrl+P / Command+P already,
-    // but you can also call exportToPrint() if you want a dedicated button later.
   </script>
 </body>
 </html>
