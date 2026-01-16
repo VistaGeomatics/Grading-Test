@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VistaGeomatics – Grading Check</title>
 
-  <!-- Fonts (matches your other Vista forms) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
 
   <style>
@@ -23,7 +22,6 @@
 
       --ok:#15803d;
       --bad:#b91c1c;
-      --warn:#b45309;
 
       --shadow: 0 10px 30px rgba(2, 10, 20, 0.08);
       --radius: 16px;
@@ -56,6 +54,7 @@
       align-items:center;
       gap:16px;
       padding: 16px 18px;
+      flex-wrap:wrap;
     }
 
     .logo{
@@ -74,12 +73,11 @@
       height: 100%;
       object-fit: contain;
       padding: 8px;
-      background: transparent;
     }
 
     .brand{
       flex:1 1 auto;
-      min-width: 200px;
+      min-width: 220px;
     }
     .brand .title{
       font-family:"Montserrat", sans-serif;
@@ -117,7 +115,6 @@
     @media (max-width: 980px){
       .grid{ grid-template-columns:1fr; }
       .pill{ width:100%; justify-content:space-between; }
-      .topbar-inner{ flex-wrap:wrap; }
     }
 
     .card{
@@ -174,13 +171,6 @@
     }
     textarea{ min-height: 86px; resize: vertical; }
 
-    .row{
-      display:flex;
-      gap: 10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
     .btnbar{
       display:flex;
       gap: 10px;
@@ -197,6 +187,7 @@
       cursor:pointer;
       transition: transform 0.05s ease, opacity 0.15s ease, background 0.15s ease;
       user-select:none;
+      white-space: nowrap;
     }
     .btn:active{ transform: translateY(1px); }
     .btn.primary{
@@ -250,6 +241,7 @@
       border-radius: 10px;
       font-size: 13px;
     }
+
     .status{
       font-weight: 700;
       font-size: 12px;
@@ -258,38 +250,14 @@
       display:inline-block;
       border: 1px solid transparent;
     }
-    .status.ok{
-      color: var(--ok);
-      background: #eaf7ee;
-      border-color: #c7ecd2;
-    }
-    .status.bad{
-      color: var(--bad);
-      background: #fff1f2;
-      border-color: #fecdd3;
-    }
-    .status.na{
-      color: #475569;
-      background: #eef2f7;
-      border-color: #d6dee9;
-    }
+    .status.ok{ color: var(--ok); background: #eaf7ee; border-color: #c7ecd2; }
+    .status.bad{ color: var(--bad); background: #fff1f2; border-color: #fecdd3; }
+    .status.na{ color: #475569; background: #eef2f7; border-color: #d6dee9; }
 
-    .delta{
-      font-weight: 800;
-      letter-spacing:0.1px;
-    }
+    .delta{ font-weight: 800; letter-spacing:0.1px; }
     .delta.ok{ color: var(--ok); }
     .delta.bad{ color: var(--bad); }
     .delta.na{ color:#475569; }
-
-    .split{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    @media (max-width: 720px){
-      .split{ grid-template-columns: 1fr; }
-    }
 
     .summary{
       display:flex;
@@ -303,38 +271,127 @@
       border-radius: 14px;
       background: #fbfdff;
     }
-    .summary .k{
-      font-size: 12px;
-      color: var(--text-muted);
+    .summary .k{ font-size: 12px; color: var(--text-muted); }
+    .summary .v{ font-weight: 800; font-size: 14px; }
+
+    /* Photos UI */
+    .photoBar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      margin-bottom:10px;
     }
-    .summary .v{
-      font-weight: 800;
-      font-size: 14px;
+    .thumbGrid{
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 980px){
+      .thumbGrid{ grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 520px){
+      .thumbGrid{ grid-template-columns: repeat(3, 1fr); }
+    }
+    .thumb{
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      overflow:hidden;
+      background:#fff;
+      position: relative;
+      aspect-ratio: 1 / 1;
+      box-shadow: 0 6px 16px rgba(2,10,20,0.06);
+    }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .thumb .x{
+      position:absolute;
+      top:6px;
+      right:6px;
+      width:28px;
+      height:28px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.85);
+      background: rgba(0,0,0,0.42);
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+    }
+    .thumb .cap{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      padding:6px 8px;
+      font-size:11px;
+      color:#fff;
+      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.65));
+      line-height:1.2;
+      min-height: 30px;
     }
 
-    /* Print */
+    /* Print / export layout */
     @media print{
       body{ background:#fff; }
       .wrap{ max-width:none; margin:0; padding:0; }
-      .btnbar, .hint, .no-print{ display:none !important; }
+      .no-print, .btnbar, .hint{ display:none !important; }
       .card{ box-shadow:none; }
       .topbar{ border-radius:0; }
-      a[href]:after{ content:""; }
-      table{ page-break-inside:auto; }
-      tr{ page-break-inside:avoid; page-break-after:auto; }
+
+      .printPhotos{ display:block !important; }
+      .printPhotos h3{
+        margin: 18px 0 10px;
+        font-family:"Montserrat", sans-serif;
+        font-size: 14px;
+        color:#0b3045;
+      }
+      .photoPage{
+        page-break-before: always;
+      }
+      .photoGridPrint{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .photoBig{
+        border: 1px solid #d6dee9;
+        border-radius: 12px;
+        overflow:hidden;
+      }
+      .photoBig img{
+        width:100%;
+        height: auto;
+        display:block;
+      }
+      .photoBig .label{
+        padding: 8px 10px;
+        font-size: 11px;
+        color:#334155;
+        border-top: 1px solid #e5edf7;
+        background:#fafcff;
+      }
     }
+
+    /* hidden print photos container (enabled only for print) */
+    .printPhotos{ display:none; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-
-    <!-- Header -->
     <div class="topbar">
       <div class="topbar-inner">
         <div class="logo" title="Vista Geomatics">
-          <!-- Use the same logo filename you already use in your other forms (put it in the same folder as this HTML) -->
-          <img src="logo.png" alt="Vista Geomatics Logo" />
+          <img src="vista-geomatics.png" alt="Vista Geomatics Logo" />
         </div>
 
         <div class="brand">
@@ -359,22 +416,21 @@
     </div>
 
     <div class="grid">
-
-      <!-- Job info -->
       <div class="card">
         <div class="card-h">
           <h2>Job Details</h2>
           <div class="btnbar no-print">
-            <button class="btn ghost" id="btnSave">Save</button>
-            <button class="btn ghost" id="btnReset">Clear</button>
-            <button class="btn primary" id="btnPrint">Print / PDF</button>
+            <button class="btn ghost" id="btnSave" type="button">Save</button>
+            <button class="btn ghost" id="btnReset" type="button">Clear</button>
+            <button class="btn primary" id="btnDownload" type="button">Download</button>
+            <button class="btn primary" id="btnShare" type="button">Share</button>
           </div>
         </div>
         <div class="card-b">
           <div class="formgrid">
             <div>
               <label>Job Number</label>
-              <input id="jobNo" placeholder="e.g., 25-0123" />
+              <input id="jobNo" placeholder="e.g., 25-0123" autocomplete="off" />
             </div>
             <div>
               <label>Date</label>
@@ -382,25 +438,25 @@
             </div>
             <div>
               <label>Community / Subdivision</label>
-              <input id="community" placeholder="e.g., Cornerstone" />
+              <input id="community" placeholder="e.g., Cornerstone" autocomplete="off" />
             </div>
             <div>
               <label>Address</label>
-              <input id="address" placeholder="e.g., 2053–2055 Cornerstone Blvd NE" />
+              <input id="address" placeholder="e.g., 2053–2055 Cornerstone Blvd NE" autocomplete="off" />
             </div>
             <div>
               <label>Lot / Block / Plan</label>
-              <input id="lotBlockPlan" placeholder="e.g., Lot 12, Block 3, Plan ____" />
+              <input id="lotBlockPlan" placeholder="e.g., Lot 12, Block 3, Plan ____" autocomplete="off" />
             </div>
             <div>
               <label>Crew Chief</label>
-              <input id="crewChief" placeholder="Name" />
+              <input id="crewChief" placeholder="Name" autocomplete="off" />
             </div>
           </div>
 
           <div class="summary" style="margin-top:14px;">
             <div>
-              <div class="k">Lots / Points Checked</div>
+              <div class="k">Points Checked</div>
               <div class="v" id="sumPoints">0</div>
             </div>
             <div>
@@ -412,42 +468,61 @@
               <div class="v" id="sumWorst">—</div>
             </div>
             <div>
-              <div class="k">Autosave</div>
-              <div class="v" id="sumAutosave">On</div>
+              <div class="k">Photos</div>
+              <div class="v" id="sumPhotos">0</div>
             </div>
           </div>
 
           <div class="hint">
-            Tips: You can enter elevations as meters (92.21) or as “hundredths style” (9221). The form will normalize automatically.
+            Default file name uses Job Number, Crew Chief, and today’s date.
           </div>
         </div>
       </div>
 
-      <!-- Notes -->
       <div class="card">
         <div class="card-h">
           <h2>Notes</h2>
           <div class="btnbar no-print">
-            <button class="btn ghost" id="btnAddDefaults">Add Default Points</button>
+            <button class="btn ghost" id="btnAddDefaults" type="button">Add Default Points</button>
           </div>
         </div>
         <div class="card-b">
           <label>General Notes / Crew Notes</label>
-          <textarea id="notes" placeholder="Add any notes, issues, hold points, or rework comments..."></textarea>
+          <textarea id="notes" placeholder="Add notes, issues, hold points, or rework comments..."></textarea>
+        </div>
+      </div>
 
+      <!-- Photos -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-h">
+          <h2>Site Photos</h2>
+          <div class="btnbar no-print">
+            <label class="btn ghost" style="cursor:pointer;">
+              Add Photos
+              <input id="photoInput" type="file" accept="image/*" multiple style="display:none;">
+            </label>
+            <button class="btn danger" id="btnClearPhotos" type="button">Clear Photos</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <div class="photoBar">
+            <div class="hint" style="margin:0;">
+              Thumbnails show on the form. Export includes larger photos, 4 per page.
+            </div>
+          </div>
+          <div id="thumbGrid" class="thumbGrid"></div>
           <div class="hint">
-            Use “Add Default Points” to populate a typical grading checklist. You can edit the names to match your plot plan labels.
+            Note: Photos are stored on this device (autosave). Very large photo sets can exceed browser storage, keep it reasonable.
           </div>
         </div>
       </div>
 
-      <!-- Elevation table -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
           <h2>Elevation Comparison (Plot Plan vs Field)</h2>
           <div class="btnbar no-print">
-            <button class="btn ghost" id="btnAddRow">Add Row</button>
-            <button class="btn danger" id="btnRemoveSelected">Remove Selected</button>
+            <button class="btn ghost" id="btnAddRow" type="button">Add Row</button>
+            <button class="btn danger" id="btnRemoveSelected" type="button">Remove Selected</button>
           </div>
         </div>
         <div class="card-b">
@@ -474,13 +549,12 @@
         </div>
       </div>
 
-      <!-- Slopes -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
           <h2>Slope Calculator (Between Points)</h2>
           <div class="btnbar no-print">
-            <button class="btn ghost" id="btnAddSlope">Add Slope Row</button>
-            <button class="btn danger" id="btnRemoveSlopeSelected">Remove Selected</button>
+            <button class="btn ghost" id="btnAddSlope" type="button">Add Slope Row</button>
+            <button class="btn danger" id="btnRemoveSlopeSelected" type="button">Remove Selected</button>
           </div>
         </div>
         <div class="card-b">
@@ -505,70 +579,21 @@
               <tbody id="slopeBody"></tbody>
             </table>
           </div>
-
-          <div class="hint">
-            Distance is horizontal run (m). If you don’t know it, leave it blank and the row will show N/A.
-          </div>
         </div>
       </div>
 
     </div>
+
+    <!-- PRINT ONLY: Photo pages (built at export time) -->
+    <div id="printPhotos" class="printPhotos"></div>
+
   </div>
 
   <script>
-    /*********************
-     * Vista Grading Check
-     *********************/
+    const STORAGE_KEY = "vista_grading_check_v3";
 
-    const STORAGE_KEY = "vista_grading_check_v1";
+    const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
 
-    const tolByAreaCm = {
-      calgary: 15,
-      chestermere: 15,
-      airdrie: 10
-    };
-
-    // --- Helpers ---
-    function fmt(n, decimals=2){
-      if (n === null || n === undefined || !Number.isFinite(n)) return "—";
-      return Number(n).toFixed(decimals);
-    }
-
-    // Accept 92.21 (m) or 9221 meaning 92.21
-    function normalizeElevToMeters(v){
-      const s = String(v ?? "").trim();
-      if (!s) return null;
-
-      // allow comma decimals if someone types 92,21
-      const s2 = s.replace(",", ".");
-      const n = Number(s2);
-      if (!Number.isFinite(n)) return null;
-
-      // Heuristic: if it's big, treat as hundredths
-      // 9221 -> 92.21
-      return n > 1000 ? n / 100 : n;
-    }
-
-    function deltaCm(fieldM, designM){
-      if (!Number.isFinite(fieldM) || !Number.isFinite(designM)) return null;
-      return (fieldM - designM) * 100;
-    }
-
-    function passFail(deltaCmVal, tolCm){
-      if (!Number.isFinite(deltaCmVal)) return "N/A";
-      return Math.abs(deltaCmVal) <= tolCm ? "PASS" : "FAIL";
-    }
-
-    function slopePercent(elevFromM, elevToM, runM){
-      if (!Number.isFinite(elevFromM) || !Number.isFinite(elevToM) || !Number.isFinite(runM) || runM <= 0) return null;
-      return ((elevToM - elevFromM) / runM) * 100;
-    }
-
-    function uid(){
-      return Math.random().toString(16).slice(2) + Date.now().toString(16);
-    }
-
-    // --- State ---
     const state = {
       meta: {
         area: "calgary",
@@ -581,8 +606,65 @@
         notes: ""
       },
       elevRows: [],
-      slopeRows: []
+      slopeRows: [],
+      photos: [] // { id, name, type, dataUrl, caption, ts }
     };
+
+    // --- Helpers ---
+    function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+    function fmt(n, decimals=2){ if (!Number.isFinite(n)) return "—"; return Number(n).toFixed(decimals); }
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function normalizeElevToMeters(v){
+      const s = String(v ?? "").trim();
+      if (!s) return null;
+      const n = Number(s.replace(",", "."));
+      if (!Number.isFinite(n)) return null;
+      return n > 1000 ? n / 100 : n;
+    }
+    function calcDeltaCm(fieldM, designM){
+      if (!Number.isFinite(fieldM) || !Number.isFinite(designM)) return null;
+      return (fieldM - designM) * 100;
+    }
+    function passFail(deltaCmVal, tolCm){
+      if (!Number.isFinite(deltaCmVal)) return "N/A";
+      return Math.abs(deltaCmVal) <= tolCm ? "PASS" : "FAIL";
+    }
+    function slopePercent(elevFromM, elevToM, runM){
+      if (!Number.isFinite(elevFromM) || !Number.isFinite(elevToM) || !Number.isFinite(runM) || runM <= 0) return null;
+      return ((elevToM - elevFromM) / runM) * 100;
+    }
+
+    function todayISO(){
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function safeName(s){
+      return String(s ?? "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "")
+        .replace(/\s+/g, " ")
+        .replaceAll(" ", "_")
+        .slice(0, 80) || "Grading_Check";
+    }
+
+    function defaultFileName(ext){
+      const job = safeName(state.meta.jobNo || "Job");
+      const crew = safeName(state.meta.crewChief || "Crew");
+      const date = todayISO();
+      return `${job}_${crew}_${date}.${ext}`;
+    }
 
     // --- Elements ---
     const areaSelect = document.getElementById("areaSelect");
@@ -602,8 +684,8 @@
     const sumPoints = document.getElementById("sumPoints");
     const sumFails = document.getElementById("sumFails");
     const sumWorst = document.getElementById("sumWorst");
+    const sumPhotos = document.getElementById("sumPhotos");
 
-    // Buttons
     const btnAddRow = document.getElementById("btnAddRow");
     const btnRemoveSelected = document.getElementById("btnRemoveSelected");
     const btnAddDefaults = document.getElementById("btnAddDefaults");
@@ -611,7 +693,13 @@
     const btnRemoveSlopeSelected = document.getElementById("btnRemoveSlopeSelected");
     const btnSave = document.getElementById("btnSave");
     const btnReset = document.getElementById("btnReset");
-    const btnPrint = document.getElementById("btnPrint");
+    const btnDownload = document.getElementById("btnDownload");
+    const btnShare = document.getElementById("btnShare");
+
+    const photoInput = document.getElementById("photoInput");
+    const btnClearPhotos = document.getElementById("btnClearPhotos");
+    const thumbGrid = document.getElementById("thumbGrid");
+    const printPhotos = document.getElementById("printPhotos");
 
     // --- Renderers ---
     function renderTolerance(){
@@ -620,106 +708,97 @@
     }
 
     function pointNameOptions(){
-      // build options from elevation rows
-      const names = state.elevRows
-        .map(r => (r.pointName || "").trim())
-        .filter(Boolean);
-
-      // unique preserve order
+      const names = state.elevRows.map(r => (r.pointName || "").trim()).filter(Boolean);
       const uniq = [];
       const seen = new Set();
       for (const n of names){
-        if (!seen.has(n)){
-          uniq.push(n);
-          seen.add(n);
-        }
+        if (!seen.has(n)){ uniq.push(n); seen.add(n); }
       }
       return uniq;
     }
 
     function renderElevations(){
-      elevBody.innerHTML = "";
       const tol = tolByAreaCm[state.meta.area] ?? 15;
+      elevBody.innerHTML = "";
 
-      state.elevRows.forEach((row, idx) => {
+      for (const row of state.elevRows){
         const tr = document.createElement("tr");
+        tr.dataset.rowId = row.id;
 
         const designM = normalizeElevToMeters(row.designElev);
         const fieldM  = normalizeElevToMeters(row.fieldElev);
-        const dCm     = deltaCm(fieldM, designM);
+        const dCm     = calcDeltaCm(fieldM, designM);
         const status  = passFail(dCm, tol);
 
-        const deltaClass = (status === "PASS") ? "ok" : (status === "FAIL" ? "bad" : "na");
-        const statusClass = (status === "PASS") ? "ok" : (status === "FAIL" ? "bad" : "na");
+        const deltaClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
+        const statusClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
 
         tr.innerHTML = `
           <td class="no-print"><input type="checkbox" data-id="${row.id}" class="rowSel" /></td>
           <td>
-            <input class="mini" value="${escapeHtml(row.pointName)}" placeholder="e.g., ROW, FL, FR, SWALE..." data-k="pointName" data-id="${row.id}" />
+            <input class="mini" value="${escapeHtml(row.pointName)}"
+              placeholder="e.g., ROW, FL, SWALE..."
+              data-k="pointName" data-id="${row.id}" />
           </td>
           <td>
-            <input class="mini" value="${escapeHtml(row.designElev)}" placeholder="Design elev" data-k="designElev" data-id="${row.id}" />
+            <input class="mini" value="${escapeHtml(row.designElev)}"
+              placeholder="Design elev"
+              inputmode="decimal"
+              data-k="designElev" data-id="${row.id}" />
           </td>
           <td>
-            <input class="mini" value="${escapeHtml(row.fieldElev)}" placeholder="Field elev" data-k="fieldElev" data-id="${row.id}" />
+            <input class="mini" value="${escapeHtml(row.fieldElev)}"
+              placeholder="Field elev"
+              inputmode="decimal"
+              data-k="fieldElev" data-id="${row.id}" />
           </td>
           <td>
-            <span class="delta ${deltaClass}">${Number.isFinite(dCm) ? fmt(dCm, 1) : "—"}</span>
+            <span class="delta ${deltaClass}" data-role="delta">${Number.isFinite(dCm) ? fmt(dCm, 1) : "—"}</span>
           </td>
           <td>
-            <span class="status ${statusClass}">${status}</span>
+            <span class="status ${statusClass}" data-role="status">${status}</span>
           </td>
           <td>
-            <input class="mini" value="${escapeHtml(row.note)}" placeholder="Optional" data-k="note" data-id="${row.id}" />
+            <input class="mini" value="${escapeHtml(row.note)}"
+              placeholder="Optional"
+              data-k="note" data-id="${row.id}" />
           </td>
         `;
-
         elevBody.appendChild(tr);
-      });
+      }
 
-      // After elevations re-render, re-render slopes too (so point dropdowns stay in sync)
-      renderSlopes();
+      renderSlopes(true);
       renderSummary();
     }
 
-    function renderSlopes(){
-      slopeBody.innerHTML = "";
-      const options = pointNameOptions();
+    function updateElevationComputed(rowId){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+      const row = state.elevRows.find(r => r.id === rowId);
+      const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(rowId)}"]`);
+      if (!row || !tr) return;
 
-      state.slopeRows.forEach((row) => {
-        const tr = document.createElement("tr");
+      const designM = normalizeElevToMeters(row.designElev);
+      const fieldM  = normalizeElevToMeters(row.fieldElev);
+      const dCm     = calcDeltaCm(fieldM, designM);
+      const status  = passFail(dCm, tol);
 
-        // find elevation rows by point name
-        const from = state.elevRows.find(r => (r.pointName || "").trim() === (row.fromPoint || "").trim());
-        const to   = state.elevRows.find(r => (r.pointName || "").trim() === (row.toPoint || "").trim());
+      const deltaEl = tr.querySelector('[data-role="delta"]');
+      const statusEl = tr.querySelector('[data-role="status"]');
 
-        const runM = Number(String(row.distanceM || "").trim().replace(",", "."));
-        const designFromM = normalizeElevToMeters(from?.designElev);
-        const designToM   = normalizeElevToMeters(to?.designElev);
-        const fieldFromM  = normalizeElevToMeters(from?.fieldElev);
-        const fieldToM    = normalizeElevToMeters(to?.fieldElev);
+      const deltaClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
+      const statusClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
 
-        const designSlope = slopePercent(designFromM, designToM, runM);
-        const fieldSlope  = slopePercent(fieldFromM, fieldToM, runM);
-        const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
+      if (deltaEl){
+        deltaEl.textContent = Number.isFinite(dCm) ? fmt(dCm, 1) : "—";
+        deltaEl.className = `delta ${deltaClass}`;
+      }
+      if (statusEl){
+        statusEl.textContent = status;
+        statusEl.className = `status ${statusClass}`;
+      }
 
-        tr.innerHTML = `
-          <td class="no-print"><input type="checkbox" data-id="${row.id}" class="slopeSel" /></td>
-          <td>
-            <input class="mini" value="${escapeHtml(row.segment)}" placeholder="e.g., Front swale, Driveway..." data-k="segment" data-id="${row.id}" data-type="slope" />
-          </td>
-          <td>${pointSelectHtml(row.id, "fromPoint", row.fromPoint, options)}</td>
-          <td>${pointSelectHtml(row.id, "toPoint", row.toPoint, options)}</td>
-          <td>
-            <input class="mini" value="${escapeHtml(row.distanceM)}" placeholder="Run (m)" data-k="distanceM" data-id="${row.id}" data-type="slope" />
-          </td>
-          <td><span class="delta na">${Number.isFinite(designSlope) ? fmt(designSlope, 2) : "—"}</span></td>
-          <td><span class="delta na">${Number.isFinite(fieldSlope) ? fmt(fieldSlope, 2) : "—"}</span></td>
-          <td><span class="delta na">${Number.isFinite(deltaSlope) ? fmt(deltaSlope, 2) : "—"}</span></td>
-        `;
-
-        slopeBody.appendChild(tr);
-      });
+      renderSummary();
+      updateAllSlopeComputed();
     }
 
     function pointSelectHtml(rowId, key, current, options){
@@ -737,6 +816,58 @@
       `;
     }
 
+    function renderSlopes(rebuild=false){
+      const options = pointNameOptions();
+      if (rebuild){
+        slopeBody.innerHTML = "";
+        for (const row of state.slopeRows){
+          const tr = document.createElement("tr");
+          tr.dataset.rowId = row.id;
+
+          tr.innerHTML = `
+            <td class="no-print"><input type="checkbox" data-id="${row.id}" class="slopeSel" /></td>
+            <td><input class="mini" value="${escapeHtml(row.segment)}" placeholder="e.g., Front swale, Driveway..." data-k="segment" data-id="${row.id}" data-type="slope" /></td>
+            <td>${pointSelectHtml(row.id, "fromPoint", row.fromPoint, options)}</td>
+            <td>${pointSelectHtml(row.id, "toPoint", row.toPoint, options)}</td>
+            <td><input class="mini" value="${escapeHtml(row.distanceM)}" placeholder="Run (m)" inputmode="decimal" data-k="distanceM" data-id="${row.id}" data-type="slope" /></td>
+            <td><span class="delta na" data-role="designSlope">—</span></td>
+            <td><span class="delta na" data-role="fieldSlope">—</span></td>
+            <td><span class="delta na" data-role="deltaSlope">—</span></td>
+          `;
+          slopeBody.appendChild(tr);
+        }
+      }
+      updateAllSlopeComputed();
+    }
+
+    function updateAllSlopeComputed(){
+      for (const row of state.slopeRows) updateSlopeComputed(row.id);
+    }
+
+    function updateSlopeComputed(rowId){
+      const row = state.slopeRows.find(r => r.id === rowId);
+      const tr = slopeBody.querySelector(`tr[data-row-id="${CSS.escape(rowId)}"]`);
+      if (!row || !tr) return;
+
+      const from = state.elevRows.find(r => (r.pointName || "").trim() === (row.fromPoint || "").trim());
+      const to   = state.elevRows.find(r => (r.pointName || "").trim() === (row.toPoint || "").trim());
+
+      const runM = Number(String(row.distanceM || "").trim().replace(",", "."));
+
+      const designFromM = normalizeElevToMeters(from?.designElev);
+      const designToM   = normalizeElevToMeters(to?.designElev);
+      const fieldFromM  = normalizeElevToMeters(from?.fieldElev);
+      const fieldToM    = normalizeElevToMeters(to?.fieldElev);
+
+      const designSlope = slopePercent(designFromM, designToM, runM);
+      const fieldSlope  = slopePercent(fieldFromM, fieldToM, runM);
+      const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
+
+      tr.querySelector('[data-role="designSlope"]').textContent = Number.isFinite(designSlope) ? fmt(designSlope, 2) : "—";
+      tr.querySelector('[data-role="fieldSlope"]').textContent  = Number.isFinite(fieldSlope)  ? fmt(fieldSlope, 2)  : "—";
+      tr.querySelector('[data-role="deltaSlope"]').textContent  = Number.isFinite(deltaSlope)  ? fmt(deltaSlope, 2)  : "—";
+    }
+
     function renderSummary(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
 
@@ -748,7 +879,7 @@
       for (const r of state.elevRows){
         const designM = normalizeElevToMeters(r.designElev);
         const fieldM  = normalizeElevToMeters(r.fieldElev);
-        const dCm = deltaCm(fieldM, designM);
+        const dCm = calcDeltaCm(fieldM, designM);
         if (!Number.isFinite(dCm)) continue;
 
         pointsChecked++;
@@ -764,17 +895,295 @@
       sumPoints.textContent = String(pointsChecked);
       sumFails.textContent = String(fails);
       sumWorst.textContent = (worstSigned === null) ? "—" : fmt(worstSigned, 1);
+      sumPhotos.textContent = String(state.photos.length);
+    }
+
+    // --- Photos ---
+    function renderThumbs(){
+      thumbGrid.innerHTML = "";
+      for (const p of state.photos){
+        const div = document.createElement("div");
+        div.className = "thumb";
+        div.dataset.pid = p.id;
+
+        const cap = p.caption ? p.caption : p.name;
+
+        div.innerHTML = `
+          <img src="${p.dataUrl}" alt="${escapeHtml(p.name)}" />
+          <div class="x" title="Remove" data-action="remove">×</div>
+          <div class="cap">${escapeHtml(cap || "")}</div>
+        `;
+        thumbGrid.appendChild(div);
+      }
+      renderSummary();
+    }
+
+    function compressImageToDataUrl(file, maxDim=1600, quality=0.82){
+      return new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onerror = () => reject(new Error("File read failed"));
+        fr.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const w = img.width;
+            const h = img.height;
+            const scale = Math.min(1, maxDim / Math.max(w, h));
+            const cw = Math.round(w * scale);
+            const ch = Math.round(h * scale);
+
+            const canvas = document.createElement("canvas");
+            canvas.width = cw;
+            canvas.height = ch;
+            const ctx = canvas.getContext("2d", { alpha:false });
+            ctx.drawImage(img, 0, 0, cw, ch);
+
+            // use jpeg to keep size reasonable
+            const out = canvas.toDataURL("image/jpeg", quality);
+            resolve(out);
+          };
+          img.onerror = () => reject(new Error("Image load failed"));
+          img.src = fr.result;
+        };
+        fr.readAsDataURL(file);
+      });
+    }
+
+    async function addPhotosFromFiles(fileList){
+      const files = Array.from(fileList || []);
+      for (const f of files){
+        if (!f.type.startsWith("image/")) continue;
+        try{
+          const dataUrl = await compressImageToDataUrl(f, 1600, 0.82);
+          state.photos.push({
+            id: uid(),
+            name: f.name || "photo",
+            type: "image/jpeg",
+            dataUrl,
+            caption: "",
+            ts: Date.now()
+          });
+        }catch(e){
+          console.warn("Photo add failed:", e);
+        }
+      }
+      renderThumbs();
+      saveToStorage();
+    }
+
+    function removePhoto(id){
+      state.photos = state.photos.filter(p => p.id !== id);
+      renderThumbs();
+      saveToStorage();
+    }
+
+    function clearPhotos(){
+      if (!confirm("Remove all photos from this report?")) return;
+      state.photos = [];
+      renderThumbs();
+      saveToStorage();
+    }
+
+    // Build print-only photo pages: 4 images per page
+    function buildPrintPhotoPages(){
+      printPhotos.innerHTML = "";
+      if (state.photos.length === 0) return;
+
+      const perPage = 4;
+      const pages = Math.ceil(state.photos.length / perPage);
+
+      for (let p = 0; p < pages; p++){
+        const pageDiv = document.createElement("div");
+        pageDiv.className = "photoPage";
+
+        const h3 = document.createElement("h3");
+        h3.textContent = `Site Photos (Page ${p+1} of ${pages})`;
+        pageDiv.appendChild(h3);
+
+        const grid = document.createElement("div");
+        grid.className = "photoGridPrint";
+
+        const slice = state.photos.slice(p*perPage, p*perPage + perPage);
+        for (const photo of slice){
+          const wrap = document.createElement("div");
+          wrap.className = "photoBig";
+          const label = photo.caption ? photo.caption : photo.name;
+
+          wrap.innerHTML = `
+            <img src="${photo.dataUrl}" alt="${escapeHtml(photo.name)}" />
+            <div class="label">${escapeHtml(label || "")}</div>
+          `;
+          grid.appendChild(wrap);
+        }
+
+        pageDiv.appendChild(grid);
+        printPhotos.appendChild(pageDiv);
+      }
+    }
+
+    // --- Export / Download / Share ---
+    // We generate a “print view” using window.print(). For “Download” we create an HTML file snapshot.
+    // For “Share” on mobile (and some desktops), Web Share API shares the HTML file. If not supported, it downloads.
+
+    function buildHtmlSnapshot(){
+      // Clone current document and ensure print photo pages are populated
+      buildPrintPhotoPages();
+
+      // Create a full HTML snapshot so crews can send/share a self-contained report.
+      // This embeds images as data URLs, so it remains portable.
+      const doc = document.documentElement.cloneNode(true);
+
+      // Ensure form values are in attributes for snapshot readability
+      // (inputs already hold values, but HTML export relies on outerHTML; we can set attributes for safety)
+      function setValueAttr(id){
+        const el = document.getElementById(id);
+        const cloneEl = doc.querySelector("#" + CSS.escape(id));
+        if (el && cloneEl){
+          if (cloneEl.tagName === "TEXTAREA"){
+            cloneEl.textContent = el.value || "";
+          } else {
+            cloneEl.setAttribute("value", el.value || "");
+          }
+        }
+      }
+      ["jobNo","jobDate","community","address","lotBlockPlan","crewChief"].forEach(setValueAttr);
+      const notesClone = doc.querySelector("#notes");
+      if (notesClone) notesClone.textContent = notes.value || "";
+
+      // Set area dropdown selected
+      const areaClone = doc.querySelector("#areaSelect");
+      if (areaClone){
+        const val = areaSelect.value;
+        Array.from(areaClone.options).forEach(o => o.selected = (o.value === val));
+      }
+
+      // Remove file input for snapshot safety
+      const pi = doc.querySelector("#photoInput");
+      if (pi) pi.remove();
+
+      // Put a small banner in snapshot so people know it’s a report
+      const subtitle = doc.querySelector(".brand .subtitle");
+      if (subtitle){
+        subtitle.textContent = "Survey Grading Check Report (shareable snapshot)";
+      }
+
+      // Ensure print photo pages exist in snapshot
+      const snapPrint = doc.querySelector("#printPhotos");
+      if (snapPrint) snapPrint.innerHTML = printPhotos.innerHTML;
+
+      // Return full HTML
+      return "<!DOCTYPE html>\n" + doc.outerHTML;
+    }
+
+    function downloadFile(filename, content, mime){
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      return blob;
+    }
+
+    async function handleDownload(){
+      const name = defaultFileName("html");
+      const snapshot = buildHtmlSnapshot();
+      downloadFile(name, snapshot, "text/html");
+    }
+
+    async function handleShare(){
+      const name = defaultFileName("html");
+      const snapshot = buildHtmlSnapshot();
+      const blob = new Blob([snapshot], { type: "text/html" });
+      const file = new File([blob], name, { type: "text/html" });
+
+      // Web Share (mobile + some desktop browsers)
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
+        try{
+          await navigator.share({
+            title: "Vista Geomatics – Grading Check",
+            text: "Grading check report attached.",
+            files: [file]
+          });
+          return;
+        }catch(e){
+          // user cancelled or share failed: fall back to download
+        }
+      }
+
+      // Fallback (PC + unsupported): download
+      downloadFile(name, snapshot, "text/html");
+      alert("Share isn't available in this browser, the report was downloaded instead.");
+    }
+
+    // Print/PDF export (uses browser print dialog). Photos appear 4 per page.
+    function exportToPrint(){
+      buildPrintPhotoPages();
+      window.print();
+    }
+
+    // --- Storage ---
+    function saveToStorage(showToast=false){
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (showToast){
+          btnSave.textContent = "Saved";
+          setTimeout(() => btnSave.textContent = "Save", 900);
+        }
+      }catch(e){
+        console.warn("Save failed", e);
+        alert("Save failed. This is usually caused by too many photos stored in the browser. Try removing some photos.");
+      }
+    }
+
+    function loadFromStorage(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return false;
+
+        state.meta = Object.assign(state.meta, parsed.meta || {});
+        state.elevRows = Array.isArray(parsed.elevRows) ? parsed.elevRows : [];
+        state.slopeRows = Array.isArray(parsed.slopeRows) ? parsed.slopeRows : [];
+        state.photos = Array.isArray(parsed.photos) ? parsed.photos : [];
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    function syncMetaToUI(){
+      areaSelect.value = state.meta.area || "calgary";
+      jobNo.value = state.meta.jobNo || "";
+      jobDate.value = state.meta.jobDate || "";
+      community.value = state.meta.community || "";
+      address.value = state.meta.address || "";
+      lotBlockPlan.value = state.meta.lotBlockPlan || "";
+      crewChief.value = state.meta.crewChief || "";
+      notes.value = state.meta.notes || "";
+    }
+
+    function initDefaults(){
+      if (state.elevRows.length === 0){
+        state.elevRows.push({ id: uid(), pointName: "ROW", designElev: "", fieldElev: "", note: "" });
+        state.elevRows.push({ id: uid(), pointName: "Front Lot Grade (FL)", designElev: "", fieldElev: "", note: "" });
+      }
+      if (state.slopeRows.length === 0){
+        state.slopeRows.push({ id: uid(), segment: "Front (FL → ROW)", fromPoint: "Front Lot Grade (FL)", toPoint: "ROW", distanceM: "" });
+      }
     }
 
     // --- Events ---
     areaSelect.addEventListener("change", () => {
       state.meta.area = areaSelect.value;
       renderTolerance();
-      renderElevations();
+      for (const r of state.elevRows) updateElevationComputed(r.id);
       saveToStorage();
     });
 
-    // Meta inputs
     [jobNo, jobDate, community, address, lotBlockPlan, crewChief, notes].forEach(el => {
       el.addEventListener("input", () => {
         state.meta[el.id] = el.value;
@@ -782,10 +1191,9 @@
       });
     });
 
-    // Elev table input handler (delegated)
     elevBody.addEventListener("input", (e) => {
       const t = e.target;
-      if (!t || !t.dataset || !t.dataset.id) return;
+      if (!t?.dataset?.id) return;
 
       const id = t.dataset.id;
       const k = t.dataset.k;
@@ -794,14 +1202,18 @@
       if (!row) return;
 
       row[k] = t.value;
-      renderElevations(); // recalcs deltas
+
+      if (k === "designElev" || k === "fieldElev"){
+        updateElevationComputed(id);
+      } else if (k === "pointName"){
+        renderSlopes(true);
+      }
       saveToStorage();
     });
 
-    // Slope input handler
     slopeBody.addEventListener("input", (e) => {
       const t = e.target;
-      if (!t || !t.dataset || !t.dataset.id) return;
+      if (!t?.dataset?.id) return;
 
       const id = t.dataset.id;
       const k = t.dataset.k;
@@ -810,13 +1222,13 @@
       if (!row) return;
 
       row[k] = t.value;
-      renderSlopes();
+      if (k === "distanceM") updateSlopeComputed(id);
       saveToStorage();
     });
 
     slopeBody.addEventListener("change", (e) => {
       const t = e.target;
-      if (!t || !t.dataset || !t.dataset.id) return;
+      if (!t?.dataset?.id) return;
       if (t.tagName !== "SELECT") return;
 
       const id = t.dataset.id;
@@ -826,18 +1238,12 @@
       if (!row) return;
 
       row[k] = t.value;
-      renderSlopes();
+      updateSlopeComputed(id);
       saveToStorage();
     });
 
     btnAddRow.addEventListener("click", () => {
-      state.elevRows.push({
-        id: uid(),
-        pointName: "",
-        designElev: "",
-        fieldElev: "",
-        note: ""
-      });
+      state.elevRows.push({ id: uid(), pointName: "", designElev: "", fieldElev: "", note: "" });
       renderElevations();
       saveToStorage();
     });
@@ -852,47 +1258,24 @@
 
     btnAddDefaults.addEventListener("click", () => {
       const defaults = [
-        "ROW",
-        "TOC",
-        "Sidewalk",
-        "Driveway",
-        "Front Lot Grade (FL)",
-        "Garage Slab",
-        "Front Swale",
-        "Left Side Yard",
-        "Right Side Yard",
-        "Rear Lot Grade (RL)",
-        "Rear Swale / Lane"
+        "ROW","TOC","Sidewalk","Driveway",
+        "Front Lot Grade (FL)","Garage Slab","Front Swale",
+        "Left Side Yard","Right Side Yard",
+        "Rear Lot Grade (RL)","Rear Swale / Lane"
       ];
-
-      // Only add if table empty
-      if (state.elevRows.length === 0){
-        defaults.forEach(name => {
+      const existing = new Set(state.elevRows.map(r => (r.pointName || "").trim()).filter(Boolean));
+      for (const name of defaults){
+        if (!existing.has(name)){
           state.elevRows.push({ id: uid(), pointName: name, designElev: "", fieldElev: "", note: "" });
-        });
-      } else {
-        // append missing default names
-        const existing = new Set(state.elevRows.map(r => (r.pointName || "").trim()).filter(Boolean));
-        defaults.forEach(name => {
-          if (!existing.has(name)){
-            state.elevRows.push({ id: uid(), pointName: name, designElev: "", fieldElev: "", note: "" });
-          }
-        });
+        }
       }
-
       renderElevations();
       saveToStorage();
     });
 
     btnAddSlope.addEventListener("click", () => {
-      state.slopeRows.push({
-        id: uid(),
-        segment: "",
-        fromPoint: "",
-        toPoint: "",
-        distanceM: ""
-      });
-      renderSlopes();
+      state.slopeRows.push({ id: uid(), segment: "", fromPoint: "", toPoint: "", distanceM: "" });
+      renderSlopes(true);
       saveToStorage();
     });
 
@@ -900,120 +1283,89 @@
       const checks = Array.from(document.querySelectorAll(".slopeSel:checked"));
       const ids = new Set(checks.map(c => c.dataset.id));
       state.slopeRows = state.slopeRows.filter(r => !ids.has(r.id));
-      renderSlopes();
+      renderSlopes(true);
       saveToStorage();
     });
 
-    btnSave.addEventListener("click", () => {
-      saveToStorage(true);
-    });
+    btnSave.addEventListener("click", () => saveToStorage(true));
 
     btnReset.addEventListener("click", () => {
       if (!confirm("Clear this grading check from this device?")) return;
       localStorage.removeItem(STORAGE_KEY);
-
-      // reset state
-      state.meta = {
-        area: "calgary",
-        jobNo: "",
-        jobDate: "",
-        community: "",
-        address: "",
-        lotBlockPlan: "",
-        crewChief: "",
-        notes: ""
-      };
+      state.meta = { area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"", notes:"" };
       state.elevRows = [];
       state.slopeRows = [];
-
+      state.photos = [];
+      initDefaults();
       syncMetaToUI();
       renderTolerance();
       renderElevations();
-      renderSlopes();
+      renderThumbs();
+      saveToStorage();
     });
 
-    btnPrint.addEventListener("click", () => {
-      window.print();
+    // Download / Share buttons
+    btnDownload.addEventListener("click", async () => {
+      // First, also offer a print/PDF option by default on download long-press? Keep simple:
+      await handleDownload();
     });
+
+    btnShare.addEventListener("click", async () => {
+      await handleShare();
+    });
+
+    // Photos
+    photoInput.addEventListener("change", async (e) => {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+      await addPhotosFromFiles(files);
+      photoInput.value = ""; // allow re-adding same file
+    });
+
+    thumbGrid.addEventListener("click", (e) => {
+      const t = e.target;
+      const card = t.closest(".thumb");
+      if (!card) return;
+      const pid = card.dataset.pid;
+      if (t.dataset.action === "remove"){
+        removePhoto(pid);
+        return;
+      }
+      // click thumbnail: prompt caption edit
+      const photo = state.photos.find(p => p.id === pid);
+      if (!photo) return;
+      const cap = prompt("Photo caption (optional):", photo.caption || "");
+      if (cap !== null){
+        photo.caption = cap.trim();
+        renderThumbs();
+        saveToStorage();
+      }
+    });
+
+    btnClearPhotos.addEventListener("click", () => clearPhotos());
 
     // --- Storage ---
-    function saveToStorage(showToast=false){
-      try{
-        const payload = JSON.stringify(state);
-        localStorage.setItem(STORAGE_KEY, payload);
-        if (showToast){
-          // simple visual confirmation without extra UI clutter
-          btnSave.textContent = "Saved";
-          setTimeout(() => btnSave.textContent = "Save", 900);
-        }
-      }catch(err){
-        console.warn("Save failed:", err);
-      }
+    function saveToStorageSafe(){
+      saveToStorage();
     }
 
-    function loadFromStorage(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return false;
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== "object") return false;
-
-        // merge safely
-        state.meta = Object.assign(state.meta, parsed.meta || {});
-        state.elevRows = Array.isArray(parsed.elevRows) ? parsed.elevRows : [];
-        state.slopeRows = Array.isArray(parsed.slopeRows) ? parsed.slopeRows : [];
-        return true;
-      }catch(err){
-        console.warn("Load failed:", err);
-        return false;
-      }
-    }
-
-    function syncMetaToUI(){
-      areaSelect.value = state.meta.area || "calgary";
-
-      jobNo.value = state.meta.jobNo || "";
-      jobDate.value = state.meta.jobDate || "";
-      community.value = state.meta.community || "";
-      address.value = state.meta.address || "";
-      lotBlockPlan.value = state.meta.lotBlockPlan || "";
-      crewChief.value = state.meta.crewChief || "";
-      notes.value = state.meta.notes || "";
-    }
-
-    // --- Safety: escape HTML for injected values ---
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+    function loadAndInit(){
+      loadFromStorage();
+      state.meta.area = state.meta.area || "calgary";
+      if (!state.meta.jobDate) state.meta.jobDate = todayISO();
+      initDefaults();
+      syncMetaToUI();
+      renderTolerance();
+      renderElevations();
+      renderThumbs();
+      saveToStorageSafe();
     }
 
     // --- Init ---
-    (function init(){
-      loadFromStorage();
+    loadAndInit();
 
-      // ensure defaults exist
-      state.meta.area = state.meta.area || "calgary";
-
-      syncMetaToUI();
-      renderTolerance();
-
-      // if no rows, start with a couple of blanks
-      if (state.elevRows.length === 0){
-        state.elevRows.push({ id: uid(), pointName: "ROW", designElev: "", fieldElev: "", note: "" });
-        state.elevRows.push({ id: uid(), pointName: "Front Lot Grade (FL)", designElev: "", fieldElev: "", note: "" });
-      }
-      if (state.slopeRows.length === 0){
-        state.slopeRows.push({ id: uid(), segment: "Front (FL → ROW)", fromPoint: "Front Lot Grade (FL)", toPoint: "ROW", distanceM: "" });
-      }
-
-      renderElevations();
-      renderSlopes();
-      saveToStorage();
-    })();
+    // Optional: allow quick “Export to PDF” via Ctrl+P / Command+P already,
+    // but you can also call exportToPrint() if you want a dedicated button later.
   </script>
 </body>
 </html>
