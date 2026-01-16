@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VistaGeomatics – Grading Check</title>
+
+  <!-- Fonts (matches your other Vista forms) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --vista-blue:#165f7d;
+      --vista-blue-light:#2a7fa3;
+      --vista-blue-dark:#0b3045;
+
+      --bg-body:#eef3f9;
+      --bg-card:#ffffff;
+      --border-soft:#d6e2f0;
+
+      --text-main:#101827;
+      --text-muted:#5b6777;
+
+      --ok:#15803d;
+      --bad:#b91c1c;
+      --warn:#b45309;
+
+      --shadow: 0 10px 30px rgba(2, 10, 20, 0.08);
+      --radius: 16px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Inter", sans-serif;
+      background: radial-gradient(circle at top, #f4fbff 0%, var(--bg-body) 55%, #e9f1fb 100%);
+      color:var(--text-main);
+    }
+
+    .wrap{
+      max-width: 1180px;
+      margin: 20px auto 60px;
+      padding: 0 16px;
+    }
+
+    .topbar{
+      background: linear-gradient(135deg, var(--vista-blue-dark), var(--vista-blue));
+      color:#fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .topbar-inner{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding: 16px 18px;
+    }
+
+    .logo{
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      flex: 0 0 auto;
+    }
+    .logo img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 8px;
+      background: transparent;
+    }
+
+    .brand{
+      flex:1 1 auto;
+      min-width: 200px;
+    }
+    .brand .title{
+      font-family:"Montserrat", sans-serif;
+      font-weight:700;
+      letter-spacing:0.5px;
+      font-size: 18px;
+      margin:0;
+      line-height:1.2;
+    }
+    .brand .subtitle{
+      margin:4px 0 0;
+      opacity:0.9;
+      font-size: 13px;
+    }
+
+    .pill{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      padding:10px 12px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+    .pill b{ font-weight:700; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns:1fr; }
+      .pill{ width:100%; justify-content:space-between; }
+      .topbar-inner{ flex-wrap:wrap; }
+    }
+
+    .card{
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-h{
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+    }
+    .card-h h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:0.2px;
+    }
+    .card-b{
+      padding: 14px 16px 16px;
+    }
+
+    .formgrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 620px){
+      .formgrid{ grid-template-columns:1fr; }
+    }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 10px 10px;
+      font-size: 14px;
+      outline:none;
+      background:#fff;
+      color: var(--text-main);
+    }
+    textarea{ min-height: 86px; resize: vertical; }
+
+    .row{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .btnbar{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,0.0);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform 0.05s ease, opacity 0.15s ease, background 0.15s ease;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--vista-blue), var(--vista-blue-light));
+      color:#fff;
+    }
+    .btn.ghost{
+      background: #f4f8fc;
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+    }
+    .btn.danger{
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: var(--bad);
+    }
+
+    .hint{
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.35;
+    }
+
+    table{
+      width:100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow:hidden;
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+    }
+    thead th{
+      text-align:left;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 10px 10px;
+      background: #f6fafc;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    tbody td{
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-soft);
+      vertical-align: middle;
+      font-size: 14px;
+    }
+    tbody tr:last-child td{ border-bottom: none; }
+
+    td .mini{
+      padding: 8px 8px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .status{
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      display:inline-block;
+      border: 1px solid transparent;
+    }
+    .status.ok{
+      color: var(--ok);
+      background: #eaf7ee;
+      border-color: #c7ecd2;
+    }
+    .status.bad{
+      color: var(--bad);
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+    .status.na{
+      color: #475569;
+      background: #eef2f7;
+      border-color: #d6dee9;
+    }
+
+    .delta{
+      font-weight: 800;
+      letter-spacing:0.1px;
+    }
+    .delta.ok{ color: var(--ok); }
+    .delta.bad{ color: var(--bad); }
+    .delta.na{ color:#475569; }
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 720px){
+      .split{ grid-template-columns: 1fr; }
+    }
+
+    .summary{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-top: 10px;
+      padding: 12px 12px;
+      border: 1px dashed var(--border-soft);
+      border-radius: 14px;
+      background: #fbfdff;
+    }
+    .summary .k{
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .summary .v{
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    /* Print */
+    @media print{
+      body{ background:#fff; }
+      .wrap{ max-width:none; margin:0; padding:0; }
+      .btnbar, .hint, .no-print{ display:none !important; }
+      .card{ box-shadow:none; }
+      .topbar{ border-radius:0; }
+      a[href]:after{ content:""; }
+      table{ page-break-inside:auto; }
+      tr{ page-break-inside:avoid; page-break-after:auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- Header -->
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="logo" title="Vista Geomatics">
+          <!-- Use the same logo filename you already use in your other forms (put it in the same folder as this HTML) -->
+          <img src="logo.png" alt="Vista Geomatics Logo" />
+        </div>
+
+        <div class="brand">
+          <p class="title">VISTA GEOMATICS</p>
+          <p class="subtitle">Survey Grading Check, Plot Plan vs Field, Elevations & Slopes</p>
+        </div>
+
+        <div class="pill">
+          <span><b>Area</b></span>
+          <select id="areaSelect" style="width:auto; background: rgba(255,255,255,0.95); color:#0b3045; border:none; border-radius:999px; padding:8px 10px;">
+            <option value="calgary">Calgary</option>
+            <option value="chestermere">Chestermere</option>
+            <option value="airdrie">Airdrie</option>
+          </select>
+        </div>
+
+        <div class="pill">
+          <span><b>Tolerance</b></span>
+          <span id="tolLabel">±15 cm</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <!-- Job info -->
+      <div class="card">
+        <div class="card-h">
+          <h2>Job Details</h2>
+          <div class="btnbar no-print">
+            <button class="btn ghost" id="btnSave">Save</button>
+            <button class="btn ghost" id="btnReset">Clear</button>
+            <button class="btn primary" id="btnPrint">Print / PDF</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <div class="formgrid">
+            <div>
+              <label>Job Number</label>
+              <input id="jobNo" placeholder="e.g., 25-0123" />
+            </div>
+            <div>
+              <label>Date</label>
+              <input id="jobDate" type="date" />
+            </div>
+            <div>
+              <label>Community / Subdivision</label>
+              <input id="community" placeholder="e.g., Cornerstone" />
+            </div>
+            <div>
+              <label>Address</label>
+              <input id="address" placeholder="e.g., 2053–2055 Cornerstone Blvd NE" />
+            </div>
+            <div>
+              <label>Lot / Block / Plan</label>
+              <input id="lotBlockPlan" placeholder="e.g., Lot 12, Block 3, Plan ____" />
+            </div>
+            <div>
+              <label>Crew Chief</label>
+              <input id="crewChief" placeholder="Name" />
+            </div>
+          </div>
+
+          <div class="summary" style="margin-top:14px;">
+            <div>
+              <div class="k">Lots / Points Checked</div>
+              <div class="v" id="sumPoints">0</div>
+            </div>
+            <div>
+              <div class="k">Fails</div>
+              <div class="v" id="sumFails">0</div>
+            </div>
+            <div>
+              <div class="k">Worst Δ (cm)</div>
+              <div class="v" id="sumWorst">—</div>
+            </div>
+            <div>
+              <div class="k">Autosave</div>
+              <div class="v" id="sumAutosave">On</div>
+            </div>
+          </div>
+
+          <div class="hint">
+            Tips: You can enter elevations as meters (92.21) or as “hundredths style” (9221). The form will normalize automatically.
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="card">
+        <div class="card-h">
+          <h2>Notes</h2>
+          <div class="btnbar no-print">
+            <button class="btn ghost" id="btnAddDefaults">Add Default Points</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <label>General Notes / Crew Notes</label>
+          <textarea id="notes" placeholder="Add any notes, issues, hold points, or rework comments..."></textarea>
+
+          <div class="hint">
+            Use “Add Default Points” to populate a typical grading checklist. You can edit the names to match your plot plan labels.
+          </div>
+        </div>
+      </div>
+
+      <!-- Elevation table -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-h">
+          <h2>Elevation Comparison (Plot Plan vs Field)</h2>
+          <div class="btnbar no-print">
+            <button class="btn ghost" id="btnAddRow">Add Row</button>
+            <button class="btn danger" id="btnRemoveSelected">Remove Selected</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <div class="hint" style="margin-top:0;">
+            Δ (cm) = (Field − Design) × 100. Status uses the selected area tolerance.
+          </div>
+
+          <div style="margin-top:12px; overflow:auto;">
+            <table id="elevTable">
+              <thead>
+                <tr>
+                  <th style="width:44px;" class="no-print">Sel</th>
+                  <th style="min-width:180px;">STA / Point</th>
+                  <th style="min-width:160px;">Design Elev</th>
+                  <th style="min-width:160px;">Field Elev</th>
+                  <th style="min-width:120px;">Δ (cm)</th>
+                  <th style="min-width:110px;">Status</th>
+                  <th style="min-width:220px;">Point Notes</th>
+                </tr>
+              </thead>
+              <tbody id="elevBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slopes -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-h">
+          <h2>Slope Calculator (Between Points)</h2>
+          <div class="btnbar no-print">
+            <button class="btn ghost" id="btnAddSlope">Add Slope Row</button>
+            <button class="btn danger" id="btnRemoveSlopeSelected">Remove Selected</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <div class="hint" style="margin-top:0;">
+            Slope % = (Rise / Run) × 100. Rise uses Design elevs and Field elevs from the elevation table.
+          </div>
+
+          <div style="margin-top:12px; overflow:auto;">
+            <table id="slopeTable">
+              <thead>
+                <tr>
+                  <th style="width:44px;" class="no-print">Sel</th>
+                  <th style="min-width:220px;">Segment</th>
+                  <th style="min-width:180px;">From Point</th>
+                  <th style="min-width:180px;">To Point</th>
+                  <th style="min-width:140px;">Distance (m)</th>
+                  <th style="min-width:140px;">Design Slope %</th>
+                  <th style="min-width:140px;">Field Slope %</th>
+                  <th style="min-width:120px;">Δ Slope %</th>
+                </tr>
+              </thead>
+              <tbody id="slopeBody"></tbody>
+            </table>
+          </div>
+
+          <div class="hint">
+            Distance is horizontal run (m). If you don’t know it, leave it blank and the row will show N/A.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /*********************
+     * Vista Grading Check
+     *********************/
+
+    const STORAGE_KEY = "vista_grading_check_v1";
+
+    const tolByAreaCm = {
+      calgary: 15,
+      chestermere: 15,
+      airdrie: 10
+    };
+
+    // --- Helpers ---
+    function fmt(n, decimals=2){
+      if (n === null || n === undefined || !Number.isFinite(n)) return "—";
+      return Number(n).toFixed(decimals);
+    }
+
+    // Accept 92.21 (m) or 9221 meaning 92.21
+    function normalizeElevToMeters(v){
+      const s = String(v ?? "").trim();
+      if (!s) return null;
+
+      // allow comma decimals if someone types 92,21
+      const s2 = s.replace(",", ".");
+      const n = Number(s2);
+      if (!Number.isFinite(n)) return null;
+
+      // Heuristic: if it's big, treat as hundredths
+      // 9221 -> 92.21
+      return n > 1000 ? n / 100 : n;
+    }
+
+    function deltaCm(fieldM, designM){
+      if (!Number.isFinite(fieldM) || !Number.isFinite(designM)) return null;
+      return (fieldM - designM) * 100;
+    }
+
+    function passFail(deltaCmVal, tolCm){
+      if (!Number.isFinite(deltaCmVal)) return "N/A";
+      return Math.abs(deltaCmVal) <= tolCm ? "PASS" : "FAIL";
+    }
+
+    function slopePercent(elevFromM, elevToM, runM){
+      if (!Number.isFinite(elevFromM) || !Number.isFinite(elevToM) || !Number.isFinite(runM) || runM <= 0) return null;
+      return ((elevToM - elevFromM) / runM) * 100;
+    }
+
+    function uid(){
+      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    }
+
+    // --- State ---
+    const state = {
+      meta: {
+        area: "calgary",
+        jobNo: "",
+        jobDate: "",
+        community: "",
+        address: "",
+        lotBlockPlan: "",
+        crewChief: "",
+        notes: ""
+      },
+      elevRows: [],
+      slopeRows: []
+    };
+
+    // --- Elements ---
+    const areaSelect = document.getElementById("areaSelect");
+    const tolLabel = document.getElementById("tolLabel");
+
+    const jobNo = document.getElementById("jobNo");
+    const jobDate = document.getElementById("jobDate");
+    const community = document.getElementById("community");
+    const address = document.getElementById("address");
+    const lotBlockPlan = document.getElementById("lotBlockPlan");
+    const crewChief = document.getElementById("crewChief");
+    const notes = document.getElementById("notes");
+
+    const elevBody = document.getElementById("elevBody");
+    const slopeBody = document.getElementById("slopeBody");
+
+    const sumPoints = document.getElementById("sumPoints");
+    const sumFails = document.getElementById("sumFails");
+    const sumWorst = document.getElementById("sumWorst");
+
+    // Buttons
+    const btnAddRow = document.getElementById("btnAddRow");
+    const btnRemoveSelected = document.getElementById("btnRemoveSelected");
+    const btnAddDefaults = document.getElementById("btnAddDefaults");
+    const btnAddSlope = document.getElementById("btnAddSlope");
+    const btnRemoveSlopeSelected = document.getElementById("btnRemoveSlopeSelected");
+    const btnSave = document.getElementById("btnSave");
+    const btnReset = document.getElementById("btnReset");
+    const btnPrint = document.getElementById("btnPrint");
+
+    // --- Renderers ---
+    function renderTolerance(){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+      tolLabel.textContent = `±${tol} cm`;
+    }
+
+    function pointNameOptions(){
+      // build options from elevation rows
+      const names = state.elevRows
+        .map(r => (r.pointName || "").trim())
+        .filter(Boolean);
+
+      // unique preserve order
+      const uniq = [];
+      const seen = new Set();
+      for (const n of names){
+        if (!seen.has(n)){
+          uniq.push(n);
+          seen.add(n);
+        }
+      }
+      return uniq;
+    }
+
+    function renderElevations(){
+      elevBody.innerHTML = "";
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+
+      state.elevRows.forEach((row, idx) => {
+        const tr = document.createElement("tr");
+
+        const designM = normalizeElevToMeters(row.designElev);
+        const fieldM  = normalizeElevToMeters(row.fieldElev);
+        const dCm     = deltaCm(fieldM, designM);
+        const status  = passFail(dCm, tol);
+
+        const deltaClass = (status === "PASS") ? "ok" : (status === "FAIL" ? "bad" : "na");
+        const statusClass = (status === "PASS") ? "ok" : (status === "FAIL" ? "bad" : "na");
+
+        tr.innerHTML = `
+          <td class="no-print"><input type="checkbox" data-id="${row.id}" class="rowSel" /></td>
+          <td>
+            <input class="mini" value="${escapeHtml(row.pointName)}" placeholder="e.g., ROW, FL, FR, SWALE..." data-k="pointName" data-id="${row.id}" />
+          </td>
+          <td>
+            <input class="mini" value="${escapeHtml(row.designElev)}" placeholder="Design elev" data-k="designElev" data-id="${row.id}" />
+          </td>
+          <td>
+            <input class="mini" value="${escapeHtml(row.fieldElev)}" placeholder="Field elev" data-k="fieldElev" data-id="${row.id}" />
+          </td>
+          <td>
+            <span class="delta ${deltaClass}">${Number.isFinite(dCm) ? fmt(dCm, 1) : "—"}</span>
+          </td>
+          <td>
+            <span class="status ${statusClass}">${status}</span>
+          </td>
+          <td>
+            <input class="mini" value="${escapeHtml(row.note)}" placeholder="Optional" data-k="note" data-id="${row.id}" />
+          </td>
+        `;
+
+        elevBody.appendChild(tr);
+      });
+
+      // After elevations re-render, re-render slopes too (so point dropdowns stay in sync)
+      renderSlopes();
+      renderSummary();
+    }
+
+    function renderSlopes(){
+      slopeBody.innerHTML = "";
+      const options = pointNameOptions();
+
+      state.slopeRows.forEach((row) => {
+        const tr = document.createElement("tr");
+
+        // find elevation rows by point name
+        const from = state.elevRows.find(r => (r.pointName || "").trim() === (row.fromPoint || "").trim());
+        const to   = state.elevRows.find(r => (r.pointName || "").trim() === (row.toPoint || "").trim());
+
+        const runM = Number(String(row.distanceM || "").trim().replace(",", "."));
+        const designFromM = normalizeElevToMeters(from?.designElev);
+        const designToM   = normalizeElevToMeters(to?.designElev);
+        const fieldFromM  = normalizeElevToMeters(from?.fieldElev);
+        const fieldToM    = normalizeElevToMeters(to?.fieldElev);
+
+        const designSlope = slopePercent(designFromM, designToM, runM);
+        const fieldSlope  = slopePercent(fieldFromM, fieldToM, runM);
+        const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
+
+        tr.innerHTML = `
+          <td class="no-print"><input type="checkbox" data-id="${row.id}" class="slopeSel" /></td>
+          <td>
+            <input class="mini" value="${escapeHtml(row.segment)}" placeholder="e.g., Front swale, Driveway..." data-k="segment" data-id="${row.id}" data-type="slope" />
+          </td>
+          <td>${pointSelectHtml(row.id, "fromPoint", row.fromPoint, options)}</td>
+          <td>${pointSelectHtml(row.id, "toPoint", row.toPoint, options)}</td>
+          <td>
+            <input class="mini" value="${escapeHtml(row.distanceM)}" placeholder="Run (m)" data-k="distanceM" data-id="${row.id}" data-type="slope" />
+          </td>
+          <td><span class="delta na">${Number.isFinite(designSlope) ? fmt(designSlope, 2) : "—"}</span></td>
+          <td><span class="delta na">${Number.isFinite(fieldSlope) ? fmt(fieldSlope, 2) : "—"}</span></td>
+          <td><span class="delta na">${Number.isFinite(deltaSlope) ? fmt(deltaSlope, 2) : "—"}</span></td>
+        `;
+
+        slopeBody.appendChild(tr);
+      });
+    }
+
+    function pointSelectHtml(rowId, key, current, options){
+      const safeCurrent = (current || "").trim();
+      const opts = options.map(n => {
+        const sel = n === safeCurrent ? "selected" : "";
+        return `<option value="${escapeHtml(n)}" ${sel}>${escapeHtml(n)}</option>`;
+      }).join("");
+
+      return `
+        <select class="mini" data-k="${key}" data-id="${rowId}" data-type="slope">
+          <option value="">Select…</option>
+          ${opts}
+        </select>
+      `;
+    }
+
+    function renderSummary(){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+
+      let pointsChecked = 0;
+      let fails = 0;
+      let worstAbs = null;
+      let worstSigned = null;
+
+      for (const r of state.elevRows){
+        const designM = normalizeElevToMeters(r.designElev);
+        const fieldM  = normalizeElevToMeters(r.fieldElev);
+        const dCm = deltaCm(fieldM, designM);
+        if (!Number.isFinite(dCm)) continue;
+
+        pointsChecked++;
+        if (Math.abs(dCm) > tol) fails++;
+
+        const abs = Math.abs(dCm);
+        if (worstAbs === null || abs > worstAbs){
+          worstAbs = abs;
+          worstSigned = dCm;
+        }
+      }
+
+      sumPoints.textContent = String(pointsChecked);
+      sumFails.textContent = String(fails);
+      sumWorst.textContent = (worstSigned === null) ? "—" : fmt(worstSigned, 1);
+    }
+
+    // --- Events ---
+    areaSelect.addEventListener("change", () => {
+      state.meta.area = areaSelect.value;
+      renderTolerance();
+      renderElevations();
+      saveToStorage();
+    });
+
+    // Meta inputs
+    [jobNo, jobDate, community, address, lotBlockPlan, crewChief, notes].forEach(el => {
+      el.addEventListener("input", () => {
+        state.meta[el.id] = el.value;
+        saveToStorage();
+      });
+    });
+
+    // Elev table input handler (delegated)
+    elevBody.addEventListener("input", (e) => {
+      const t = e.target;
+      if (!t || !t.dataset || !t.dataset.id) return;
+
+      const id = t.dataset.id;
+      const k = t.dataset.k;
+
+      const row = state.elevRows.find(r => r.id === id);
+      if (!row) return;
+
+      row[k] = t.value;
+      renderElevations(); // recalcs deltas
+      saveToStorage();
+    });
+
+    // Slope input handler
+    slopeBody.addEventListener("input", (e) => {
+      const t = e.target;
+      if (!t || !t.dataset || !t.dataset.id) return;
+
+      const id = t.dataset.id;
+      const k = t.dataset.k;
+
+      const row = state.slopeRows.find(r => r.id === id);
+      if (!row) return;
+
+      row[k] = t.value;
+      renderSlopes();
+      saveToStorage();
+    });
+
+    slopeBody.addEventListener("change", (e) => {
+      const t = e.target;
+      if (!t || !t.dataset || !t.dataset.id) return;
+      if (t.tagName !== "SELECT") return;
+
+      const id = t.dataset.id;
+      const k = t.dataset.k;
+
+      const row = state.slopeRows.find(r => r.id === id);
+      if (!row) return;
+
+      row[k] = t.value;
+      renderSlopes();
+      saveToStorage();
+    });
+
+    btnAddRow.addEventListener("click", () => {
+      state.elevRows.push({
+        id: uid(),
+        pointName: "",
+        designElev: "",
+        fieldElev: "",
+        note: ""
+      });
+      renderElevations();
+      saveToStorage();
+    });
+
+    btnRemoveSelected.addEventListener("click", () => {
+      const checks = Array.from(document.querySelectorAll(".rowSel:checked"));
+      const ids = new Set(checks.map(c => c.dataset.id));
+      state.elevRows = state.elevRows.filter(r => !ids.has(r.id));
+      renderElevations();
+      saveToStorage();
+    });
+
+    btnAddDefaults.addEventListener("click", () => {
+      const defaults = [
+        "ROW",
+        "TOC",
+        "Sidewalk",
+        "Driveway",
+        "Front Lot Grade (FL)",
+        "Garage Slab",
+        "Front Swale",
+        "Left Side Yard",
+        "Right Side Yard",
+        "Rear Lot Grade (RL)",
+        "Rear Swale / Lane"
+      ];
+
+      // Only add if table empty
+      if (state.elevRows.length === 0){
+        defaults.forEach(name => {
+          state.elevRows.push({ id: uid(), pointName: name, designElev: "", fieldElev: "", note: "" });
+        });
+      } else {
+        // append missing default names
+        const existing = new Set(state.elevRows.map(r => (r.pointName || "").trim()).filter(Boolean));
+        defaults.forEach(name => {
+          if (!existing.has(name)){
+            state.elevRows.push({ id: uid(), pointName: name, designElev: "", fieldElev: "", note: "" });
+          }
+        });
+      }
+
+      renderElevations();
+      saveToStorage();
+    });
+
+    btnAddSlope.addEventListener("click", () => {
+      state.slopeRows.push({
+        id: uid(),
+        segment: "",
+        fromPoint: "",
+        toPoint: "",
+        distanceM: ""
+      });
+      renderSlopes();
+      saveToStorage();
+    });
+
+    btnRemoveSlopeSelected.addEventListener("click", () => {
+      const checks = Array.from(document.querySelectorAll(".slopeSel:checked"));
+      const ids = new Set(checks.map(c => c.dataset.id));
+      state.slopeRows = state.slopeRows.filter(r => !ids.has(r.id));
+      renderSlopes();
+      saveToStorage();
+    });
+
+    btnSave.addEventListener("click", () => {
+      saveToStorage(true);
+    });
+
+    btnReset.addEventListener("click", () => {
+      if (!confirm("Clear this grading check from this device?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+
+      // reset state
+      state.meta = {
+        area: "calgary",
+        jobNo: "",
+        jobDate: "",
+        community: "",
+        address: "",
+        lotBlockPlan: "",
+        crewChief: "",
+        notes: ""
+      };
+      state.elevRows = [];
+      state.slopeRows = [];
+
+      syncMetaToUI();
+      renderTolerance();
+      renderElevations();
+      renderSlopes();
+    });
+
+    btnPrint.addEventListener("click", () => {
+      window.print();
+    });
+
+    // --- Storage ---
+    function saveToStorage(showToast=false){
+      try{
+        const payload = JSON.stringify(state);
+        localStorage.setItem(STORAGE_KEY, payload);
+        if (showToast){
+          // simple visual confirmation without extra UI clutter
+          btnSave.textContent = "Saved";
+          setTimeout(() => btnSave.textContent = "Save", 900);
+        }
+      }catch(err){
+        console.warn("Save failed:", err);
+      }
+    }
+
+    function loadFromStorage(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return false;
+
+        // merge safely
+        state.meta = Object.assign(state.meta, parsed.meta || {});
+        state.elevRows = Array.isArray(parsed.elevRows) ? parsed.elevRows : [];
+        state.slopeRows = Array.isArray(parsed.slopeRows) ? parsed.slopeRows : [];
+        return true;
+      }catch(err){
+        console.warn("Load failed:", err);
+        return false;
+      }
+    }
+
+    function syncMetaToUI(){
+      areaSelect.value = state.meta.area || "calgary";
+
+      jobNo.value = state.meta.jobNo || "";
+      jobDate.value = state.meta.jobDate || "";
+      community.value = state.meta.community || "";
+      address.value = state.meta.address || "";
+      lotBlockPlan.value = state.meta.lotBlockPlan || "";
+      crewChief.value = state.meta.crewChief || "";
+      notes.value = state.meta.notes || "";
+    }
+
+    // --- Safety: escape HTML for injected values ---
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // --- Init ---
+    (function init(){
+      loadFromStorage();
+
+      // ensure defaults exist
+      state.meta.area = state.meta.area || "calgary";
+
+      syncMetaToUI();
+      renderTolerance();
+
+      // if no rows, start with a couple of blanks
+      if (state.elevRows.length === 0){
+        state.elevRows.push({ id: uid(), pointName: "ROW", designElev: "", fieldElev: "", note: "" });
+        state.elevRows.push({ id: uid(), pointName: "Front Lot Grade (FL)", designElev: "", fieldElev: "", note: "" });
+      }
+      if (state.slopeRows.length === 0){
+        state.slopeRows.push({ id: uid(), segment: "Front (FL → ROW)", fromPoint: "Front Lot Grade (FL)", toPoint: "ROW", distanceM: "" });
+      }
+
+      renderElevations();
+      renderSlopes();
+      saveToStorage();
+    })();
+  </script>
+</body>
+</html>
