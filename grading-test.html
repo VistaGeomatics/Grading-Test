@@ -8,7 +8,7 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
 
-  <!-- PDF Export (Download/Share) -->
+  <!-- PDF Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <!-- PDF Upload Preview -->
@@ -131,7 +131,7 @@
       padding: 10px 10px;
       font-size: 14px;
       outline:none;
-      background: rgba(255,255,255,0.82); /* semi-transparent */
+      background: rgba(255,255,255,0.78); /* semi transparent so you can see behind */
       color: var(--text-main);
     }
     textarea{ min-height: 92px; resize: vertical; }
@@ -191,7 +191,7 @@
       padding: 8px 8px;
       border-radius: 10px;
       font-size: 13px;
-      background: rgba(255,255,255,0.82);
+      background: rgba(255,255,255,0.78);
     }
 
     .status{
@@ -259,6 +259,7 @@
       background:#fff;
       cursor: crosshair;
       user-select: none;
+      overflow: hidden;
     }
     .planStage img{ width:100%; height:auto; display:block; }
 
@@ -270,36 +271,49 @@
       height:100%;
       pointer-events:none;
     }
+
+    /* slope label red */
     .slopeLabel{
       font-family:"Inter", sans-serif;
-      font-weight:900;
+      font-weight: 900;
       font-size: 10px;
+      fill: rgba(239,68,68,0.98);
       paint-order: stroke;
       stroke: rgba(0,0,0,0.55);
       stroke-width: 3px;
       stroke-linejoin: round;
     }
 
-    /* Small markers (point + elevation only) */
+    /* Markers (smaller). Point stays white. Elevation blue unless fail -> red. */
     .marker{
       position:absolute;
       transform: translate(-50%, -100%);
-      background: rgba(22,95,125,0.45);
+      background: rgba(22,95,125,0.22);
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
-      color:#fff;
-      border: 1.5px solid rgba(255,255,255,0.9);
-      border-radius: 10px;
-      padding: 4px 6px;
-      box-shadow: 0 6px 14px rgba(2,10,20,0.16);
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: 9px;
+      padding: 3px 5px;
+      box-shadow: 0 4px 10px rgba(2,10,20,0.10);
       pointer-events: auto;
       cursor: pointer;
       white-space: nowrap;
-      min-width: 44px;
+      min-width: 34px;
       text-align:center;
     }
-    .marker .pt{ font-size: 10px; font-weight: 900; line-height: 1.05; }
-    .marker .el{ font-size: 9px;  font-weight: 900; margin-top: 1px; }
+    .marker .pt{
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1.05;
+      color:#ffffff;
+    }
+    .marker .el{
+      font-size: 9px;
+      font-weight: 900;
+      margin-top: 1px;
+      line-height: 1.05;
+      color: var(--pass-blue);
+    }
     .marker .el.pass{ color: var(--pass-blue); }
     .marker .el.fail{ color: var(--fail-red); }
     .marker .el.na{ color: rgba(255,255,255,0.92); }
@@ -308,12 +322,12 @@
       content:"";
       position:absolute;
       left:50%;
-      bottom:-7px;
+      bottom:-6px;
       transform: translateX(-50%);
       width:0; height:0;
-      border-left:5px solid transparent;
-      border-right:5px solid transparent;
-      border-top:7px solid rgba(22,95,125,0.45);
+      border-left:4px solid transparent;
+      border-right:4px solid transparent;
+      border-top:6px solid rgba(22,95,125,0.22);
     }
 
     .planMeta{
@@ -465,6 +479,7 @@
     .pillSmall.ok{ background:#eaf7ee; border-color:#c7ecd2; color:#15803d; }
     .pillSmall.bad{ background:#fff1f2; border-color:#fecdd3; color:#b91c1c; }
 
+    /* page breaks between major sections (check report, plot plan, table) */
     .pageBreak{ page-break-before: always; }
 
     .planPrintWrap{
@@ -472,8 +487,7 @@
       border-radius:12px;
       overflow:hidden;
     }
-    .planPrintStage{ position: relative; }
-
+    .planPrintStage{ position: relative; overflow:hidden; }
     .planPrintStage img{ width:100%; height:auto; display:block; }
     .planPrintOverlay{
       position:absolute;
@@ -483,24 +497,24 @@
       pointer-events:none;
     }
 
+    /* print markers: same small style */
     .planPrintMarker{
       position:absolute;
       transform: translate(-50%, -100%);
-      background: rgba(22,95,125,0.45);
+      background: rgba(22,95,125,0.22);
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
-      color:#fff;
-      border: 1.5px solid rgba(255,255,255,0.9);
-      border-radius: 10px;
-      padding: 4px 6px;
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: 9px;
+      padding: 3px 5px;
       font-weight: 900;
       white-space: nowrap;
       text-align:center;
-      min-width: 44px;
-      box-shadow: 0 6px 14px rgba(2,10,20,0.14);
+      min-width: 34px;
+      box-shadow: 0 4px 10px rgba(2,10,20,0.10);
     }
-    .planPrintMarker .pt{ font-size: 10px; line-height: 1.05; }
-    .planPrintMarker .el{ font-size: 9px; margin-top:1px; font-weight:900; opacity:0.98; }
+    .planPrintMarker .pt{ font-size: 9px; line-height: 1.05; color:#ffffff; }
+    .planPrintMarker .el{ font-size: 9px; margin-top:1px; font-weight:900; line-height:1.05; color: var(--pass-blue); }
     .planPrintMarker .el.pass{ color: var(--pass-blue); }
     .planPrintMarker .el.fail{ color: var(--fail-red); }
     .planPrintMarker .el.na{ color: rgba(255,255,255,0.92); }
@@ -508,12 +522,12 @@
       content:"";
       position:absolute;
       left:50%;
-      bottom:-7px;
+      bottom:-6px;
       transform: translateX(-50%);
       width:0; height:0;
-      border-left:5px solid transparent;
-      border-right:5px solid transparent;
-      border-top:7px solid rgba(22,95,125,0.45);
+      border-left:4px solid transparent;
+      border-right:4px solid transparent;
+      border-top:6px solid rgba(22,95,125,0.22);
     }
 
     .photoGridPrint{
@@ -547,7 +561,7 @@
 
         <div class="brand">
           <p class="title">VISTA GEOMATICS</p>
-          <p class="subtitle">Grading Check, Plot Plan vs Field, HI/FS/IFS, Slopes, Notes, Photos, PDF Export</p>
+          <p class="subtitle">Grading Check, Plot Plan vs Field, Slopes, Notes, Photos, PDF Export</p>
         </div>
 
         <div class="pill">
@@ -613,7 +627,7 @@
           </div>
 
           <div class="hint">
-            Saves on this device. If you attach very large PDFs/photos, storage can fill up. Use screenshots or flattened PDFs when possible.
+            Saves on this device. If plot plan PDFs are large, upload a screenshot image or Print to PDF (flatten) first.
           </div>
         </div>
       </div>
@@ -648,7 +662,6 @@
           <textarea id="notes" placeholder="Optional free text. Use templates below for consistent wording..."></textarea>
           <div id="templateGrid" class="templateGrid"></div>
         </div>
-
       </div>
 
       <div class="card" style="grid-column: 1 / -1;">
@@ -665,8 +678,8 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Upload plan, then click to place points. Points auto-number 1, 2, 3… You’ll enter Field Elev and Design Elev. Marker elevation turns blue (PASS) or red (FAIL).
-            If you create slope rows, arrows and slope % will appear on the plan (when both points exist on the plan).
+            Upload plan, then click to place points. Points auto-number 1, 2, 3… You’ll enter Field Elev and Design Elev.
+            Marker elevation turns blue (PASS) or red (FAIL). Slope rows draw red arrows and red % (midpoint). Markers auto-spread to avoid overlap.
           </div>
 
           <div id="planEmpty" style="margin-top:12px; padding:14px; border:1px dashed var(--border-soft); border-radius:14px; background:#fbfdff; color:var(--text-muted);">
@@ -685,7 +698,7 @@
                   <div id="planType" style="opacity:0.85; margin-top:2px;"></div>
                 </div>
                 <div class="hint" style="margin:0;">
-                  If a PDF won’t load, upload a screenshot image instead.
+                  Tip: For tight point clusters, keep clicking, the app will fan labels out automatically.
                 </div>
               </div>
             </div>
@@ -718,10 +731,6 @@
           <h2>Elevation Comparison</h2>
           <div class="btnbar" style="justify-content:space-between; width:100%;">
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-              <div class="inlineToggle">
-                <input id="fieldNotesMode" type="checkbox" checked />
-                <span><b>Field Notes Mode</b>, Field Elev = HI − FS/IFS (if Field Elev blank)</span>
-              </div>
               <div class="inlineToggle">
                 <input id="autoSortPoints" type="checkbox" checked />
                 <span><b>Auto-sort</b>, numeric points in order</span>
@@ -775,7 +784,7 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Slope % = (Rise / Run) × 100. Once points + distance exist, arrows and slope % appear on the plot plan (if both points exist on the plan).
+            Slope % = (Rise / Run) × 100. Red arrows + red % show on plan and in the exported PDF.
           </div>
 
           <div style="margin-top:12px; overflow:auto;">
@@ -804,15 +813,16 @@
   <div id="exportHost" aria-hidden="true"></div>
 
   <script>
+    // PDF.js worker
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
     }
 
-    const STORAGE_KEY = "vista_grading_check_full_v5";
+    const STORAGE_KEY = "vista_grading_check_full_v6";
     const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
 
-    // Added TOC (Top of Concrete) to station presets
+    // Includes TOC (Top of Concrete)
     const STATION_PRESETS = [
       "RMOW","BM","TBM","TP","SETUP","MID","FG","BG",
       "ROW","PL","SW","SE","NW","NE","FL","FR","RL","RR",
@@ -852,7 +862,7 @@
         nextPoint: 1
       },
       plan: null,
-      markers: [],
+      markers: [], // {id, xPct, yPct, point, fieldElev, designElev}
       photos: [],
       elevRows: [],
       slopeRows: []
@@ -940,31 +950,10 @@
       return ((elevToM - elevFromM) / runM) * 100;
     }
 
-    // Field Notes Mode: HI above + FS/IFS => Field Elev
-    function lastHIAbove(rowIndex){
-      for (let i = rowIndex; i >= 0; i--){
-        const hi = normalizeElevToMeters(state.elevRows[i]?.hi);
-        if (Number.isFinite(hi)) return hi;
-      }
-      return null;
-    }
-
-    function computeFieldElevFromNotes(rowIndex){
-      const row = state.elevRows[rowIndex];
-      const hi = lastHIAbove(rowIndex);
-      if (!Number.isFinite(hi)) return null;
-
-      const ifs = parseNumber(row.ifs);
-      const fs  = parseNumber(row.fs);
-
-      if (Number.isFinite(ifs)) return hi - ifs;
-      if (Number.isFinite(fs))  return hi - fs;
-      return null;
-    }
-
     function markerStatusClass(fieldElev, designElev){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
       const fieldM = normalizeElevToMeters(fieldElev);
+
       const designM = normalizeElevToMeters(designElev);
       const dCm = calcDeltaCm(fieldM, designM);
       if (!Number.isFinite(dCm)) return "na";
@@ -995,7 +984,6 @@
       return String(n);
     }
 
-    // Get marker coords by point
     function markerByPoint(pointName){
       const p = String(pointName || "").trim();
       if (!p) return null;
@@ -1060,7 +1048,6 @@
     const btnAddSlope = document.getElementById("btnAddSlope");
     const btnRemoveSlopeSelected = document.getElementById("btnRemoveSlopeSelected");
 
-    const fieldNotesMode = document.getElementById("fieldNotesMode");
     const autoSortPoints = document.getElementById("autoSortPoints");
     const numericKeypad = document.getElementById("numericKeypad");
 
@@ -1175,16 +1162,137 @@
       saveToStorage();
     }
 
-    // -------- Plot plan slope arrows (on screen) --------
-    function clearPlanOverlay(){
-      planOverlay.innerHTML = "";
+    // ---------- Marker collision avoidance (prevents overlap) ----------
+    // We pack markers by nudging them until their bounding boxes don't overlap.
+    // This runs on every placement and on window resize (so it stays non-overlapping).
+    const MARKER_W_PX = 42;  // approx rendered box width
+    const MARKER_H_PX = 28;  // approx rendered box height
+    const MARKER_PAD_PX = 4; // extra spacing between boxes
+
+    function markerDimsPct(){
+      const rect = planStage.getBoundingClientRect();
+      const wPct = ((MARKER_W_PX + MARKER_PAD_PX) / Math.max(1, rect.width)) * 100;
+      const hPct = ((MARKER_H_PX + MARKER_PAD_PX) / Math.max(1, rect.height)) * 100;
+      return { wPct, hPct };
     }
+
+    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+    function boxesOverlap(a, b){
+      return !(a.x2 <= b.x1 || a.x1 >= b.x2 || a.y2 <= b.y1 || a.y1 >= b.y2);
+    }
+
+    function markerBox(m, wPct, hPct){
+      // marker anchor is (xPct,yPct) at bottom-middle of box (due to translate(-50%,-100%))
+      // So box spans:
+      const x1 = m.xPct - wPct/2;
+      const x2 = m.xPct + wPct/2;
+      const y2 = m.yPct;         // bottom
+      const y1 = m.yPct - hPct;  // top
+      return { x1, y1, x2, y2 };
+    }
+
+    function resolveAllMarkerCollisions(){
+      if (!state.plan) return;
+      if (state.markers.length < 2) return;
+
+      const { wPct, hPct } = markerDimsPct();
+      const maxIter = 200;
+
+      // Simple relaxation: if two boxes overlap, push them apart
+      for (let iter = 0; iter < maxIter; iter++){
+        let moved = false;
+
+        for (let i = 0; i < state.markers.length; i++){
+          for (let j = i + 1; j < state.markers.length; j++){
+            const a = state.markers[i];
+            const b = state.markers[j];
+
+            const boxA = markerBox(a, wPct, hPct);
+            const boxB = markerBox(b, wPct, hPct);
+
+            if (!boxesOverlap(boxA, boxB)) continue;
+
+            moved = true;
+
+            // push vector
+            const dx = (a.xPct - b.xPct) || (Math.random() - 0.5);
+            const dy = (a.yPct - b.yPct) || (Math.random() - 0.5);
+
+            // small step in percent (scaled by box size)
+            const stepX = (wPct * 0.08) * Math.sign(dx);
+            const stepY = (hPct * 0.10) * Math.sign(dy);
+
+            // move both, but keep inside bounds
+            a.xPct = clamp(a.xPct + stepX, wPct/2, 100 - wPct/2);
+            b.xPct = clamp(b.xPct - stepX, wPct/2, 100 - wPct/2);
+
+            a.yPct = clamp(a.yPct + stepY, hPct, 100);
+            b.yPct = clamp(b.yPct - stepY, hPct, 100);
+          }
+        }
+
+        if (!moved) break;
+      }
+    }
+
+    // For a new marker, try a spiral of candidate offsets near the click until no collision.
+    function placeMarkerNonOverlapping(newMarker){
+      const { wPct, hPct } = markerDimsPct();
+      const baseX = newMarker.xPct;
+      const baseY = newMarker.yPct;
+
+      const existing = state.markers.filter(m => m.id !== newMarker.id);
+      const candidates = [];
+
+      // Spiral candidates in px converted to pct
+      const rect = planStage.getBoundingClientRect();
+      const pxToPctX = (px) => (px / Math.max(1, rect.width)) * 100;
+      const pxToPctY = (px) => (px / Math.max(1, rect.height)) * 100;
+
+      candidates.push({ dx:0, dy:0 });
+
+      const radii = [10, 18, 26, 34, 42, 50, 60, 70, 85, 100, 120, 140];
+      for (const r of radii){
+        for (let a = 0; a < 360; a += 30){
+          const rad = (a * Math.PI) / 180;
+          candidates.push({
+            dx: pxToPctX(r * Math.cos(rad)),
+            dy: pxToPctY(r * Math.sin(rad))
+          });
+        }
+      }
+
+      for (const c of candidates){
+        const test = { ...newMarker, xPct: clamp(baseX + c.dx, wPct/2, 100 - wPct/2), yPct: clamp(baseY + c.dy, hPct, 100) };
+        const testBox = markerBox(test, wPct, hPct);
+
+        let collides = false;
+        for (const m of existing){
+          const box = markerBox(m, wPct, hPct);
+          if (boxesOverlap(testBox, box)){ collides = true; break; }
+        }
+
+        if (!collides){
+          newMarker.xPct = test.xPct;
+          newMarker.yPct = test.yPct;
+          return;
+        }
+      }
+
+      // fallback: accept, then global relax
+      newMarker.xPct = clamp(baseX, wPct/2, 100 - wPct/2);
+      newMarker.yPct = clamp(baseY, hPct, 100);
+    }
+
+    // -------- Plot plan slope arrows (screen) --------
+    function clearPlanOverlay(){ planOverlay.innerHTML = ""; }
 
     function drawPlanArrows(){
       clearPlanOverlay();
       if (!state.plan) return;
 
-      // defs
+      // defs (RED arrowhead)
       const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
       const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
       marker.setAttribute("id", "arrowHead");
@@ -1197,7 +1305,7 @@
 
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", "M0,0 L10,3 L0,6 Z");
-      path.setAttribute("fill", "rgba(31,156,240,0.95)");
+      path.setAttribute("fill", "rgba(239,68,68,0.95)");
       marker.appendChild(path);
       defs.appendChild(marker);
       planOverlay.appendChild(defs);
@@ -1211,7 +1319,6 @@
         const mkB = markerByPoint(toP);
         if (!mkA || !mkB) continue;
 
-        // prefer field slope if possible, else design
         const fromRow = state.elevRows.find(r => (r.pointName||"").trim() === fromP);
         const toRow   = state.elevRows.find(r => (r.pointName||"").trim() === toP);
         const runM    = parseNumber(sr.distanceM);
@@ -1233,19 +1340,19 @@
         const A = pctToOverlay(mkA.xPct, mkA.yPct);
         const B = pctToOverlay(mkB.xPct, mkB.yPct);
 
-        // line
+        // line (RED)
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttribute("x1", A.x);
         line.setAttribute("y1", A.y);
         line.setAttribute("x2", B.x);
         line.setAttribute("y2", B.y);
-        line.setAttribute("stroke", "rgba(31,156,240,0.85)");
+        line.setAttribute("stroke", "rgba(239,68,68,0.90)");
         line.setAttribute("stroke-width", "4");
         line.setAttribute("stroke-linecap", "round");
         line.setAttribute("marker-end", "url(#arrowHead)");
         planOverlay.appendChild(line);
 
-        // label at midpoint
+        // label at midpoint (RED)
         const mx = (A.x + B.x) / 2;
         const my = (A.y + B.y) / 2;
 
@@ -1254,7 +1361,6 @@
         text.setAttribute("y", my);
         text.setAttribute("text-anchor", "middle");
         text.setAttribute("dominant-baseline", "central");
-        text.setAttribute("fill", "rgba(31,156,240,0.98)");
         text.setAttribute("class", "slopeLabel");
         text.textContent = `${fmtDash(slopeToShow, 2)}%`;
         planOverlay.appendChild(text);
@@ -1279,6 +1385,9 @@
       planImg.src = state.plan.dataUrl;
       planName.textContent = state.plan.name || "Plot plan";
       planType.textContent = state.plan.kind === "pdf" ? "PDF (page 1 rendered)" : "Image";
+
+      // enforce non-overlap before drawing
+      resolveAllMarkerCollisions();
 
       for (const mk of state.markers){
         const cls = markerStatusClass(mk.fieldElev, mk.designElev);
@@ -1387,30 +1496,12 @@
             </div>
           </td>
 
-          <td>
-            <input class="mini" ${numAttrs()} data-k="hi" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.hi||"")}"
-              placeholder="HI" />
-          </td>
+          <td><input class="mini" ${numAttrs()} data-k="hi" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.hi||"")}" placeholder="HI" /></td>
+          <td><input class="mini" ${numAttrs()} data-k="fs" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.fs||"")}" placeholder="FS" /></td>
+          <td><input class="mini" ${numAttrs()} data-k="ifs" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.ifs||"")}" placeholder="IFS" /></td>
 
-          <td>
-            <input class="mini" ${numAttrs()} data-k="fs" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.fs||"")}"
-              placeholder="FS" />
-          </td>
-
-          <td>
-            <input class="mini" ${numAttrs()} data-k="ifs" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.ifs||"")}"
-              placeholder="IFS" />
-          </td>
-
-          <td>
-            <input class="mini" ${numAttrs()} data-k="fieldElev" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.fieldElev||"")}"
-              placeholder="Field Elev" />
-          </td>
-
-          <td>
-            <input class="mini" ${numAttrs()} data-k="designElev" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.designElev||"")}"
-              placeholder="Design Elev" />
-          </td>
+          <td><input class="mini" ${numAttrs()} data-k="fieldElev" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.fieldElev||"")}" placeholder="Field Elev" /></td>
+          <td><input class="mini" ${numAttrs()} data-k="designElev" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.designElev||"")}" placeholder="Design Elev" /></td>
 
           <td><span class="delta ${deltaClass}" data-role="delta">${Number.isFinite(dCm) ? fmtDash(dCm,1) : "—"}</span></td>
           <td><span class="status ${statusClass}" data-role="status">${status}</span></td>
@@ -1552,7 +1643,7 @@
       tr.querySelector('[data-role="deltaSlope"]').textContent  = Number.isFinite(deltaSlope)  ? fmtDash(deltaSlope, 2)  : "—";
     }
 
-    // -------- Plan upload (robust) --------
+    // -------- Plan upload --------
     async function fileToArrayBuffer(file){
       return new Promise((resolve, reject) => {
         const fr = new FileReader();
@@ -1723,8 +1814,8 @@
       const x = (evt.clientX - rect.left) / rect.width;
       const y = (evt.clientY - rect.top) / rect.height;
 
-      const xPct = Math.max(0, Math.min(100, x * 100));
-      const yPct = Math.max(0, Math.min(100, y * 100));
+      const baseX = Math.max(0, Math.min(100, x * 100));
+      const baseY = Math.max(0, Math.min(100, y * 100));
 
       const autoPoint = nextAutoPoint();
       const data = promptFieldDesignForAutoPoint(autoPoint);
@@ -1735,14 +1826,19 @@
         return;
       }
 
-      state.markers.push({
+      const mk = {
         id: uid(),
-        xPct,
-        yPct,
+        xPct: baseX,
+        yPct: baseY,
         point: data.point,
         fieldElev: data.fieldElev,
         designElev: data.designElev
-      });
+      };
+
+      // Place without overlapping existing labels
+      state.markers.push(mk);
+      placeMarkerNonOverlapping(mk);
+      resolveAllMarkerCollisions();
 
       upsertPointRow(data.point, data.fieldElev, data.designElev);
       renderPlan();
@@ -1775,6 +1871,7 @@
         mk.designElev = String(design).trim();
 
         upsertPointRow(mk.point, mk.fieldElev, mk.designElev);
+        resolveAllMarkerCollisions();
         renderPlan();
         saveToStorage();
       }
@@ -1870,7 +1967,7 @@
       return lines.join("\n");
     }
 
-    // -------- PDF export + share (separate pages: Check Report, Plot Plan, Table) --------
+    // -------- PDF export + share (separate pages) --------
     function waitImagesLoaded(container){
       const imgs = Array.from(container.querySelectorAll("img"));
       if (imgs.length === 0) return Promise.resolve();
@@ -1893,7 +1990,7 @@
 
       const summaryText = (officeSummary.value || "").trim() || buildOfficeSummaryText();
 
-      // Page 1: Check Report
+      // PAGE 1: Check Report
       wrap.innerHTML = `
         <div class="reportHeader">
           <div class="reportLogo"><img src="vista-geomatics.png" alt="Logo"/></div>
@@ -1916,8 +2013,11 @@
         <div style="border:1px solid #d6dee9; border-radius:12px; padding:10px 10px; font-size:11px; color:#334155; white-space:pre-wrap; background:#fbfdff;">${escapeHtml(summaryText)}</div>
       `;
 
-      // Page 2: Plot plan
+      // PAGE 2: Plot Plan (all markings export)
       if (state.plan){
+        // ensure non-overlap positions are current before printing
+        resolveAllMarkerCollisions();
+
         const planPage = document.createElement("div");
         planPage.className = "pageBreak";
         planPage.innerHTML = `
@@ -1948,7 +2048,7 @@
           stage.appendChild(el);
         }
 
-        // Draw slope arrows on export plan
+        // print slope arrows + % in RED
         const overlay = planPage.querySelector("#planPrintOverlay");
 
         const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
@@ -1963,7 +2063,7 @@
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("d", "M0,0 L10,3 L0,6 Z");
-        path.setAttribute("fill", "rgba(31,156,240,0.95)");
+        path.setAttribute("fill", "rgba(239,68,68,0.95)");
         marker.appendChild(path);
         defs.appendChild(marker);
         overlay.appendChild(defs);
@@ -2002,7 +2102,7 @@
           line.setAttribute("y1", A.y);
           line.setAttribute("x2", B.x);
           line.setAttribute("y2", B.y);
-          line.setAttribute("stroke", "rgba(31,156,240,0.85)");
+          line.setAttribute("stroke", "rgba(239,68,68,0.90)");
           line.setAttribute("stroke-width", "4");
           line.setAttribute("stroke-linecap", "round");
           line.setAttribute("marker-end", "url(#arrowHeadPrint)");
@@ -2016,7 +2116,7 @@
           text.setAttribute("y", my);
           text.setAttribute("text-anchor", "middle");
           text.setAttribute("dominant-baseline", "central");
-          text.setAttribute("fill", "rgba(31,156,240,0.98)");
+          text.setAttribute("fill", "rgba(239,68,68,0.98)");
           text.setAttribute("font-family", "Inter, sans-serif");
           text.setAttribute("font-weight", "900");
           text.setAttribute("font-size", "10");
@@ -2028,7 +2128,7 @@
         }
       }
 
-      // Page 3: Tables
+      // PAGE 3: Tables
       const tablesPage = document.createElement("div");
       tablesPage.className = "pageBreak";
       wrap.appendChild(tablesPage);
@@ -2307,19 +2407,6 @@
 
     btnClearTemplates.addEventListener("click", () => clearTemplateChecks());
 
-    fieldNotesMode.addEventListener("change", () => {
-      if (fieldNotesMode.checked){
-        for (let i = 0; i < state.elevRows.length; i++){
-          const r = state.elevRows[i];
-          if (String(r.fieldElev || "").trim()) continue;
-          const computed = computeFieldElevFromNotes(i);
-          if (Number.isFinite(computed)) r.fieldElev = fmt(computed, 2);
-        }
-      }
-      renderElevations(true);
-      saveToStorage();
-    });
-
     autoSortPoints.addEventListener("change", () => {
       renderElevations(true);
       saveToStorage();
@@ -2352,18 +2439,6 @@
 
       const row = state.elevRows[rowIndex];
       row[k] = t.value;
-
-      if (fieldNotesMode.checked && (k === "hi" || k === "fs" || k === "ifs")){
-        if (!String(row.fieldElev || "").trim()){
-          const computed = computeFieldElevFromNotes(rowIndex);
-          if (Number.isFinite(computed)){
-            row.fieldElev = fmt(computed, 2);
-            const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(id)}"]`);
-            const fe = tr?.querySelector('input[data-k="fieldElev"]');
-            if (fe) fe.value = row.fieldElev;
-          }
-        }
-      }
 
       if (k === "pointName" && autoSortPoints.checked){
         renderElevations(true);
@@ -2574,6 +2649,13 @@
     });
 
     btnClearPhotos.addEventListener("click", () => clearPhotos());
+
+    // Keep markers spread out on resize (so they still don't overlap)
+    window.addEventListener("resize", () => {
+      if (!state.plan) return;
+      resolveAllMarkerCollisions();
+      renderPlan();
+    });
 
     // -------- Boot --------
     function loadAndInit(){
