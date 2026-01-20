@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VistaGeomatics – Grading Check</title>
 
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
 
   <!-- PDF export -->
@@ -133,7 +134,6 @@
       background:#fff;
       color: var(--text-main);
     }
-    textarea{ min-height: 86px; resize: vertical; }
 
     .btnbar{
       display:flex;
@@ -187,18 +187,19 @@
     td .mini{ padding: 8px 8px; border-radius: 10px; font-size: 13px; }
 
     .status{
-      font-weight: 700;
+      font-weight: 800;
       font-size: 12px;
       padding: 6px 10px;
       border-radius: 999px;
       display:inline-block;
       border: 1px solid transparent;
+      white-space: nowrap;
     }
     .status.ok{ color: var(--ok); background: #eaf7ee; border-color: #c7ecd2; }
     .status.bad{ color: var(--bad); background: #fff1f2; border-color: #fecdd3; }
     .status.na{ color: #475569; background: #eef2f7; border-color: #d6dee9; }
 
-    .delta{ font-weight: 800; letter-spacing:0.1px; }
+    .delta{ font-weight: 900; letter-spacing:0.1px; }
     .delta.ok{ color: var(--ok); }
     .delta.bad{ color: var(--bad); }
     .delta.na{ color:#475569; }
@@ -213,7 +214,7 @@
       background: #fbfdff;
     }
     .summary .k{ font-size: 12px; color: var(--text-muted); }
-    .summary .v{ font-weight: 800; font-size: 14px; }
+    .summary .v{ font-weight: 900; font-size: 14px; }
 
     /* Plan preview + click markers */
     .planPreview{
@@ -241,7 +242,7 @@
       border-radius: 999px;
       padding: 3px 7px;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
       box-shadow: 0 8px 18px rgba(2,10,20,0.18);
       pointer-events: auto;
       cursor: pointer;
@@ -285,7 +286,7 @@
     }
     .inlineToggle input{ width:auto; }
 
-    /* Export host */
+    /* Export host (hidden) */
     #exportHost{
       position: fixed;
       left: -99999px;
@@ -345,7 +346,7 @@
       padding: 3px 8px;
       border-radius: 999px;
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 900;
       border: 1px solid #d6dee9;
       background:#eef2f7;
       color:#334155;
@@ -356,7 +357,6 @@
 
     .pageBreak{ page-break-before: always; }
 
-    /* Plan in PDF export with markers baked in */
     .planPrintWrap{
       border:1px solid #d6dee9;
       border-radius:12px;
@@ -400,7 +400,7 @@
 
         <div class="brand">
           <p class="title">VISTA GEOMATICS</p>
-          <p class="subtitle">Survey Grading Check, Plot Plan vs Field, Click-to-Add Points, PDF Export</p>
+          <p class="subtitle">Grading Check, Plot Plan vs Field, Click-to-Add Points, HI/FS/IFS, Slopes, PDF Export</p>
         </div>
 
         <div class="pill">
@@ -462,32 +462,37 @@
             <div><div class="k">Points Checked</div><div class="v" id="sumPoints">0</div></div>
             <div><div class="k">Fails</div><div class="v" id="sumFails">0</div></div>
             <div><div class="k">Worst Δ (cm)</div><div class="v" id="sumWorst">—</div></div>
-            <div><div class="k">Plan Points</div><div class="v" id="sumPlanPts">0</div></div>
+            <div><div class="k">Plan Markers</div><div class="v" id="sumPlanPts">0</div></div>
           </div>
 
           <div class="hint">
-            Click points on the plan to add point number and field elevation quickly, everything exports or shares as PDF.
+            Default filename uses Job Number, Crew Chief, and today’s date. Everything exports or shares as PDF.
           </div>
         </div>
       </div>
 
       <div class="card">
         <div class="card-h">
-          <h2>Mode</h2>
+          <h2>Modes</h2>
         </div>
         <div class="card-b">
-          <div class="inlineToggle" title="If checked, clicking on the plan prompts for point # and field elevation and inserts/updates the table.">
+          <div class="inlineToggle">
             <input id="planClickMode" type="checkbox" checked />
-            <span><b>Plan Click Mode</b> (tap plan to add points)</span>
+            <span><b>Plan Click Mode</b>, click plan to add a point</span>
           </div>
 
-          <div class="inlineToggle" style="margin-top:10px;" title="If checked, numeric points are automatically sorted 1,2,3... while non-numeric setup rows stay above.">
+          <div class="inlineToggle" style="margin-top:10px;">
             <input id="autoSortPoints" type="checkbox" checked />
-            <span><b>Auto-sort numeric points</b></span>
+            <span><b>Auto-sort numeric points</b>, keep setup rows above</span>
+          </div>
+
+          <div class="inlineToggle" style="margin-top:10px;">
+            <input id="fieldNotesMode" type="checkbox" checked />
+            <span><b>Field Notes Mode</b>, auto-calc Field Elev from HI, FS/IFS</span>
           </div>
 
           <div class="hint" style="margin-top:10px;">
-            Tip: Setup rows like RMOW, TP, LMOW stay above, numbered points sort automatically.
+            Typical workflow: enter HI on a setup row (RMOW/TP/etc.), then enter FS/IFS on point rows (1,2,3…).
           </div>
         </div>
       </div>
@@ -507,7 +512,7 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Upload the marked-up plan. Then click where the shot was taken, enter Point # and Field Elev, the form updates automatically.
+            Upload the plan, click on the plan to add point number and field elevation quickly. Click a marker to edit or remove it.
           </div>
 
           <div id="planEmpty" style="margin-top:12px; padding:14px; border:1px dashed var(--border-soft); border-radius:14px; background:#fbfdff; color:var(--text-muted);">
@@ -518,7 +523,6 @@
             <div class="planPreview">
               <div class="planStage" id="planStage" title="Click on the plan to add a point">
                 <img id="planImg" alt="Marked up plot plan preview" />
-                <!-- markers injected here -->
               </div>
               <div class="planMeta">
                 <div>
@@ -526,19 +530,18 @@
                   <div id="planType" style="opacity:0.85; margin-top:2px;"></div>
                 </div>
                 <div class="hint" style="margin:0;">
-                  Click a marker to edit or remove it.
+                  Uploading a screenshot image is the most reliable option if PDFs fail to render.
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- Elevation table -->
+      <!-- Elevations -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
-          <h2>Elevation Comparison (Plot Plan vs Field)</h2>
+          <h2>Elevation Comparison</h2>
           <div class="btnbar">
             <button class="btn ghost" id="btnAddRow" type="button">Add Row</button>
             <button class="btn danger" id="btnRemoveSelected" type="button">Remove Selected</button>
@@ -546,7 +549,7 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Δ (cm) = (Field Elev − Design Elev) × 100. Status uses area tolerance.
+            Δ (cm) = (Field − Design) × 100. Field Notes Mode: Field Elev auto-fills when HI and FS/IFS are entered.
           </div>
 
           <div style="margin-top:12px; overflow:auto;">
@@ -554,14 +557,51 @@
               <thead>
                 <tr>
                   <th style="width:44px;">Sel</th>
-                  <th style="min-width:170px;">STA / Point</th>
-                  <th style="min-width:160px;">Field Elev</th>
-                  <th style="min-width:160px;">Design Elev</th>
+                  <th style="min-width:160px;">STA / Point</th>
+                  <th style="min-width:120px;">HI (m)</th>
+                  <th style="min-width:120px;">FS (m)</th>
+                  <th style="min-width:120px;">IFS (m)</th>
+                  <th style="min-width:150px;">Field Elev</th>
+                  <th style="min-width:150px;">Design Elev</th>
                   <th style="min-width:120px;">Δ (cm)</th>
                   <th style="min-width:110px;">Status</th>
                 </tr>
               </thead>
               <tbody id="elevBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slopes -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-h">
+          <h2>Slope Calculator (Between Points)</h2>
+          <div class="btnbar">
+            <button class="btn ghost" id="btnAddSlope" type="button">Add Slope Row</button>
+            <button class="btn danger" id="btnRemoveSlopeSelected" type="button">Remove Selected</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <div class="hint" style="margin-top:0;">
+            Slope % = (Rise / Run) × 100. Design and Field slopes update live as soon as points and distance are set.
+          </div>
+
+          <div style="margin-top:12px; overflow:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:44px;">Sel</th>
+                  <th style="min-width:220px;">Segment</th>
+                  <th style="min-width:180px;">From</th>
+                  <th style="min-width:180px;">To</th>
+                  <th style="min-width:140px;">Distance (m)</th>
+                  <th style="min-width:140px;">Design Slope %</th>
+                  <th style="min-width:140px;">Field Slope %</th>
+                  <th style="min-width:120px;">Δ Slope %</th>
+                </tr>
+              </thead>
+              <tbody id="slopeBody"></tbody>
             </table>
           </div>
         </div>
@@ -579,7 +619,7 @@
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
     }
 
-    const STORAGE_KEY = "vista_grading_check_clickpoints_v1";
+    const STORAGE_KEY = "vista_grading_check_v1_full";
     const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
 
     const state = {
@@ -592,12 +632,15 @@
         lotBlockPlan: "",
         crewChief: ""
       },
-      elevRows: [],
       plan: null,      // { name, kind, dataUrl }
-      markers: []      // { id, xPct, yPct, point, fieldElev }
+      markers: [],     // { id, xPct, yPct, point, fieldElev }
+      elevRows: [],    // { id, pointName, hi, fs, ifs, fieldElev, designElev }
+      slopeRows: []    // { id, segment, fromPoint, toPoint, distanceM }
     };
 
+    // -------- Helpers --------
     function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+
     function todayISO(){
       const d = new Date();
       const yyyy = d.getFullYear();
@@ -605,6 +648,7 @@
       const dd = String(d.getDate()).padStart(2,"0");
       return `${yyyy}-${mm}-${dd}`;
     }
+
     function safeName(s){
       return String(s ?? "")
         .trim()
@@ -613,40 +657,92 @@
         .replaceAll(" ", "_")
         .slice(0, 80) || "Grading_Check";
     }
+
     function defaultFileName(ext){
       const job = safeName(state.meta.jobNo || "Job");
       const crew = safeName(state.meta.crewChief || "Crew");
       const date = todayISO();
       return `${job}_${crew}_${date}.${ext}`;
     }
+
     function parseNumber(v){
       const s = String(v ?? "").trim();
       if (!s) return null;
       const n = Number(s.replace(",", "."));
       return Number.isFinite(n) ? n : null;
     }
+
     function normalizeElevToMeters(v){
       const n = parseNumber(v);
       if (!Number.isFinite(n)) return null;
+      // Common "9221" -> 92.21 style
       return n > 1000 ? n / 100 : n;
     }
+
     function calcDeltaCm(fieldM, designM){
       if (!Number.isFinite(fieldM) || !Number.isFinite(designM)) return null;
       return (fieldM - designM) * 100;
     }
+
     function passFail(deltaCmVal, tolCm){
       if (!Number.isFinite(deltaCmVal)) return "N/A";
       return Math.abs(deltaCmVal) <= tolCm ? "PASS" : "FAIL";
     }
+
     function fmt(n, d=2){ if (!Number.isFinite(n)) return ""; return Number(n).toFixed(d); }
     function fmtDash(n, d=1){ if (!Number.isFinite(n)) return "—"; return Number(n).toFixed(d); }
+
     function escapeHtml(s){
       return String(s ?? "")
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
 
-    // ---- Elements ----
+    function isNumericPointName(name){
+      const s = String(name || "").trim();
+      return /^\d+(\.\d+)?$/.test(s);
+    }
+
+    function sortElevRowsIfEnabled(){
+      if (!autoSortPoints.checked) return;
+      const nonNumeric = [];
+      const numeric = [];
+      for (const r of state.elevRows){
+        if (isNumericPointName(r.pointName)) numeric.push(r);
+        else nonNumeric.push(r);
+      }
+      numeric.sort((a,b) => parseFloat(a.pointName) - parseFloat(b.pointName));
+      state.elevRows = [...nonNumeric, ...numeric];
+    }
+
+    function slopePercent(elevFromM, elevToM, runM){
+      if (!Number.isFinite(elevFromM) || !Number.isFinite(elevToM) || !Number.isFinite(runM) || runM <= 0) return null;
+      return ((elevToM - elevFromM) / runM) * 100;
+    }
+
+    // Field Notes Mode: HI above + FS/IFS => Field Elev
+    function lastHIAbove(rowIndex){
+      for (let i = rowIndex; i >= 0; i--){
+        const hi = normalizeElevToMeters(state.elevRows[i]?.hi);
+        if (Number.isFinite(hi)) return hi;
+      }
+      return null;
+    }
+
+    function computeFieldElevFromNotes(rowIndex){
+      const row = state.elevRows[rowIndex];
+      const hi = lastHIAbove(rowIndex);
+      if (!Number.isFinite(hi)) return null;
+
+      const ifs = parseNumber(row.ifs);
+      const fs  = parseNumber(row.fs);
+
+      if (Number.isFinite(ifs)) return hi - ifs;
+      if (Number.isFinite(fs))  return hi - fs;
+      return null;
+    }
+
+    // -------- Elements --------
     const areaSelect = document.getElementById("areaSelect");
     const tolLabel = document.getElementById("tolLabel");
 
@@ -680,14 +776,19 @@
 
     const planClickMode = document.getElementById("planClickMode");
     const autoSortPoints = document.getElementById("autoSortPoints");
+    const fieldNotesMode = document.getElementById("fieldNotesMode");
 
     const elevBody = document.getElementById("elevBody");
     const btnAddRow = document.getElementById("btnAddRow");
     const btnRemoveSelected = document.getElementById("btnRemoveSelected");
 
+    const slopeBody = document.getElementById("slopeBody");
+    const btnAddSlope = document.getElementById("btnAddSlope");
+    const btnRemoveSlopeSelected = document.getElementById("btnRemoveSlopeSelected");
+
     const exportHost = document.getElementById("exportHost");
 
-    // ---- Storage ----
+    // -------- Storage --------
     function saveToStorage(showToast=false){
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -696,9 +797,10 @@
           setTimeout(() => btnSave.textContent = "Save", 900);
         }
       }catch(e){
-        alert("Save failed (storage limit). Try removing the plan or clearing markers.");
+        alert("Save failed (storage limit). If you attached a large plan, upload a smaller image or clear the plan.");
       }
     }
+
     function loadFromStorage(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -707,35 +809,17 @@
         if (!parsed || typeof parsed !== "object") return false;
 
         state.meta = Object.assign(state.meta, parsed.meta || {});
-        state.elevRows = Array.isArray(parsed.elevRows) ? parsed.elevRows : [];
         state.plan = parsed.plan || null;
         state.markers = Array.isArray(parsed.markers) ? parsed.markers : [];
+        state.elevRows = Array.isArray(parsed.elevRows) ? parsed.elevRows : [];
+        state.slopeRows = Array.isArray(parsed.slopeRows) ? parsed.slopeRows : [];
         return true;
       }catch(e){
         return false;
       }
     }
 
-    // ---- Sorting logic ----
-    // Keep non-numeric rows in their current relative order, numeric rows sorted ascending.
-    function isNumericPointName(name){
-      const s = String(name || "").trim();
-      return /^\d+(\.\d+)?$/.test(s);
-    }
-    function sortElevRowsIfEnabled(){
-      if (!autoSortPoints.checked) return;
-      const nonNumeric = [];
-      const numeric = [];
-
-      for (const r of state.elevRows){
-        if (isNumericPointName(r.pointName)) numeric.push(r);
-        else nonNumeric.push(r);
-      }
-      numeric.sort((a,b) => parseFloat(a.pointName) - parseFloat(b.pointName));
-      state.elevRows = [...nonNumeric, ...numeric];
-    }
-
-    // ---- Tolerance + summary ----
+    // -------- Render: tolerance + summary --------
     function renderTolerance(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
       tolLabel.textContent = `±${tol} cm`;
@@ -771,12 +855,50 @@
       sumPlanPts.textContent = String(state.markers.length);
     }
 
-    // ---- Elevation table ----
-    function renderElevations(){
-      sortElevRowsIfEnabled();
-      const tol = tolByAreaCm[state.meta.area] ?? 15;
+    // -------- Render: plan --------
+    function renderPlan(){
+      planStage.querySelectorAll(".marker").forEach(m => m.remove());
 
+      if (!state.plan){
+        planWrap.style.display = "none";
+        planEmpty.style.display = "block";
+        renderSummary();
+        return;
+      }
+
+      planWrap.style.display = "block";
+      planEmpty.style.display = "none";
+
+      planImg.src = state.plan.dataUrl;
+      planName.textContent = state.plan.name || "Plot plan";
+      planType.textContent = state.plan.kind === "pdf" ? "PDF (page 1 rendered)" : "Image";
+
+      for (const mk of state.markers){
+        const el = document.createElement("div");
+        el.className = "marker";
+        el.style.left = mk.xPct + "%";
+        el.style.top = mk.yPct + "%";
+        el.dataset.id = mk.id;
+        el.title = `Point ${mk.point} (click to edit/remove)`;
+        el.textContent = mk.point;
+        planStage.appendChild(el);
+      }
+
+      renderSummary();
+    }
+
+    // -------- Render: elevations (minimal rerendering to avoid focus loss) --------
+    function renderElevations(fullRebuild=true){
+      sortElevRowsIfEnabled();
+      if (!fullRebuild){
+        renderSummary();
+        updateAllSlopesComputed();
+        return;
+      }
+
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
       elevBody.innerHTML = "";
+
       for (const row of state.elevRows){
         const designM = normalizeElevToMeters(row.designElev);
         const fieldM  = normalizeElevToMeters(row.fieldElev);
@@ -791,25 +913,46 @@
 
         tr.innerHTML = `
           <td><input type="checkbox" class="rowSel" data-id="${row.id}"></td>
+
           <td>
             <input class="mini" data-k="pointName" data-id="${row.id}" value="${escapeHtml(row.pointName||"")}"
-              placeholder="RMOW, TP, LMOW, 1, 2..." />
+              placeholder="RMOW, TP, 1, 2..." />
           </td>
+
+          <td>
+            <input class="mini" data-k="hi" data-id="${row.id}" value="${escapeHtml(row.hi||"")}"
+              placeholder="HI" inputmode="decimal" />
+          </td>
+
+          <td>
+            <input class="mini" data-k="fs" data-id="${row.id}" value="${escapeHtml(row.fs||"")}"
+              placeholder="FS" inputmode="decimal" />
+          </td>
+
+          <td>
+            <input class="mini" data-k="ifs" data-id="${row.id}" value="${escapeHtml(row.ifs||"")}"
+              placeholder="IFS" inputmode="decimal" />
+          </td>
+
           <td>
             <input class="mini" data-k="fieldElev" data-id="${row.id}" value="${escapeHtml(row.fieldElev||"")}"
               placeholder="Field Elev" inputmode="decimal" />
           </td>
+
           <td>
             <input class="mini" data-k="designElev" data-id="${row.id}" value="${escapeHtml(row.designElev||"")}"
               placeholder="Design Elev" inputmode="decimal" />
           </td>
-          <td><span class="delta ${deltaClass}">${Number.isFinite(dCm) ? fmtDash(dCm,1) : "—"}</span></td>
-          <td><span class="status ${statusClass}">${status}</span></td>
+
+          <td><span class="delta ${deltaClass}" data-role="delta">${Number.isFinite(dCm) ? fmtDash(dCm,1) : "—"}</span></td>
+          <td><span class="status ${statusClass}" data-role="status">${status}</span></td>
         `;
+
         elevBody.appendChild(tr);
       }
 
       renderSummary();
+      renderSlopes(true);
     }
 
     function updateComputedRow(rowId){
@@ -825,22 +968,108 @@
       const dCm     = calcDeltaCm(fieldM, designM);
       const status  = passFail(dCm, tol);
 
-      const deltaSpan = tr.querySelector(".delta");
-      const statusSpan = tr.querySelector(".status");
+      const deltaEl = tr.querySelector('[data-role="delta"]');
+      const statusEl = tr.querySelector('[data-role="status"]');
 
       const deltaClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
       const statusClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
 
-      deltaSpan.textContent = Number.isFinite(dCm) ? fmtDash(dCm,1) : "—";
-      deltaSpan.className = `delta ${deltaClass}`;
-
-      statusSpan.textContent = status;
-      statusSpan.className = `status ${statusClass}`;
+      if (deltaEl){
+        deltaEl.textContent = Number.isFinite(dCm) ? fmtDash(dCm,1) : "—";
+        deltaEl.className = `delta ${deltaClass}`;
+      }
+      if (statusEl){
+        statusEl.textContent = status;
+        statusEl.className = `status ${statusClass}`;
+      }
 
       renderSummary();
+      updateAllSlopesComputed();
     }
 
-    // ---- Plan upload + click markers ----
+    // -------- Slopes --------
+    function pointNameOptions(){
+      const names = state.elevRows.map(r => (r.pointName || "").trim()).filter(Boolean);
+      const uniq = [];
+      const seen = new Set();
+      for (const n of names){
+        if (!seen.has(n)){ uniq.push(n); seen.add(n); }
+      }
+      return uniq;
+    }
+
+    function renderSlopes(rebuild=false){
+      if (!rebuild){
+        updateAllSlopesComputed();
+        return;
+      }
+
+      const options = pointNameOptions();
+      slopeBody.innerHTML = "";
+
+      for (const row of state.slopeRows){
+        const tr = document.createElement("tr");
+        tr.dataset.rowId = row.id;
+
+        tr.innerHTML = `
+          <td><input type="checkbox" class="slopeSel" data-id="${row.id}"></td>
+          <td><input class="mini" data-type="slope" data-k="segment" data-id="${row.id}" value="${escapeHtml(row.segment||"")}" placeholder="e.g., Front swale" /></td>
+          <td>${selectHtml(row.id, "fromPoint", row.fromPoint, options)}</td>
+          <td>${selectHtml(row.id, "toPoint", row.toPoint, options)}</td>
+          <td><input class="mini" data-type="slope" data-k="distanceM" data-id="${row.id}" value="${escapeHtml(row.distanceM||"")}" placeholder="Run (m)" inputmode="decimal" /></td>
+          <td><span class="delta na" data-role="designSlope">—</span></td>
+          <td><span class="delta na" data-role="fieldSlope">—</span></td>
+          <td><span class="delta na" data-role="deltaSlope">—</span></td>
+        `;
+
+        slopeBody.appendChild(tr);
+      }
+
+      updateAllSlopesComputed();
+    }
+
+    function selectHtml(rowId, key, current, options){
+      const cur = (current || "").trim();
+      const opts = options.map(n => {
+        const sel = n === cur ? "selected" : "";
+        return `<option value="${escapeHtml(n)}" ${sel}>${escapeHtml(n)}</option>`;
+      }).join("");
+      return `
+        <select class="mini" data-type="slope" data-k="${key}" data-id="${rowId}">
+          <option value="">Select…</option>
+          ${opts}
+        </select>
+      `;
+    }
+
+    function updateAllSlopesComputed(){
+      for (const r of state.slopeRows) updateSlopeComputed(r.id);
+    }
+
+    function updateSlopeComputed(rowId){
+      const row = state.slopeRows.find(r => r.id === rowId);
+      const tr = slopeBody.querySelector(`tr[data-row-id="${CSS.escape(rowId)}"]`);
+      if (!row || !tr) return;
+
+      const from = state.elevRows.find(r => (r.pointName||"").trim() === (row.fromPoint||"").trim());
+      const to   = state.elevRows.find(r => (r.pointName||"").trim() === (row.toPoint||"").trim());
+      const runM = parseNumber(row.distanceM);
+
+      const designFromM = normalizeElevToMeters(from?.designElev);
+      const designToM   = normalizeElevToMeters(to?.designElev);
+      const fieldFromM  = normalizeElevToMeters(from?.fieldElev);
+      const fieldToM    = normalizeElevToMeters(to?.fieldElev);
+
+      const designSlope = slopePercent(designFromM, designToM, runM);
+      const fieldSlope  = slopePercent(fieldFromM, fieldToM, runM);
+      const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
+
+      tr.querySelector('[data-role="designSlope"]').textContent = Number.isFinite(designSlope) ? fmtDash(designSlope, 2) : "—";
+      tr.querySelector('[data-role="fieldSlope"]').textContent  = Number.isFinite(fieldSlope)  ? fmtDash(fieldSlope, 2)  : "—";
+      tr.querySelector('[data-role="deltaSlope"]').textContent  = Number.isFinite(deltaSlope)  ? fmtDash(deltaSlope, 2)  : "—";
+    }
+
+    // -------- Plan upload (robust PDF rendering) --------
     async function fileToArrayBuffer(file){
       return new Promise((resolve, reject) => {
         const fr = new FileReader();
@@ -878,96 +1107,122 @@
       });
     }
 
-    async function renderPdfFirstPageToDataUrl(file, maxWidth=1800){
-      if (!window.pdfjsLib) throw new Error("PDF.js not available");
+    async function renderPdfFirstPageToDataUrl(file, maxWidth = 1200) {
+      if (!window.pdfjsLib) throw new Error("PDF.js did not load (offline or blocked).");
+
       const ab = await fileToArrayBuffer(file);
-      const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+
+      const loadingTask = pdfjsLib.getDocument({
+        data: ab,
+        disableAutoFetch: true,
+        disableStream: true
+      });
+
+      const pdf = await loadingTask.promise;
       const page = await pdf.getPage(1);
 
-      const viewport1 = page.getViewport({ scale: 1 });
-      const scale = Math.min(3, maxWidth / viewport1.width);
-      const viewport = page.getViewport({ scale });
+      const attempts = [maxWidth, 900, 700];
+      let lastErr = null;
 
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d", { alpha:false });
-      canvas.width = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
+      for (const w of attempts) {
+        try {
+          const viewport1 = page.getViewport({ scale: 1 });
+          const scale = Math.min(2.0, w / viewport1.width);
+          const viewport = page.getViewport({ scale });
 
-      await page.render({ canvasContext: ctx, viewport }).promise;
-      return canvas.toDataURL("image/jpeg", 0.90);
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d", { alpha: false });
+
+          canvas.width = Math.floor(viewport.width);
+          canvas.height = Math.floor(viewport.height);
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          return canvas.toDataURL("image/jpeg", 0.85);
+        } catch (err) {
+          lastErr = err;
+        }
+      }
+
+      throw lastErr || new Error("PDF render failed.");
     }
 
-    function renderPlan(){
-      // clear any existing marker elements
-      planStage.querySelectorAll(".marker").forEach(m => m.remove());
+    async function setPlotPlanFromFile(file){
+      const isPdf = file.type === "application/pdf" || (file.name || "").toLowerCase().endsWith(".pdf");
 
-      if (!state.plan){
-        planWrap.style.display = "none";
-        planEmpty.style.display = "block";
-        return;
+      let dataUrl = "";
+      let kind = "image";
+
+      if (isPdf){
+        kind = "pdf";
+        dataUrl = await renderPdfFirstPageToDataUrl(file, 1200);
+      } else if (file.type.startsWith("image/")){
+        kind = "image";
+        dataUrl = await compressImageToDataUrl(file, 1800, 0.88);
+      } else {
+        throw new Error("Unsupported file type");
       }
 
-      planWrap.style.display = "block";
-      planEmpty.style.display = "none";
+      state.plan = { name: file.name || "plot-plan", kind, dataUrl };
+      renderPlan();
+      saveToStorage();
+    }
 
-      planImg.src = state.plan.dataUrl;
-      planName.textContent = state.plan.name || "Plot plan";
-      planType.textContent = state.plan.kind === "pdf" ? "PDF (page 1 rendered)" : "Image";
+    function clearPlan(){
+      if (!state.plan) return;
+      if (!confirm("Remove the attached plot plan?")) return;
+      state.plan = null;
+      renderPlan();
+      saveToStorage();
+    }
 
-      // inject markers
-      for (const mk of state.markers){
-        const el = document.createElement("div");
-        el.className = "marker";
-        el.style.left = mk.xPct + "%";
-        el.style.top = mk.yPct + "%";
-        el.dataset.id = mk.id;
-        el.title = "Click to edit/remove";
-        el.textContent = mk.point;
-        planStage.appendChild(el);
-      }
-      renderSummary();
+    function clearMarkers(){
+      if (!state.markers.length) return;
+      if (!confirm("Clear all markers from the plot plan?")) return;
+      state.markers = [];
+      renderPlan();
+      saveToStorage();
+    }
+
+    // -------- Click-to-add markers + upsert point rows --------
+    function promptPointAndElev(defaultPoint=""){
+      const p = prompt("Point number (e.g., 1, 2, 12):", defaultPoint);
+      if (p === null) return null;
+      const pe = String(p).trim();
+      if (!pe){ alert("Point number is required."); return null; }
+
+      const elev = prompt("Field elevation (e.g., 92.21 or 9221):", "");
+      if (elev === null) return null;
+      const ee = String(elev).trim();
+      if (!ee){ alert("Field elevation is required."); return null; }
+
+      return { point: pe, fieldElev: ee };
     }
 
     function upsertPointRow(pointStr, fieldElevStr){
       const p = String(pointStr || "").trim();
       if (!p) return;
 
-      // find existing point row (exact match)
       let row = state.elevRows.find(r => String(r.pointName||"").trim() === p);
-
       if (!row){
-        row = { id: uid(), pointName: p, fieldElev: "", designElev: "" };
+        row = { id: uid(), pointName: p, hi:"", fs:"", ifs:"", fieldElev:"", designElev:"" };
         state.elevRows.push(row);
+        renderElevations(true); // new row => rebuild
       }
 
-      // set field elevation
       row.fieldElev = String(fieldElevStr || "").trim();
 
-      // sort + render table, but keep typing stable by rerendering only when we add new rows
-      renderElevations();
+      // update visible field elev input without full rebuild (prevents focus loss)
+      const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(row.id)}"]`);
+      if (tr){
+        const fe = tr.querySelector('input[data-k="fieldElev"]');
+        if (fe) fe.value = row.fieldElev;
+        updateComputedRow(row.id);
+      } else {
+        renderElevations(true);
+      }
+
       saveToStorage();
-    }
-
-    function promptPointAndElev(defaultPoint=""){
-      const p = prompt("Point number (e.g., 1, 2, 12):", defaultPoint);
-      if (p === null) return null;
-
-      const pe = String(p).trim();
-      if (!pe){
-        alert("Point number is required.");
-        return null;
-      }
-
-      const elev = prompt("Field elevation (e.g., 92.21 or 9221):", "");
-      if (elev === null) return null;
-
-      const ee = String(elev).trim();
-      if (!ee){
-        alert("Field elevation is required.");
-        return null;
-      }
-
-      return { point: pe, fieldElev: ee };
     }
 
     function addMarkerAtClick(evt){
@@ -978,32 +1233,22 @@
       const x = (evt.clientX - rect.left) / rect.width;
       const y = (evt.clientY - rect.top) / rect.height;
 
-      // constrain
       const xPct = Math.max(0, Math.min(100, x * 100));
       const yPct = Math.max(0, Math.min(100, y * 100));
 
       const data = promptPointAndElev("");
       if (!data) return;
 
-      // If marker for this point exists, move it + update elev
       const existing = state.markers.find(m => String(m.point).trim() === String(data.point).trim());
       if (existing){
         existing.xPct = xPct;
         existing.yPct = yPct;
         existing.fieldElev = data.fieldElev;
       } else {
-        state.markers.push({
-          id: uid(),
-          xPct, yPct,
-          point: data.point,
-          fieldElev: data.fieldElev
-        });
+        state.markers.push({ id: uid(), xPct, yPct, point: data.point, fieldElev: data.fieldElev });
       }
 
-      // update table
       upsertPointRow(data.point, data.fieldElev);
-
-      // re-render markers
       renderPlan();
       saveToStorage();
     }
@@ -1027,59 +1272,16 @@
         const data = promptPointAndElev(mk.point);
         if (!data) return;
 
-        // update marker point + elev
         mk.point = data.point;
         mk.fieldElev = data.fieldElev;
 
-        // push to table
         upsertPointRow(data.point, data.fieldElev);
-
         renderPlan();
         saveToStorage();
       }
     }
 
-    async function setPlotPlanFromFile(file){
-      const isPdf = file.type === "application/pdf" || (file.name || "").toLowerCase().endsWith(".pdf");
-
-      let dataUrl = "";
-      let kind = "image";
-
-      if (isPdf){
-        kind = "pdf";
-        dataUrl = await renderPdfFirstPageToDataUrl(file, 1800);
-      } else if (file.type.startsWith("image/")){
-        kind = "image";
-        dataUrl = await compressImageToDataUrl(file, 1800, 0.88);
-      } else {
-        alert("Please upload an image or a PDF.");
-        return;
-      }
-
-      state.plan = { name: file.name || "plot-plan", kind, dataUrl };
-
-      // keep markers, but user can clear if new plan
-      renderPlan();
-      saveToStorage();
-    }
-
-    function clearPlan(){
-      if (!state.plan) return;
-      if (!confirm("Remove the attached plot plan?")) return;
-      state.plan = null;
-      renderPlan();
-      saveToStorage();
-    }
-
-    function clearMarkers(){
-      if (!state.markers.length) return;
-      if (!confirm("Clear all markers from the plot plan?")) return;
-      state.markers = [];
-      renderPlan();
-      saveToStorage();
-    }
-
-    // ---- PDF export + share ----
+    // -------- PDF export + share --------
     function buildReportElement(){
       exportHost.innerHTML = "";
       const tol = tolByAreaCm[state.meta.area] ?? 15;
@@ -1106,7 +1308,7 @@
         </div>
       `;
 
-      // Plan page (with markers baked in)
+      // Plan page
       if (state.plan){
         const planPage = document.createElement("div");
         planPage.className = "pageBreak";
@@ -1123,7 +1325,6 @@
         `;
         wrap.appendChild(planPage);
 
-        // add markers as absolutely positioned labels in percent coords
         const stage = planPage.querySelector("#planPrintStage");
         for (const mk of state.markers){
           const el = document.createElement("div");
@@ -1135,11 +1336,11 @@
         }
       }
 
-      // Elevation table
-      const elevTableTitle = document.createElement("div");
-      elevTableTitle.className = "reportSectionTitle";
-      elevTableTitle.textContent = "Elevation Comparison";
-      wrap.appendChild(elevTableTitle);
+      // Elevations
+      const elevTitle = document.createElement("div");
+      elevTitle.className = "reportSectionTitle";
+      elevTitle.textContent = "Elevation Comparison";
+      wrap.appendChild(elevTitle);
 
       const tolCm = tolByAreaCm[state.meta.area] ?? 15;
 
@@ -1149,6 +1350,9 @@
         <thead>
           <tr>
             <th>STA / Point</th>
+            <th>HI</th>
+            <th>FS</th>
+            <th>IFS</th>
             <th>Field Elev</th>
             <th>Design Elev</th>
             <th>Δ (cm)</th>
@@ -1164,9 +1368,12 @@
             const pill = status === "PASS" ? 'pillSmall ok' : (status === "FAIL" ? 'pillSmall bad' : 'pillSmall');
             return `
               <tr>
-                <td>${escapeHtml(String(r.pointName||"").trim())}</td>
-                <td>${escapeHtml(String(r.fieldElev||"").trim())}</td>
-                <td>${escapeHtml(String(r.designElev||"").trim())}</td>
+                <td>${escapeHtml((r.pointName||"").trim())}</td>
+                <td>${escapeHtml((r.hi||"").trim())}</td>
+                <td>${escapeHtml((r.fs||"").trim())}</td>
+                <td>${escapeHtml((r.ifs||"").trim())}</td>
+                <td>${escapeHtml((r.fieldElev||"").trim())}</td>
+                <td>${escapeHtml((r.designElev||"").trim())}</td>
                 <td>${escapeHtml(Number.isFinite(dCm) ? fmtDash(dCm,1) : "—")}</td>
                 <td><span class="${pill}">${escapeHtml(status)}</span></td>
               </tr>
@@ -1175,6 +1382,57 @@
         </tbody>
       `;
       wrap.appendChild(elevTable);
+
+      // Slopes
+      const slopeTitle = document.createElement("div");
+      slopeTitle.className = "reportSectionTitle";
+      slopeTitle.textContent = "Slope Summary";
+      wrap.appendChild(slopeTitle);
+
+      const slopeTable = document.createElement("table");
+      slopeTable.className = "reportTable";
+      slopeTable.innerHTML = `
+        <thead>
+          <tr>
+            <th>Segment</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Distance (m)</th>
+            <th>Design Slope %</th>
+            <th>Field Slope %</th>
+            <th>Δ Slope %</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.slopeRows.map(sr => {
+            const from = state.elevRows.find(r => (r.pointName||"").trim() === (sr.fromPoint||"").trim());
+            const to   = state.elevRows.find(r => (r.pointName||"").trim() === (sr.toPoint||"").trim());
+            const runM = parseNumber(sr.distanceM);
+
+            const designFromM = normalizeElevToMeters(from?.designElev);
+            const designToM   = normalizeElevToMeters(to?.designElev);
+            const fieldFromM  = normalizeElevToMeters(from?.fieldElev);
+            const fieldToM    = normalizeElevToMeters(to?.fieldElev);
+
+            const designSlope = slopePercent(designFromM, designToM, runM);
+            const fieldSlope  = slopePercent(fieldFromM, fieldToM, runM);
+            const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
+
+            return `
+              <tr>
+                <td>${escapeHtml((sr.segment||"").trim())}</td>
+                <td>${escapeHtml((sr.fromPoint||"").trim())}</td>
+                <td>${escapeHtml((sr.toPoint||"").trim())}</td>
+                <td>${escapeHtml((sr.distanceM||"").trim())}</td>
+                <td>${escapeHtml(Number.isFinite(designSlope) ? fmtDash(designSlope,2) : "—")}</td>
+                <td>${escapeHtml(Number.isFinite(fieldSlope) ? fmtDash(fieldSlope,2) : "—")}</td>
+                <td>${escapeHtml(Number.isFinite(deltaSlope) ? fmtDash(deltaSlope,2) : "—")}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      `;
+      wrap.appendChild(slopeTable);
 
       exportHost.appendChild(wrap);
       return wrap;
@@ -1264,7 +1522,7 @@
           alert("Share isn't available in this browser, the PDF was downloaded instead.");
         }
       } catch (e) {
-        // user can cancel share
+        // user cancelled share or browser blocked
       } finally{
         btnShare.textContent = "Share PDF";
         btnShare.disabled = false;
@@ -1272,14 +1530,16 @@
       }
     }
 
-    // ---- Defaults ----
+    // -------- Defaults + Sync --------
     function initDefaults(){
       if (state.elevRows.length === 0){
-        // setup row + starter points
-        state.elevRows.push({ id: uid(), pointName: "RMOW", fieldElev: "", designElev: "" });
-        state.elevRows.push({ id: uid(), pointName: "1", fieldElev: "", designElev: "" });
-        state.elevRows.push({ id: uid(), pointName: "2", fieldElev: "", designElev: "" });
-        state.elevRows.push({ id: uid(), pointName: "3", fieldElev: "", designElev: "" });
+        state.elevRows.push({ id: uid(), pointName: "RMOW", hi:"", fs:"", ifs:"", fieldElev:"", designElev:"" });
+        state.elevRows.push({ id: uid(), pointName: "1", hi:"", fs:"", ifs:"", fieldElev:"", designElev:"" });
+        state.elevRows.push({ id: uid(), pointName: "2", hi:"", fs:"", ifs:"", fieldElev:"", designElev:"" });
+        state.elevRows.push({ id: uid(), pointName: "3", hi:"", fs:"", ifs:"", fieldElev:"", designElev:"" });
+      }
+      if (state.slopeRows.length === 0){
+        state.slopeRows.push({ id: uid(), segment:"Front swale", fromPoint:"1", toPoint:"2", distanceM:"5.0" });
       }
     }
 
@@ -1293,12 +1553,12 @@
       crewChief.value = state.meta.crewChief || "";
     }
 
-    // ---- Events ----
+    // -------- Events --------
     areaSelect.addEventListener("change", () => {
       state.meta.area = areaSelect.value;
       renderTolerance();
-      // update computed cells without rerendering inputs
-      renderElevations();
+      // rebuild to update statuses in-place cleanly
+      renderElevations(true);
       saveToStorage();
     });
 
@@ -1315,29 +1575,64 @@
     bindMetaInput(lotBlockPlan, "lotBlockPlan");
     bindMetaInput(crewChief, "crewChief");
 
+    fieldNotesMode.addEventListener("change", () => {
+      // Recompute any blank Field Elev rows from HI/FS/IFS
+      if (fieldNotesMode.checked){
+        for (let i = 0; i < state.elevRows.length; i++){
+          const r = state.elevRows[i];
+          if (String(r.fieldElev || "").trim()) continue;
+          const computed = computeFieldElevFromNotes(i);
+          if (Number.isFinite(computed)) r.fieldElev = fmt(computed, 2);
+        }
+      }
+      renderElevations(true);
+      saveToStorage();
+    });
+
+    autoSortPoints.addEventListener("change", () => {
+      renderElevations(true);
+      saveToStorage();
+    });
+
     elevBody.addEventListener("input", (e) => {
       const t = e.target;
       if (!t?.dataset?.id) return;
 
       const id = t.dataset.id;
       const k = t.dataset.k;
-      const row = state.elevRows.find(r => r.id === id);
-      if (!row) return;
+      const rowIndex = state.elevRows.findIndex(r => r.id === id);
+      if (rowIndex < 0) return;
 
+      const row = state.elevRows[rowIndex];
       row[k] = t.value;
 
-      // only rerender when pointName changes AND autosort enabled
+      // Field Notes auto-fill (don’t overwrite if Field Elev already typed)
+      if (fieldNotesMode.checked && (k === "hi" || k === "fs" || k === "ifs")){
+        if (!String(row.fieldElev || "").trim()){
+          const computed = computeFieldElevFromNotes(rowIndex);
+          if (Number.isFinite(computed)){
+            row.fieldElev = fmt(computed, 2);
+            const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(id)}"]`);
+            const fe = tr?.querySelector('input[data-k="fieldElev"]');
+            if (fe) fe.value = row.fieldElev;
+          }
+        }
+      }
+
+      // Avoid the “click each character” issue:
+      // Only rebuild table when pointName changes AND autosort is enabled.
       if (k === "pointName" && autoSortPoints.checked){
-        renderElevations();
+        renderElevations(true);
       } else {
         updateComputedRow(id);
       }
+
       saveToStorage();
     });
 
     btnAddRow.addEventListener("click", () => {
-      state.elevRows.push({ id: uid(), pointName: "", fieldElev: "", designElev: "" });
-      renderElevations();
+      state.elevRows.push({ id: uid(), pointName: "", hi:"", fs:"", ifs:"", fieldElev:"", designElev:"" });
+      renderElevations(true);
       saveToStorage();
     });
 
@@ -1345,7 +1640,54 @@
       const checks = Array.from(document.querySelectorAll(".rowSel:checked"));
       const ids = new Set(checks.map(c => c.dataset.id));
       state.elevRows = state.elevRows.filter(r => !ids.has(r.id));
-      renderElevations();
+      renderElevations(true);
+      saveToStorage();
+    });
+
+    // Slopes handlers (live update)
+    slopeBody.addEventListener("input", (e) => {
+      const t = e.target;
+      if (!t?.dataset?.id) return;
+      if (t.dataset.type !== "slope") return;
+
+      const id = t.dataset.id;
+      const k = t.dataset.k;
+      const row = state.slopeRows.find(r => r.id === id);
+      if (!row) return;
+
+      row[k] = t.value;
+
+      updateSlopeComputed(id);
+      saveToStorage();
+    });
+
+    slopeBody.addEventListener("change", (e) => {
+      const t = e.target;
+      if (!t?.dataset?.id) return;
+      if (t.dataset.type !== "slope") return;
+
+      const id = t.dataset.id;
+      const k = t.dataset.k;
+      const row = state.slopeRows.find(r => r.id === id);
+      if (!row) return;
+
+      row[k] = t.value;
+
+      updateSlopeComputed(id);
+      saveToStorage();
+    });
+
+    btnAddSlope.addEventListener("click", () => {
+      state.slopeRows.push({ id: uid(), segment:"", fromPoint:"", toPoint:"", distanceM:"" });
+      renderSlopes(true);
+      saveToStorage();
+    });
+
+    btnRemoveSlopeSelected.addEventListener("click", () => {
+      const checks = Array.from(document.querySelectorAll(".slopeSel:checked"));
+      const ids = new Set(checks.map(c => c.dataset.id));
+      state.slopeRows = state.slopeRows.filter(r => !ids.has(r.id));
+      renderSlopes(true);
       saveToStorage();
     });
 
@@ -1356,54 +1698,63 @@
       localStorage.removeItem(STORAGE_KEY);
 
       state.meta = { area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"" };
-      state.elevRows = [];
       state.plan = null;
       state.markers = [];
+      state.elevRows = [];
+      state.slopeRows = [];
 
       initDefaults();
       if (!state.meta.jobDate) state.meta.jobDate = todayISO();
       syncMetaToUI();
 
       renderTolerance();
-      renderElevations();
       renderPlan();
+      renderElevations(true);
       saveToStorage();
     });
 
     btnPDF.addEventListener("click", () => exportPDF());
     btnShare.addEventListener("click", () => sharePDF());
 
-    // Plan upload
+    // Plan upload handler (with better error messages)
     planInput.addEventListener("change", async (e) => {
       const f = e.target.files && e.target.files[0];
       if (!f) return;
-      try{
+
+      try {
         await setPlotPlanFromFile(f);
-      }catch(err){
-        alert("Could not process that file. Try a smaller PDF or export it flattened.");
+      } catch (err) {
+        const msg = String(err?.message || err || "");
+
+        if (msg.toLowerCase().includes("pdf.js")) {
+          alert("Plot plan upload failed because the PDF viewer library didn’t load. If you’re offline or the network blocks CDNs, upload a screenshot (image) instead.");
+        } else if (msg.toLowerCase().includes("password") || msg.toLowerCase().includes("encrypted")) {
+          alert("This PDF appears to be protected. Please Print to PDF (flatten) and upload the new file, or upload a screenshot.");
+        } else {
+          alert("Could not process this PDF. Try: Print to PDF (flatten), export a lower-resolution PDF, or upload a screenshot image.\n\nDetails: " + msg);
+        }
+      } finally {
+        planInput.value = "";
       }
-      planInput.value = "";
     });
 
     btnClearPlan.addEventListener("click", () => clearPlan());
     btnClearMarkers.addEventListener("click", () => clearMarkers());
 
-    // Click-to-add marker
+    // Click-to-add points
     planStage.addEventListener("click", (e) => {
-      // If clicking on an existing marker, let the marker click handler take it
       const mk = e.target.closest(".marker");
-      if (mk) return;
+      if (mk) return; // marker click handled below
       addMarkerAtClick(e);
     });
 
-    // Marker edit/remove
     planStage.addEventListener("click", (e) => {
       const mk = e.target.closest(".marker");
       if (!mk) return;
       editOrRemoveMarker(mk.dataset.id);
     });
 
-    // ---- Boot ----
+    // -------- Boot --------
     function loadAndInit(){
       loadFromStorage();
       if (!state.meta.jobDate) state.meta.jobDate = todayISO();
@@ -1412,9 +1763,8 @@
       syncMetaToUI();
 
       renderTolerance();
-      renderElevations();
       renderPlan();
-
+      renderElevations(true);
       saveToStorage();
     }
     loadAndInit();
