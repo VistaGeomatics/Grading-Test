@@ -20,7 +20,7 @@
       --vista-blue-light:#2a7fa3;
       --vista-blue-dark:#0b3045;
 
-      --pass-blue:#1f9cf0;
+      --pass-blue:#1f9cf0;  /* standard blue */
       --fail-red:#ef4444;
 
       --bg-body:#eef3f9;
@@ -124,7 +124,7 @@
 
     label{ display:block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
 
-    /* Semi-transparent inputs (including field/design elevations) */
+    /* Semi-transparent inputs */
     input, select, textarea{
       width:100%;
       border: 1px solid var(--border-soft);
@@ -246,7 +246,6 @@
       overflow: hidden;
     }
     .planStage img{ width:100%; height:auto; display:block; }
-
     .planOverlay{
       position:absolute;
       inset:0;
@@ -267,9 +266,9 @@
       stroke-linejoin: round;
     }
 
-    /* ===== Markers v7: anchor point is EXACT click location =====
-       - anchor shows POINT number only, placed EXACTLY where user clicks
-       - label (semi transparent) shows ELEV only and can be auto-spread to avoid overlap
+    /* ===== Updated markers =====
+      - point number pinned EXACTLY where user clicks
+      - elevation tag sits right beside point number (can nudge to avoid overlap)
     */
     .mkAnchor{
       position:absolute;
@@ -295,9 +294,9 @@
       line-height: 1;
     }
 
-    .mkLabel{
+    .mkElev{
       position:absolute;
-      transform: translate(-50%, -100%);
+      transform: translate(0, -50%); /* left edge anchored, vertically centered */
       padding: 2px 4px;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.85);
@@ -309,15 +308,14 @@
       white-space: nowrap;
       text-align:center;
     }
-    .mkLabel .el{
+    .mkElev .el{
       font-size: 7px;
       font-weight: 900;
       line-height: 1.05;
-      color: var(--pass-blue);
     }
-    .mkLabel .el.pass{ color: var(--pass-blue); }
-    .mkLabel .el.fail{ color: var(--fail-red); }
-    .mkLabel .el.na{ color: rgba(255,255,255,0.92); }
+    .mkElev .el.pass{ color: var(--pass-blue); }
+    .mkElev .el.fail{ color: var(--fail-red); }
+    .mkElev .el.na{ color: rgba(255,255,255,0.92); }
 
     .planMeta{
       padding: 10px 12px;
@@ -344,55 +342,6 @@
       background:#fbfdff;
     }
     .inlineToggle input{ width:auto; }
-
-    /* Photos */
-    .thumbGrid{
-      display:grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
-      margin-top: 12px;
-    }
-    @media (max-width: 980px){ .thumbGrid{ grid-template-columns: repeat(4, 1fr); } }
-    @media (max-width: 520px){ .thumbGrid{ grid-template-columns: repeat(3, 1fr); } }
-
-    .thumb{
-      border: 1px solid var(--border-soft);
-      border-radius: 12px;
-      overflow:hidden;
-      background:#fff;
-      position: relative;
-      aspect-ratio: 1 / 1;
-      box-shadow: 0 6px 16px rgba(2,10,20,0.06);
-      cursor:pointer;
-    }
-    .thumb img{ width:100%; height:100%; object-fit: cover; display:block; }
-    .thumb .x{
-      position:absolute;
-      top:6px;
-      right:6px;
-      width:28px;
-      height:28px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.85);
-      background: rgba(0,0,0,0.42);
-      color:#fff;
-      font-weight:900;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      user-select:none;
-      cursor:pointer;
-    }
-    .thumb .cap{
-      position:absolute;
-      left:0; right:0; bottom:0;
-      padding:6px 8px;
-      font-size:11px;
-      color:#fff;
-      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.70));
-      line-height:1.2;
-      min-height: 30px;
-    }
 
     /* Export host (hidden) */
     #exportHost{
@@ -485,7 +434,7 @@
       pointer-events:none;
     }
 
-    /* print markers (same small anchor + label) */
+    /* Print markers: number pinned + elevation beside */
     .mkAnchorPrint{
       position:absolute;
       transform: translate(-50%, -50%);
@@ -505,9 +454,10 @@
       color:#ffffff;
       line-height: 1;
     }
-    .mkLabelPrint{
+
+    .mkElevPrint{
       position:absolute;
-      transform: translate(-50%, -100%);
+      transform: translate(0, -50%);
       padding: 2px 4px;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.85);
@@ -516,34 +466,14 @@
       white-space: nowrap;
       text-align:center;
     }
-    .mkLabelPrint .el{
+    .mkElevPrint .el{
       font-size: 7px;
       font-weight: 900;
       line-height: 1.05;
-      color: var(--pass-blue);
     }
-    .mkLabelPrint .el.pass{ color: var(--pass-blue); }
-    .mkLabelPrint .el.fail{ color: var(--fail-red); }
-    .mkLabelPrint .el.na{ color: rgba(255,255,255,0.92); }
-
-    .photoGridPrint{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .photoBig{
-      border: 1px solid #d6dee9;
-      border-radius: 12px;
-      overflow:hidden;
-    }
-    .photoBig img{ width:100%; height:auto; display:block; }
-    .photoBig .label{
-      padding: 8px 10px;
-      font-size: 11px;
-      color:#334155;
-      border-top: 1px solid #e5edf7;
-      background:#fafcff;
-    }
+    .mkElevPrint .el.pass{ color: var(--pass-blue); }
+    .mkElevPrint .el.fail{ color: var(--fail-red); }
+    .mkElevPrint .el.na{ color: rgba(255,255,255,0.92); }
   </style>
 </head>
 
@@ -557,7 +487,7 @@
 
         <div class="brand">
           <p class="title">VISTA GEOMATICS</p>
-          <p class="subtitle">Grading Check, Plot Plan vs Field, Slopes, Notes, Photos, PDF Export</p>
+          <p class="subtitle">FIELD GRADING CHECK</p>
         </div>
 
         <div class="pill">
@@ -619,7 +549,6 @@
             <div><div class="k">Points Checked</div><div class="v" id="sumPoints">0</div></div>
             <div><div class="k">Fails</div><div class="v" id="sumFails">0</div></div>
             <div><div class="k">Worst Δ (cm)</div><div class="v" id="sumWorst">—</div></div>
-            <div><div class="k">Photos</div><div class="v" id="sumPhotos">0</div></div>
           </div>
 
           <div class="hint">
@@ -640,7 +569,7 @@
           <label>Auto-generated summary for office & drafters</label>
           <textarea id="officeSummary" placeholder="Click Generate to build a consistent summary..."></textarea>
           <div class="hint">
-            Includes tolerance, pass/fails, worst deltas, slope deltas, and photo count.
+            Includes tolerance, pass/fails, worst deltas, and slope values.
           </div>
         </div>
       </div>
@@ -659,8 +588,8 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Click to place a point. The point number is placed <b>exactly where you click</b>. Elevation label is smaller and semi-transparent, and auto-spreads to avoid overlaps.
-            Slope arrows and labels are smaller and always point <b>downhill</b>.
+            Click to place a point. The point number is placed <b>exactly where you click</b>, and the elevation is shown <b>right beside</b> it.
+            Elevation tags auto-nudge to avoid overlaps, but the point number never moves.
           </div>
 
           <div id="planEmpty" style="margin-top:12px; padding:14px; border:1px dashed var(--border-soft); border-radius:14px; background:#fbfdff; color:var(--text-muted);">
@@ -679,7 +608,7 @@
                   <div id="planType" style="opacity:0.85; margin-top:2px;"></div>
                 </div>
                 <div class="hint" style="margin:0;">
-                  Tap the point number to edit/remove. Elev label spreads automatically.
+                  Tap a point number to edit/remove.
                 </div>
               </div>
             </div>
@@ -707,7 +636,7 @@
 
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Δ (cm) = (Field − Design) × 100. Points placed on plan also populate the table.
+            Δ (cm) = (Field − Design) × 100. Points placed on the plan also populate the table.
           </div>
 
           <div style="margin-top:12px; overflow:auto;">
@@ -771,7 +700,7 @@
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
     }
 
-    const STORAGE_KEY = "vista_grading_check_full_v7";
+    const STORAGE_KEY = "vista_grading_check_full_v8";
     const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
 
     const state = {
@@ -830,6 +759,7 @@
       if (!Number.isFinite(cm)) return "na";
       return Math.abs(cm) <= tol ? "pass" : "fail";
     }
+    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
     // choose elevation for downhill direction: prefer field, else design
     function bestElevForPoint(pointName){
@@ -864,7 +794,6 @@
     const sumPoints = document.getElementById("sumPoints");
     const sumFails = document.getElementById("sumFails");
     const sumWorst = document.getElementById("sumWorst");
-    const sumPhotos = document.getElementById("sumPhotos");
 
     const btnSave = document.getElementById("btnSave");
     const btnReset = document.getElementById("btnReset");
@@ -952,7 +881,6 @@
       sumPoints.textContent = String(pointsChecked);
       sumFails.textContent = String(fails);
       sumWorst.textContent = worstSigned === null ? "—" : fmtDash(worstSigned, 1);
-      sumPhotos.textContent = "0";
     }
 
     // ---------- numeric keypad attrs ----------
@@ -984,11 +912,10 @@
       return String(n);
     }
 
-    // ---------- plan collision avoidance (labels ONLY, anchors never move) ----------
-    // anchor = exact click
-    // label = can move
-    const LABEL_W_PX = 44;
-    const LABEL_H_PX = 18;
+    // ---------- collision avoidance for elevation tags (point number never moves) ----------
+    // These describe the *elevation tag* box, not the point number.
+    const LABEL_W_PX = 36;
+    const LABEL_H_PX = 14;
     const LABEL_PAD_PX = 4;
 
     function labelDimsPct(){
@@ -997,22 +924,34 @@
       const hPct = ((LABEL_H_PX + LABEL_PAD_PX) / Math.max(1, rect.height)) * 100;
       return { wPct, hPct };
     }
-    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
     function boxesOverlap(a,b){ return !(a.x2 <= b.x1 || a.x1 >= b.x2 || a.y2 <= b.y1 || a.y1 >= b.y2); }
-    function labelBox(m, wPct, hPct){
-      // label is positioned with translate(-50%,-100%) at (labelXPct,labelYPct)
-      // box spans:
-      const x1 = m.labelXPct - wPct/2;
-      const x2 = m.labelXPct + wPct/2;
-      const y2 = m.labelYPct;       // bottom
-      const y1 = m.labelYPct - hPct; // top
+
+    // mkElev is positioned with translate(0,-50%) at (labelXPct,labelYPct)
+    // so box is [x, x+w] and [y-h/2, y+h/2]
+    function elevBox(m, wPct, hPct){
+      const x1 = m.labelXPct;
+      const x2 = m.labelXPct + wPct;
+      const y1 = m.labelYPct - hPct/2;
+      const y2 = m.labelYPct + hPct/2;
       return { x1,y1,x2,y2 };
+    }
+
+    function seedLabelPosition(m){
+      // Place elevation just to the right of the point number
+      m.labelXPct = (m.labelXPct ?? clamp(m.xPct + 1.0, 0, 100));
+      m.labelYPct = (m.labelYPct ?? m.yPct);
     }
 
     function resolveLabelCollisions(){
       if (!state.plan || state.markers.length < 2) return;
       const { wPct, hPct } = labelDimsPct();
-      const maxIter = 180;
+      const maxIter = 220;
+
+      // First, clamp to safe bounds so tag stays inside plan
+      for (const m of state.markers){
+        m.labelXPct = clamp(m.labelXPct, 0, 100 - wPct);
+        m.labelYPct = clamp(m.labelYPct, hPct/2, 100 - hPct/2);
+      }
 
       for (let iter=0; iter<maxIter; iter++){
         let moved = false;
@@ -1020,33 +959,29 @@
         for (let i=0; i<state.markers.length; i++){
           for (let j=i+1; j<state.markers.length; j++){
             const a = state.markers[i], b = state.markers[j];
-            const A = labelBox(a,wPct,hPct);
-            const B = labelBox(b,wPct,hPct);
+            const A = elevBox(a,wPct,hPct);
+            const B = elevBox(b,wPct,hPct);
             if (!boxesOverlap(A,B)) continue;
 
             moved = true;
-            const dx = (a.labelXPct - b.labelXPct) || (Math.random()-0.5);
+
+            // push apart mainly in Y, a bit in X, but keep near the anchor
             const dy = (a.labelYPct - b.labelYPct) || (Math.random()-0.5);
+            const dx = (a.labelXPct - b.labelXPct) || (Math.random()-0.5);
 
-            const stepX = (wPct * 0.12) * Math.sign(dx);
-            const stepY = (hPct * 0.16) * Math.sign(dy);
+            const stepY = (hPct * 0.22) * Math.sign(dy);
+            const stepX = (wPct * 0.10) * Math.sign(dx);
 
-            a.labelXPct = clamp(a.labelXPct + stepX, wPct/2, 100 - wPct/2);
-            b.labelXPct = clamp(b.labelXPct - stepX, wPct/2, 100 - wPct/2);
+            a.labelYPct = clamp(a.labelYPct + stepY, hPct/2, 100 - hPct/2);
+            b.labelYPct = clamp(b.labelYPct - stepY, hPct/2, 100 - hPct/2);
 
-            a.labelYPct = clamp(a.labelYPct + stepY, hPct, 100);
-            b.labelYPct = clamp(b.labelYPct - stepY, hPct, 100);
+            a.labelXPct = clamp(a.labelXPct + stepX, 0, 100 - wPct);
+            b.labelXPct = clamp(b.labelXPct - stepX, 0, 100 - wPct);
           }
         }
 
         if (!moved) break;
       }
-    }
-
-    function seedLabelPosition(m){
-      // default label slightly above the anchor
-      m.labelXPct = m.labelXPct ?? m.xPct;
-      m.labelYPct = m.labelYPct ?? clamp(m.yPct - 3.0, 0, 100);
     }
 
     // ---------- slope overlay ----------
@@ -1113,7 +1048,6 @@
         const A = pctToOverlay(mkHigh.xPct, mkHigh.yPct);
         const B = pctToOverlay(mkLow.xPct,  mkLow.yPct);
 
-        // smaller line
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttribute("x1", A.x);
         line.setAttribute("y1", A.y);
@@ -1142,7 +1076,7 @@
 
     // ---------- plan render ----------
     function renderPlan(){
-      planStage.querySelectorAll(".mkAnchor, .mkLabel").forEach(n => n.remove());
+      planStage.querySelectorAll(".mkAnchor, .mkElev").forEach(n => n.remove());
       clearPlanOverlay();
 
       if (!state.plan){
@@ -1159,14 +1093,13 @@
       planName.textContent = state.plan.name || "Plot plan";
       planType.textContent = state.plan.kind === "pdf" ? "PDF (page 1 rendered)" : "Image";
 
-      // ensure each label has a seed position, then resolve overlaps
       for (const m of state.markers) seedLabelPosition(m);
       resolveLabelCollisions();
 
       for (const m of state.markers){
         const cls = markerStatusClass(m.fieldElev, m.designElev);
 
-        // Anchor at EXACT click location (point number)
+        // Point number pinned EXACT click
         const a = document.createElement("div");
         a.className = "mkAnchor";
         a.style.left = m.xPct + "%";
@@ -1176,13 +1109,13 @@
         a.innerHTML = `<span>${escapeHtml(m.point)}</span>`;
         planStage.appendChild(a);
 
-        // Label (elevation) auto-spread
-        const l = document.createElement("div");
-        l.className = "mkLabel";
-        l.style.left = m.labelXPct + "%";
-        l.style.top  = m.labelYPct + "%";
-        l.innerHTML = `<div class="el ${cls}">${escapeHtml(m.fieldElev || "")}</div>`;
-        planStage.appendChild(l);
+        // Elevation tag beside it (allowed to nudge)
+        const e = document.createElement("div");
+        e.className = "mkElev";
+        e.style.left = m.labelXPct + "%";
+        e.style.top  = m.labelYPct + "%";
+        e.innerHTML = `<div class="el ${cls}">${escapeHtml(m.fieldElev || "")}</div>`;
+        planStage.appendChild(e);
       }
 
       drawPlanArrows();
@@ -1217,7 +1150,7 @@
       }
 
       renderSummary();
-      renderPlan(); // keeps plan colors + downhill arrows in sync
+      renderPlan(); // keep plan colors + arrows in sync
     }
 
     function updateComputedRow(rowId){
@@ -1377,8 +1310,7 @@
 
       state.plan = { name: file.name || "plot-plan", kind, dataUrl };
       state.markers = [];
-      state.meta.nextPoint = getMaxNumericPoint() + 1;
-      if (state.meta.nextPoint < 1) state.meta.nextPoint = 1;
+      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
       renderPlan();
       saveToStorage();
     }
@@ -1417,8 +1349,8 @@
       const rect = planStage.getBoundingClientRect();
       const x = (evt.clientX - rect.left) / rect.width;
       const y = (evt.clientY - rect.top) / rect.height;
-      const xPct = Math.max(0, Math.min(100, x * 100));
-      const yPct = Math.max(0, Math.min(100, y * 100));
+      const xPct = clamp(x * 100, 0, 100);
+      const yPct = clamp(y * 100, 0, 100);
 
       const point = nextAutoPoint();
       const data = promptFieldDesign(point);
@@ -1430,9 +1362,9 @@
 
       const mk = {
         id: uid(),
-        xPct, yPct,                // anchor EXACT click
-        labelXPct: xPct,
-        labelYPct: Math.max(0, yPct - 3.0),
+        xPct, yPct, // anchor EXACT click
+        labelXPct: xPct + 1.0, // elevation tag to the right by default
+        labelYPct: yPct,
         point,
         fieldElev: data.fieldElev,
         designElev: data.designElev
@@ -1440,6 +1372,7 @@
 
       state.markers.push(mk);
       upsertElevRow(point, data.fieldElev, data.designElev);
+
       renderElevations();
       renderSlopes();
       renderPlan();
@@ -1456,7 +1389,7 @@
       const a = action.trim().toLowerCase();
       if (a === "remove"){
         state.markers = state.markers.filter(m => m.id !== markerId);
-        state.meta.nextPoint = getMaxNumericPoint() + 1;
+        state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
         renderPlan();
         saveToStorage();
         return;
@@ -1471,6 +1404,7 @@
         mk.fieldElev = String(f).trim();
         mk.designElev = String(d).trim();
         upsertElevRow(mk.point, mk.fieldElev, mk.designElev);
+
         renderElevations();
         renderSlopes();
         renderPlan();
@@ -1478,7 +1412,7 @@
       }
     }
 
-    // ---------- PDF export (with plan markings) ----------
+    // ---------- PDF export / share ----------
     function waitImagesLoaded(container){
       const imgs = Array.from(container.querySelectorAll("img"));
       if (!imgs.length) return Promise.resolve();
@@ -1523,9 +1457,8 @@
         </div>
       `;
 
-      // plot plan page (with ALL points + labels + downhill arrows)
+      // plot plan page with markings
       if (state.plan){
-        // re-resolve label overlap for print too
         for (const m of state.markers) seedLabelPosition(m);
         resolveLabelCollisions();
 
@@ -1558,15 +1491,15 @@
           a.innerHTML = `<span>${escapeHtml(m.point)}</span>`;
           stage.appendChild(a);
 
-          const l = document.createElement("div");
-          l.className = "mkLabelPrint";
-          l.style.left = m.labelXPct + "%";
-          l.style.top  = m.labelYPct + "%";
-          l.innerHTML = `<div class="el ${cls}">${escapeHtml(m.fieldElev||"")}</div>`;
-          stage.appendChild(l);
+          const e = document.createElement("div");
+          e.className = "mkElevPrint";
+          e.style.left = m.labelXPct + "%";
+          e.style.top  = m.labelYPct + "%";
+          e.innerHTML = `<div class="el ${cls}">${escapeHtml(m.fieldElev||"")}</div>`;
+          stage.appendChild(e);
         }
 
-        // smaller arrowhead for print
+        // arrow head for print
         const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
         const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
         marker.setAttribute("id", "arrowHeadPrint");
@@ -1611,6 +1544,7 @@
           const B = pctToOverlay(mkLow.xPct,  mkLow.yPct);
 
           const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
           line.setAttribute("x1", A.x);
           line.setAttribute("y1", A.y);
           line.setAttribute("x2", B.x);
@@ -1874,7 +1808,7 @@
       if (!state.markers.length) return;
       if (!confirm("Clear all points from the plot plan?")) return;
       state.markers = [];
-      state.meta.nextPoint = getMaxNumericPoint() + 1;
+      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
       renderPlan();
       saveToStorage();
     });
@@ -1908,8 +1842,8 @@
       row[t.dataset.k] = t.value;
 
       // sync marker by point name
-      if (t.dataset.k === "fieldElev" || t.dataset.k === "designElev" || t.dataset.k === "pointName"){
-        const p = String(row.pointName||"").trim();
+      const p = String(row.pointName||"").trim();
+      if (p){
         const mk = state.markers.find(m => String(m.point||"").trim() === p);
         if (mk){
           mk.fieldElev = row.fieldElev;
@@ -1921,14 +1855,14 @@
       renderSlopes();
     });
 
-    document.getElementById("btnAddRow").addEventListener("click", () => {
+    btnAddRow.addEventListener("click", () => {
       state.elevRows.push({ id: uid(), pointName:"", fieldElev:"", designElev:"" });
       renderElevations();
       renderSlopes();
       saveToStorage();
     });
 
-    document.getElementById("btnRemoveSelected").addEventListener("click", () => {
+    btnRemoveSelected.addEventListener("click", () => {
       const ids = new Set(Array.from(document.querySelectorAll(".rowSel:checked")).map(x => x.dataset.id));
       state.elevRows = state.elevRows.filter(r => !ids.has(r.id));
       renderElevations();
