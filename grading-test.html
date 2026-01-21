@@ -124,6 +124,7 @@
 
     label{ display:block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
 
+    /* Semi-transparent inputs (including field/design elevations) */
     input, select, textarea{
       width:100%;
       border: 1px solid var(--border-soft);
@@ -131,7 +132,9 @@
       padding: 10px 10px;
       font-size: 14px;
       outline:none;
-      background: rgba(255,255,255,0.78); /* semi transparent so you can see behind */
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
       color: var(--text-main);
     }
     textarea{ min-height: 92px; resize: vertical; }
@@ -191,7 +194,9 @@
       padding: 8px 8px;
       border-radius: 10px;
       font-size: 13px;
-      background: rgba(255,255,255,0.78);
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
     }
 
     .status{
@@ -224,28 +229,7 @@
     .summary .k{ font-size: 12px; color: var(--text-muted); }
     .summary .v{ font-weight: 900; font-size: 14px; }
 
-    /* Templates */
-    .templateGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    @media (max-width: 680px){ .templateGrid{ grid-template-columns: 1fr; } }
-    .checkRow{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      padding:10px 10px;
-      border: 1px solid var(--border-soft);
-      border-radius: 12px;
-      background:#fbfdff;
-    }
-    .checkRow input{ width:auto; margin-top:2px; }
-    .checkRow .t{ font-size: 13px; line-height: 1.25; }
-    .checkRow .t b{ display:block; font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
-
-    /* Plan preview */
+    /* Plot plan preview */
     .planPreview{
       border: 1px solid var(--border-soft);
       border-radius: 14px;
@@ -263,7 +247,6 @@
     }
     .planStage img{ width:100%; height:auto; display:block; }
 
-    /* SVG overlay for slope arrows */
     .planOverlay{
       position:absolute;
       inset:0;
@@ -272,63 +255,69 @@
       pointer-events:none;
     }
 
-    /* slope label red */
+    /* Smaller slope label (RED) */
     .slopeLabel{
       font-family:"Inter", sans-serif;
       font-weight: 900;
-      font-size: 10px;
+      font-size: 8px;
       fill: rgba(239,68,68,0.98);
       paint-order: stroke;
       stroke: rgba(0,0,0,0.55);
-      stroke-width: 3px;
+      stroke-width: 2px;
       stroke-linejoin: round;
     }
 
-    /* Markers (smaller). Point stays white. Elevation blue unless fail -> red. */
-    .marker{
+    /* ===== Markers v7: anchor point is EXACT click location =====
+       - anchor shows POINT number only, placed EXACTLY where user clicks
+       - label (semi transparent) shows ELEV only and can be auto-spread to avoid overlap
+    */
+    .mkAnchor{
       position:absolute;
-      transform: translate(-50%, -100%);
-      background: rgba(22,95,125,0.22);
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.85);
+      background: rgba(22,95,125,0.25);
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
+      box-shadow: 0 3px 8px rgba(2,10,20,0.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:auto;
+      cursor:pointer;
+    }
+    .mkAnchor span{
+      font-size: 7px;
+      font-weight: 900;
+      color:#ffffff;
+      line-height: 1;
+    }
+
+    .mkLabel{
+      position:absolute;
+      transform: translate(-50%, -100%);
+      padding: 2px 4px;
+      border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.85);
-      border-radius: 9px;
-      padding: 3px 5px;
-      box-shadow: 0 4px 10px rgba(2,10,20,0.10);
-      pointer-events: auto;
-      cursor: pointer;
+      background: rgba(22,95,125,0.18);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      box-shadow: 0 3px 8px rgba(2,10,20,0.10);
+      pointer-events:none;
       white-space: nowrap;
-      min-width: 34px;
       text-align:center;
     }
-    .marker .pt{
-      font-size: 9px;
+    .mkLabel .el{
+      font-size: 7px;
       font-weight: 900;
-      line-height: 1.05;
-      color:#ffffff;
-    }
-    .marker .el{
-      font-size: 9px;
-      font-weight: 900;
-      margin-top: 1px;
       line-height: 1.05;
       color: var(--pass-blue);
     }
-    .marker .el.pass{ color: var(--pass-blue); }
-    .marker .el.fail{ color: var(--fail-red); }
-    .marker .el.na{ color: rgba(255,255,255,0.92); }
-
-    .marker::after{
-      content:"";
-      position:absolute;
-      left:50%;
-      bottom:-6px;
-      transform: translateX(-50%);
-      width:0; height:0;
-      border-left:4px solid transparent;
-      border-right:4px solid transparent;
-      border-top:6px solid rgba(22,95,125,0.22);
-    }
+    .mkLabel .el.pass{ color: var(--pass-blue); }
+    .mkLabel .el.fail{ color: var(--fail-red); }
+    .mkLabel .el.na{ color: rgba(255,255,255,0.92); }
 
     .planMeta{
       padding: 10px 12px;
@@ -479,7 +468,6 @@
     .pillSmall.ok{ background:#eaf7ee; border-color:#c7ecd2; color:#15803d; }
     .pillSmall.bad{ background:#fff1f2; border-color:#fecdd3; color:#b91c1c; }
 
-    /* page breaks between major sections (check report, plot plan, table) */
     .pageBreak{ page-break-before: always; }
 
     .planPrintWrap{
@@ -497,38 +485,46 @@
       pointer-events:none;
     }
 
-    /* print markers: same small style */
-    .planPrintMarker{
+    /* print markers (same small anchor + label) */
+    .mkAnchorPrint{
+      position:absolute;
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.85);
+      background: rgba(22,95,125,0.25);
+      box-shadow: 0 3px 8px rgba(2,10,20,0.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .mkAnchorPrint span{
+      font-size: 7px;
+      font-weight: 900;
+      color:#ffffff;
+      line-height: 1;
+    }
+    .mkLabelPrint{
       position:absolute;
       transform: translate(-50%, -100%);
-      background: rgba(22,95,125,0.22);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
+      padding: 2px 4px;
+      border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.85);
-      border-radius: 9px;
-      padding: 3px 5px;
-      font-weight: 900;
+      background: rgba(22,95,125,0.18);
+      box-shadow: 0 3px 8px rgba(2,10,20,0.10);
       white-space: nowrap;
       text-align:center;
-      min-width: 34px;
-      box-shadow: 0 4px 10px rgba(2,10,20,0.10);
     }
-    .planPrintMarker .pt{ font-size: 9px; line-height: 1.05; color:#ffffff; }
-    .planPrintMarker .el{ font-size: 9px; margin-top:1px; font-weight:900; line-height:1.05; color: var(--pass-blue); }
-    .planPrintMarker .el.pass{ color: var(--pass-blue); }
-    .planPrintMarker .el.fail{ color: var(--fail-red); }
-    .planPrintMarker .el.na{ color: rgba(255,255,255,0.92); }
-    .planPrintMarker::after{
-      content:"";
-      position:absolute;
-      left:50%;
-      bottom:-6px;
-      transform: translateX(-50%);
-      width:0; height:0;
-      border-left:4px solid transparent;
-      border-right:4px solid transparent;
-      border-top:6px solid rgba(22,95,125,0.22);
+    .mkLabelPrint .el{
+      font-size: 7px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--pass-blue);
     }
+    .mkLabelPrint .el.pass{ color: var(--pass-blue); }
+    .mkLabelPrint .el.fail{ color: var(--fail-red); }
+    .mkLabelPrint .el.na{ color: rgba(255,255,255,0.92); }
 
     .photoGridPrint{
       display:grid;
@@ -644,27 +640,12 @@
           <label>Auto-generated summary for office & drafters</label>
           <textarea id="officeSummary" placeholder="Click Generate to build a consistent summary..."></textarea>
           <div class="hint">
-            Includes tolerance, pass/fails, worst deltas, slope deltas, templates, and photo count.
+            Includes tolerance, pass/fails, worst deltas, slope deltas, and photo count.
           </div>
         </div>
       </div>
 
       <div class="card" style="grid-column:1/-1;">
-        <div class="card-h">
-          <h2>Fast Notes (Consistent)</h2>
-          <div class="btnbar">
-            <button class="btn ghost" id="btnApplyTemplates" type="button">Apply Templates</button>
-            <button class="btn ghost" id="btnClearTemplates" type="button">Clear Template Checks</button>
-          </div>
-        </div>
-        <div class="card-b">
-          <label>General Notes / Crew Notes</label>
-          <textarea id="notes" placeholder="Optional free text. Use templates below for consistent wording..."></textarea>
-          <div id="templateGrid" class="templateGrid"></div>
-        </div>
-      </div>
-
-      <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
           <h2>Marked Up Plot Plan (Image or PDF)</h2>
           <div class="btnbar">
@@ -673,13 +654,13 @@
               <input id="planInput" type="file" accept="image/*,application/pdf" style="display:none;">
             </label>
             <button class="btn danger" id="btnClearPlan" type="button">Remove</button>
-            <button class="btn ghost" id="btnClearMarkers" type="button">Clear Markers</button>
+            <button class="btn ghost" id="btnClearMarkers" type="button">Clear Points</button>
           </div>
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Upload plan, then click to place points. Points auto-number 1, 2, 3… You’ll enter Field Elev and Design Elev.
-            Marker elevation turns blue (PASS) or red (FAIL). Slope rows draw red arrows and red % (midpoint). Markers auto-spread to avoid overlap.
+            Click to place a point. The point number is placed <b>exactly where you click</b>. Elevation label is smaller and semi-transparent, and auto-spreads to avoid overlaps.
+            Slope arrows and labels are smaller and always point <b>downhill</b>.
           </div>
 
           <div id="planEmpty" style="margin-top:12px; padding:14px; border:1px dashed var(--border-soft); border-radius:14px; background:#fbfdff; color:var(--text-muted);">
@@ -698,7 +679,7 @@
                   <div id="planType" style="opacity:0.85; margin-top:2px;"></div>
                 </div>
                 <div class="hint" style="margin:0;">
-                  Tip: For tight point clusters, keep clicking, the app will fan labels out automatically.
+                  Tap the point number to edit/remove. Elev label spreads automatically.
                 </div>
               </div>
             </div>
@@ -709,35 +690,12 @@
 
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
-          <h2>Site Photos</h2>
-          <div class="btnbar">
-            <label class="btn ghost" style="cursor:pointer;">
-              Add Photos
-              <input id="photoInput" type="file" accept="image/*" multiple style="display:none;">
-            </label>
-            <button class="btn danger" id="btnClearPhotos" type="button">Clear Photos</button>
-          </div>
-        </div>
-        <div class="card-b">
-          <div class="hint" style="margin-top:0;">
-            Thumbnails show here. PDF export includes larger photos, 4 per page, with captions.
-          </div>
-          <div id="thumbGrid" class="thumbGrid"></div>
-        </div>
-      </div>
-
-      <div class="card" style="grid-column: 1 / -1;">
-        <div class="card-h">
           <h2>Elevation Comparison</h2>
           <div class="btnbar" style="justify-content:space-between; width:100%;">
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
               <div class="inlineToggle">
-                <input id="autoSortPoints" type="checkbox" checked />
-                <span><b>Auto-sort</b>, numeric points in order</span>
-              </div>
-              <div class="inlineToggle">
                 <input id="numericKeypad" type="checkbox" checked />
-                <span><b>Numeric keypad</b> on iPad (HI/FS/IFS/Elev)</span>
+                <span><b>Numeric keypad</b> on iPad for elevations</span>
               </div>
             </div>
             <div class="btnbar" style="justify-content:flex-end;">
@@ -749,7 +707,7 @@
 
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Δ (cm) = (Field − Design) × 100. Station presets and point notes are dropdowns to keep wording consistent.
+            Δ (cm) = (Field − Design) × 100. Points placed on plan also populate the table.
           </div>
 
           <div style="margin-top:12px; overflow:auto;">
@@ -757,15 +715,11 @@
               <thead>
                 <tr>
                   <th style="width:44px;">Sel</th>
-                  <th style="min-width:210px;">Station / Point</th>
-                  <th style="min-width:120px;">HI (m)</th>
-                  <th style="min-width:120px;">FS (m)</th>
-                  <th style="min-width:120px;">IFS (m)</th>
+                  <th style="min-width:180px;">Point</th>
                   <th style="min-width:150px;">Field Elev</th>
                   <th style="min-width:150px;">Design Elev</th>
                   <th style="min-width:120px;">Δ (cm)</th>
                   <th style="min-width:110px;">Status</th>
-                  <th style="min-width:260px;">Point Note</th>
                 </tr>
               </thead>
               <tbody id="elevBody"></tbody>
@@ -784,7 +738,7 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Slope % = (Rise / Run) × 100. Red arrows + red % show on plan and in the exported PDF.
+            Arrow points downhill (higher elev → lower elev). Uses Field elev when available, otherwise Design elev.
           </div>
 
           <div style="margin-top:12px; overflow:auto;">
@@ -796,9 +750,7 @@
                   <th style="min-width:180px;">From</th>
                   <th style="min-width:180px;">To</th>
                   <th style="min-width:140px;">Distance (m)</th>
-                  <th style="min-width:140px;">Design Slope %</th>
-                  <th style="min-width:140px;">Field Slope %</th>
-                  <th style="min-width:120px;">Δ Slope %</th>
+                  <th style="min-width:140px;">Downhill Slope %</th>
                 </tr>
               </thead>
               <tbody id="slopeBody"></tbody>
@@ -819,186 +771,89 @@
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
     }
 
-    const STORAGE_KEY = "vista_grading_check_full_v6";
+    const STORAGE_KEY = "vista_grading_check_full_v7";
     const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
 
-    // Includes TOC (Top of Concrete)
-    const STATION_PRESETS = [
-      "RMOW","BM","TBM","TP","SETUP","MID","FG","BG",
-      "ROW","PL","SW","SE","NW","NE","FL","FR","RL","RR",
-      "C/L","DW","GAR","APRON","SWALE","CURB","GB","GUTTER",
-      "TOC"
-    ];
-
-    const POINT_NOTE_PRESETS = [
-      "", "Low, requires fill", "High, requires cut", "Regrade and shape to drain",
-      "Swale not defined, re-shape", "Tie-in required, verify match", "Curb tie-in check required",
-      "Hold, builder review required", "Recheck after regrade", "As-built matches design",
-      "Top of concrete, verify finish"
-    ];
-
-    const NOTE_TEMPLATES = [
-      { id:"tpl_access", title:"Access / Site Condition", text:"Site accessible, no major obstructions impacting shots." },
-      { id:"tpl_obstruct", title:"Access / Site Condition", text:"Obstructions present on site, some shots limited, see photos and point notes." },
-      { id:"tpl_snow", title:"Weather / Surface", text:"Snow/ice present, measurements taken with caution and limited surface visibility in areas." },
-      { id:"tpl_wet", title:"Weather / Surface", text:"Soft/wet soil conditions observed, expect potential settlement/adjustment after compaction." },
-      { id:"tpl_equip", title:"Construction Activity", text:"Builder equipment/materials on site during survey, access constraints noted." },
-      { id:"tpl_recheck", title:"Follow-up", text:"Recheck required after regrade/adjustment, see out-of-tolerance items." },
-      { id:"tpl_hold", title:"Hold", text:"Hold pending builder correction/confirmation, office to review before drafting." }
-    ];
-
     const state = {
-      meta: {
-        area: "calgary",
-        jobNo: "",
-        jobDate: "",
-        community: "",
-        address: "",
-        lotBlockPlan: "",
-        crewChief: "",
-        notes: "",
-        templates: {},
-        officeSummary: "",
-        nextPoint: 1
-      },
+      meta: { area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"", officeSummary:"", nextPoint: 1 },
       plan: null,
-      markers: [], // {id, xPct, yPct, point, fieldElev, designElev}
-      photos: [],
+      // marker: {id, xPct,yPct, labelXPct,labelYPct, point, fieldElev, designElev}
+      markers: [],
       elevRows: [],
       slopeRows: []
     };
 
-    // -------- Helpers --------
+    // ---------- helpers ----------
     function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
-
     function todayISO(){
       const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,"0");
-      const dd = String(d.getDate()).padStart(2,"0");
-      return `${yyyy}-${mm}-${dd}`;
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
     }
-
     function safeName(s){
-      return String(s ?? "")
-        .trim()
-        .replace(/[\\/:*?"<>|]+/g, "")
-        .replace(/\s+/g, " ")
-        .replaceAll(" ", "_")
-        .slice(0, 80) || "Grading_Check";
+      return String(s ?? "").trim().replace(/[\\/:*?"<>|]+/g,"").replace(/\s+/g," ").replaceAll(" ","_").slice(0,80) || "Grading_Check";
     }
-
     function defaultFileName(ext){
       const job = safeName(state.meta.jobNo || "Job");
       const crew = safeName(state.meta.crewChief || "Crew");
-      const date = todayISO();
-      return `${job}_${crew}_${date}.${ext}`;
+      return `${job}_${crew}_${todayISO()}.${ext}`;
     }
-
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
     function parseNumber(v){
       const s = String(v ?? "").trim();
       if (!s) return null;
       const n = Number(s.replace(",", "."));
       return Number.isFinite(n) ? n : null;
     }
-
     function normalizeElevToMeters(v){
       const n = parseNumber(v);
       if (!Number.isFinite(n)) return null;
       return n > 1000 ? n / 100 : n;
     }
-
-    function fmt(n, d=2){ if (!Number.isFinite(n)) return ""; return Number(n).toFixed(d); }
-    function fmtDash(n, d=1){ if (!Number.isFinite(n)) return "—"; return Number(n).toFixed(d); }
-
+    function fmtDash(n, d=2){ return Number.isFinite(n) ? Number(n).toFixed(d) : "—"; }
     function calcDeltaCm(fieldM, designM){
       if (!Number.isFinite(fieldM) || !Number.isFinite(designM)) return null;
       return (fieldM - designM) * 100;
     }
-
     function passFail(deltaCmVal, tolCm){
       if (!Number.isFinite(deltaCmVal)) return "N/A";
       return Math.abs(deltaCmVal) <= tolCm ? "PASS" : "FAIL";
     }
-
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-    }
-
-    function isNumericPointName(name){
-      const s = String(name || "").trim();
-      return /^\d+(\.\d+)?$/.test(s);
-    }
-
-    function sortElevRowsIfEnabled(){
-      if (!autoSortPoints.checked) return;
-
-      const nonNumeric = [];
-      const numeric = [];
-      for (const r of state.elevRows){
-        if (isNumericPointName(r.pointName)) numeric.push(r);
-        else nonNumeric.push(r);
-      }
-      numeric.sort((a,b) => parseFloat(a.pointName) - parseFloat(b.pointName));
-      state.elevRows = [...nonNumeric, ...numeric];
-    }
-
-    function slopePercent(elevFromM, elevToM, runM){
-      if (!Number.isFinite(elevFromM) || !Number.isFinite(elevToM) || !Number.isFinite(runM) || runM <= 0) return null;
-      return ((elevToM - elevFromM) / runM) * 100;
-    }
-
     function markerStatusClass(fieldElev, designElev){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
-      const fieldM = normalizeElevToMeters(fieldElev);
-
-      const designM = normalizeElevToMeters(designElev);
-      const dCm = calcDeltaCm(fieldM, designM);
-      if (!Number.isFinite(dCm)) return "na";
-      return (Math.abs(dCm) <= tol) ? "pass" : "fail";
+      const f = normalizeElevToMeters(fieldElev);
+      const d = normalizeElevToMeters(designElev);
+      const cm = calcDeltaCm(f,d);
+      if (!Number.isFinite(cm)) return "na";
+      return Math.abs(cm) <= tol ? "pass" : "fail";
     }
 
-    // Auto point numbering
-    function getMaxNumericPoint(){
-      let maxN = 0;
-      for (const r of state.elevRows){
-        const s = String(r.pointName || "").trim();
-        if (/^\d+$/.test(s)) maxN = Math.max(maxN, parseInt(s, 10));
-      }
-      for (const m of state.markers){
-        const s = String(m.point || "").trim();
-        if (/^\d+$/.test(s)) maxN = Math.max(maxN, parseInt(s, 10));
-      }
-      return maxN;
-    }
-    function nextAutoPoint(){
-      if (!Number.isFinite(state.meta.nextPoint) || state.meta.nextPoint < 1){
-        state.meta.nextPoint = getMaxNumericPoint() + 1;
-        if (state.meta.nextPoint < 1) state.meta.nextPoint = 1;
-      }
-      const n = state.meta.nextPoint;
-      state.meta.nextPoint += 1;
-      saveToStorage();
-      return String(n);
-    }
-
-    function markerByPoint(pointName){
-      const p = String(pointName || "").trim();
+    // choose elevation for downhill direction: prefer field, else design
+    function bestElevForPoint(pointName){
+      const p = String(pointName||"").trim();
       if (!p) return null;
-      return state.markers.find(m => String(m.point||"").trim() === p) || null;
+
+      const r = state.elevRows.find(x => String(x.pointName||"").trim() === p);
+      const f = normalizeElevToMeters(r?.fieldElev);
+      const d = normalizeElevToMeters(r?.designElev);
+      if (Number.isFinite(f)) return f;
+      if (Number.isFinite(d)) return d;
+
+      const mk = state.markers.find(m => String(m.point||"").trim() === p);
+      const mf = normalizeElevToMeters(mk?.fieldElev);
+      const md = normalizeElevToMeters(mk?.designElev);
+      if (Number.isFinite(mf)) return mf;
+      if (Number.isFinite(md)) return md;
+
+      return null;
     }
 
-    // Convert marker percent coords (0..100) to overlay coords (0..1000)
-    function pctToOverlay(xPct, yPct){
-      return { x: (xPct/100)*1000, y: (yPct/100)*1000 };
-    }
-
-    // -------- Elements --------
+    // ---------- elements ----------
     const areaSelect = document.getElementById("areaSelect");
     const tolLabel = document.getElementById("tolLabel");
-
     const jobNo = document.getElementById("jobNo");
     const jobDate = document.getElementById("jobDate");
     const community = document.getElementById("community");
@@ -1020,11 +875,6 @@
     const btnGenSummary = document.getElementById("btnGenSummary");
     const btnCopySummary = document.getElementById("btnCopySummary");
 
-    const notes = document.getElementById("notes");
-    const templateGrid = document.getElementById("templateGrid");
-    const btnApplyTemplates = document.getElementById("btnApplyTemplates");
-    const btnClearTemplates = document.getElementById("btnClearTemplates");
-
     const planInput = document.getElementById("planInput");
     const btnClearPlan = document.getElementById("btnClearPlan");
     const btnClearMarkers = document.getElementById("btnClearMarkers");
@@ -1036,10 +886,6 @@
     const planName = document.getElementById("planName");
     const planType = document.getElementById("planType");
 
-    const photoInput = document.getElementById("photoInput");
-    const btnClearPhotos = document.getElementById("btnClearPhotos");
-    const thumbGrid = document.getElementById("thumbGrid");
-
     const elevBody = document.getElementById("elevBody");
     const btnAddRow = document.getElementById("btnAddRow");
     const btnRemoveSelected = document.getElementById("btnRemoveSelected");
@@ -1048,12 +894,10 @@
     const btnAddSlope = document.getElementById("btnAddSlope");
     const btnRemoveSlopeSelected = document.getElementById("btnRemoveSlopeSelected");
 
-    const autoSortPoints = document.getElementById("autoSortPoints");
     const numericKeypad = document.getElementById("numericKeypad");
-
     const exportHost = document.getElementById("exportHost");
 
-    // -------- Storage --------
+    // ---------- storage ----------
     function saveToStorage(showToast=false){
       try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -1062,7 +906,7 @@
           setTimeout(() => btnSave.textContent = "Save", 900);
         }
       }catch(e){
-        alert("Save failed (storage limit). Clear plan/photos or use smaller screenshots/flattened PDFs.");
+        alert("Save failed (storage limit). Use smaller plan images or clear points.");
       }
     }
 
@@ -1070,22 +914,18 @@
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return false;
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== "object") return false;
-
-        state.meta = Object.assign(state.meta, parsed.meta || {});
-        state.plan = parsed.plan || null;
-        state.markers = Array.isArray(parsed.markers) ? parsed.markers : [];
-        state.photos = Array.isArray(parsed.photos) ? parsed.photos : [];
-        state.elevRows = Array.isArray(parsed.elevRows) ? parsed.elevRows : [];
-        state.slopeRows = Array.isArray(parsed.slopeRows) ? parsed.slopeRows : [];
+        const p = JSON.parse(raw);
+        if (!p || typeof p !== "object") return false;
+        state.meta = Object.assign(state.meta, p.meta || {});
+        state.plan = p.plan || null;
+        state.markers = Array.isArray(p.markers) ? p.markers : [];
+        state.elevRows = Array.isArray(p.elevRows) ? p.elevRows : [];
+        state.slopeRows = Array.isArray(p.slopeRows) ? p.slopeRows : [];
         return true;
-      }catch(e){
-        return false;
-      }
+      }catch(e){ return false; }
     }
 
-    // -------- Render: tolerance + summary --------
+    // ---------- tolerance + summary ----------
     function renderTolerance(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
       tolLabel.textContent = `±${tol} cm`;
@@ -1093,142 +933,109 @@
 
     function renderSummary(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
-
-      let pointsChecked = 0;
-      let fails = 0;
-      let worstAbs = null;
-      let worstSigned = null;
+      let pointsChecked = 0, fails = 0;
+      let worstAbs = null, worstSigned = null;
 
       for (const r of state.elevRows){
-        const designM = normalizeElevToMeters(r.designElev);
-        const fieldM  = normalizeElevToMeters(r.fieldElev);
-        const dCm = calcDeltaCm(fieldM, designM);
-        if (!Number.isFinite(dCm)) continue;
-
+        const f = normalizeElevToMeters(r.fieldElev);
+        const d = normalizeElevToMeters(r.designElev);
+        const cm = calcDeltaCm(f,d);
+        if (!Number.isFinite(cm)) continue;
         pointsChecked++;
-        if (Math.abs(dCm) > tol) fails++;
-
-        const abs = Math.abs(dCm);
+        if (Math.abs(cm) > tol) fails++;
+        const abs = Math.abs(cm);
         if (worstAbs === null || abs > worstAbs){
           worstAbs = abs;
-          worstSigned = dCm;
+          worstSigned = cm;
         }
       }
-
       sumPoints.textContent = String(pointsChecked);
       sumFails.textContent = String(fails);
-      sumWorst.textContent = (worstSigned === null) ? "—" : fmtDash(worstSigned, 1);
-      sumPhotos.textContent = String(state.photos.length);
+      sumWorst.textContent = worstSigned === null ? "—" : fmtDash(worstSigned, 1);
+      sumPhotos.textContent = "0";
     }
 
-    // -------- Notes templates --------
-    function renderTemplates(){
-      templateGrid.innerHTML = "";
-      for (const t of NOTE_TEMPLATES){
-        const checked = !!state.meta.templates[t.id];
-        const div = document.createElement("div");
-        div.className = "checkRow";
-        div.innerHTML = `
-          <input type="checkbox" data-tpl="${t.id}" ${checked ? "checked":""} />
-          <div class="t">
-            <b>${escapeHtml(t.title)}</b>
-            ${escapeHtml(t.text)}
-          </div>
-        `;
-        templateGrid.appendChild(div);
+    // ---------- numeric keypad attrs ----------
+    function numAttrs(){
+      return numericKeypad.checked ? `type="number" step="any" inputmode="decimal" pattern="[0-9]*"` : `inputmode="decimal"`;
+    }
+
+    // ---------- auto point numbering ----------
+    function getMaxNumericPoint(){
+      let maxN = 0;
+      for (const r of state.elevRows){
+        const s = String(r.pointName||"").trim();
+        if (/^\d+$/.test(s)) maxN = Math.max(maxN, parseInt(s,10));
       }
-    }
-
-    function applyTemplatesToNotes(){
-      const chosen = NOTE_TEMPLATES
-        .filter(t => state.meta.templates[t.id])
-        .map(t => t.text);
-
-      const manual = (notes.value || "").trim();
-      const manualLines = manual ? manual.split("\n").map(s => s.trim()).filter(Boolean) : [];
-
-      const all = [...manualLines];
-      for (const line of chosen){
-        if (!all.includes(line)) all.push(line);
+      for (const m of state.markers){
+        const s = String(m.point||"").trim();
+        if (/^\d+$/.test(s)) maxN = Math.max(maxN, parseInt(s,10));
       }
-
-      notes.value = all.join("\n");
-      state.meta.notes = notes.value;
+      return maxN;
     }
-
-    function clearTemplateChecks(){
-      state.meta.templates = {};
-      renderTemplates();
+    function nextAutoPoint(){
+      if (!Number.isFinite(state.meta.nextPoint) || state.meta.nextPoint < 1){
+        state.meta.nextPoint = getMaxNumericPoint() + 1;
+        if (state.meta.nextPoint < 1) state.meta.nextPoint = 1;
+      }
+      const n = state.meta.nextPoint;
+      state.meta.nextPoint += 1;
       saveToStorage();
+      return String(n);
     }
 
-    // ---------- Marker collision avoidance (prevents overlap) ----------
-    // We pack markers by nudging them until their bounding boxes don't overlap.
-    // This runs on every placement and on window resize (so it stays non-overlapping).
-    const MARKER_W_PX = 42;  // approx rendered box width
-    const MARKER_H_PX = 28;  // approx rendered box height
-    const MARKER_PAD_PX = 4; // extra spacing between boxes
+    // ---------- plan collision avoidance (labels ONLY, anchors never move) ----------
+    // anchor = exact click
+    // label = can move
+    const LABEL_W_PX = 44;
+    const LABEL_H_PX = 18;
+    const LABEL_PAD_PX = 4;
 
-    function markerDimsPct(){
+    function labelDimsPct(){
       const rect = planStage.getBoundingClientRect();
-      const wPct = ((MARKER_W_PX + MARKER_PAD_PX) / Math.max(1, rect.width)) * 100;
-      const hPct = ((MARKER_H_PX + MARKER_PAD_PX) / Math.max(1, rect.height)) * 100;
+      const wPct = ((LABEL_W_PX + LABEL_PAD_PX) / Math.max(1, rect.width)) * 100;
+      const hPct = ((LABEL_H_PX + LABEL_PAD_PX) / Math.max(1, rect.height)) * 100;
       return { wPct, hPct };
     }
-
-    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-
-    function boxesOverlap(a, b){
-      return !(a.x2 <= b.x1 || a.x1 >= b.x2 || a.y2 <= b.y1 || a.y1 >= b.y2);
+    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+    function boxesOverlap(a,b){ return !(a.x2 <= b.x1 || a.x1 >= b.x2 || a.y2 <= b.y1 || a.y1 >= b.y2); }
+    function labelBox(m, wPct, hPct){
+      // label is positioned with translate(-50%,-100%) at (labelXPct,labelYPct)
+      // box spans:
+      const x1 = m.labelXPct - wPct/2;
+      const x2 = m.labelXPct + wPct/2;
+      const y2 = m.labelYPct;       // bottom
+      const y1 = m.labelYPct - hPct; // top
+      return { x1,y1,x2,y2 };
     }
 
-    function markerBox(m, wPct, hPct){
-      // marker anchor is (xPct,yPct) at bottom-middle of box (due to translate(-50%,-100%))
-      // So box spans:
-      const x1 = m.xPct - wPct/2;
-      const x2 = m.xPct + wPct/2;
-      const y2 = m.yPct;         // bottom
-      const y1 = m.yPct - hPct;  // top
-      return { x1, y1, x2, y2 };
-    }
+    function resolveLabelCollisions(){
+      if (!state.plan || state.markers.length < 2) return;
+      const { wPct, hPct } = labelDimsPct();
+      const maxIter = 180;
 
-    function resolveAllMarkerCollisions(){
-      if (!state.plan) return;
-      if (state.markers.length < 2) return;
-
-      const { wPct, hPct } = markerDimsPct();
-      const maxIter = 200;
-
-      // Simple relaxation: if two boxes overlap, push them apart
-      for (let iter = 0; iter < maxIter; iter++){
+      for (let iter=0; iter<maxIter; iter++){
         let moved = false;
 
-        for (let i = 0; i < state.markers.length; i++){
-          for (let j = i + 1; j < state.markers.length; j++){
-            const a = state.markers[i];
-            const b = state.markers[j];
-
-            const boxA = markerBox(a, wPct, hPct);
-            const boxB = markerBox(b, wPct, hPct);
-
-            if (!boxesOverlap(boxA, boxB)) continue;
+        for (let i=0; i<state.markers.length; i++){
+          for (let j=i+1; j<state.markers.length; j++){
+            const a = state.markers[i], b = state.markers[j];
+            const A = labelBox(a,wPct,hPct);
+            const B = labelBox(b,wPct,hPct);
+            if (!boxesOverlap(A,B)) continue;
 
             moved = true;
+            const dx = (a.labelXPct - b.labelXPct) || (Math.random()-0.5);
+            const dy = (a.labelYPct - b.labelYPct) || (Math.random()-0.5);
 
-            // push vector
-            const dx = (a.xPct - b.xPct) || (Math.random() - 0.5);
-            const dy = (a.yPct - b.yPct) || (Math.random() - 0.5);
+            const stepX = (wPct * 0.12) * Math.sign(dx);
+            const stepY = (hPct * 0.16) * Math.sign(dy);
 
-            // small step in percent (scaled by box size)
-            const stepX = (wPct * 0.08) * Math.sign(dx);
-            const stepY = (hPct * 0.10) * Math.sign(dy);
+            a.labelXPct = clamp(a.labelXPct + stepX, wPct/2, 100 - wPct/2);
+            b.labelXPct = clamp(b.labelXPct - stepX, wPct/2, 100 - wPct/2);
 
-            // move both, but keep inside bounds
-            a.xPct = clamp(a.xPct + stepX, wPct/2, 100 - wPct/2);
-            b.xPct = clamp(b.xPct - stepX, wPct/2, 100 - wPct/2);
-
-            a.yPct = clamp(a.yPct + stepY, hPct, 100);
-            b.yPct = clamp(b.yPct - stepY, hPct, 100);
+            a.labelYPct = clamp(a.labelYPct + stepY, hPct, 100);
+            b.labelYPct = clamp(b.labelYPct - stepY, hPct, 100);
           }
         }
 
@@ -1236,76 +1043,44 @@
       }
     }
 
-    // For a new marker, try a spiral of candidate offsets near the click until no collision.
-    function placeMarkerNonOverlapping(newMarker){
-      const { wPct, hPct } = markerDimsPct();
-      const baseX = newMarker.xPct;
-      const baseY = newMarker.yPct;
-
-      const existing = state.markers.filter(m => m.id !== newMarker.id);
-      const candidates = [];
-
-      // Spiral candidates in px converted to pct
-      const rect = planStage.getBoundingClientRect();
-      const pxToPctX = (px) => (px / Math.max(1, rect.width)) * 100;
-      const pxToPctY = (px) => (px / Math.max(1, rect.height)) * 100;
-
-      candidates.push({ dx:0, dy:0 });
-
-      const radii = [10, 18, 26, 34, 42, 50, 60, 70, 85, 100, 120, 140];
-      for (const r of radii){
-        for (let a = 0; a < 360; a += 30){
-          const rad = (a * Math.PI) / 180;
-          candidates.push({
-            dx: pxToPctX(r * Math.cos(rad)),
-            dy: pxToPctY(r * Math.sin(rad))
-          });
-        }
-      }
-
-      for (const c of candidates){
-        const test = { ...newMarker, xPct: clamp(baseX + c.dx, wPct/2, 100 - wPct/2), yPct: clamp(baseY + c.dy, hPct, 100) };
-        const testBox = markerBox(test, wPct, hPct);
-
-        let collides = false;
-        for (const m of existing){
-          const box = markerBox(m, wPct, hPct);
-          if (boxesOverlap(testBox, box)){ collides = true; break; }
-        }
-
-        if (!collides){
-          newMarker.xPct = test.xPct;
-          newMarker.yPct = test.yPct;
-          return;
-        }
-      }
-
-      // fallback: accept, then global relax
-      newMarker.xPct = clamp(baseX, wPct/2, 100 - wPct/2);
-      newMarker.yPct = clamp(baseY, hPct, 100);
+    function seedLabelPosition(m){
+      // default label slightly above the anchor
+      m.labelXPct = m.labelXPct ?? m.xPct;
+      m.labelYPct = m.labelYPct ?? clamp(m.yPct - 3.0, 0, 100);
     }
 
-    // -------- Plot plan slope arrows (screen) --------
+    // ---------- slope overlay ----------
     function clearPlanOverlay(){ planOverlay.innerHTML = ""; }
+    function pctToOverlay(xPct, yPct){ return { x:(xPct/100)*1000, y:(yPct/100)*1000 }; }
+
+    function slopePercentAbs(elevHighM, elevLowM, runM){
+      if (!Number.isFinite(elevHighM) || !Number.isFinite(elevLowM) || !Number.isFinite(runM) || runM <= 0) return null;
+      return Math.abs(((elevLowM - elevHighM) / runM) * 100);
+    }
+
+    function markerByPoint(pointName){
+      const p = String(pointName||"").trim();
+      return state.markers.find(m => String(m.point||"").trim() === p) || null;
+    }
 
     function drawPlanArrows(){
       clearPlanOverlay();
       if (!state.plan) return;
 
-      // defs (RED arrowhead)
+      // smaller red arrowhead
       const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
       const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
       marker.setAttribute("id", "arrowHead");
-      marker.setAttribute("markerWidth", "10");
-      marker.setAttribute("markerHeight", "10");
-      marker.setAttribute("refX", "8");
-      marker.setAttribute("refY", "3");
+      marker.setAttribute("markerWidth", "7");
+      marker.setAttribute("markerHeight", "7");
+      marker.setAttribute("refX", "5.5");
+      marker.setAttribute("refY", "2.5");
       marker.setAttribute("orient", "auto");
       marker.setAttribute("markerUnits", "strokeWidth");
 
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", "M0,0 L10,3 L0,6 Z");
-      path.setAttribute("fill", "rgba(239,68,68,0.95)");
+      path.setAttribute("d", "M0,0 L7,2.5 L0,5 Z");
+      path.setAttribute("fill", "rgba(239,68,68,0.92)");
       marker.appendChild(path);
       defs.appendChild(marker);
       planOverlay.appendChild(defs);
@@ -1315,44 +1090,42 @@
         const toP   = (sr.toPoint||"").trim();
         if (!fromP || !toP) continue;
 
-        const mkA = markerByPoint(fromP);
-        const mkB = markerByPoint(toP);
-        if (!mkA || !mkB) continue;
+        const mkFrom = markerByPoint(fromP);
+        const mkTo   = markerByPoint(toP);
+        if (!mkFrom || !mkTo) continue;
 
-        const fromRow = state.elevRows.find(r => (r.pointName||"").trim() === fromP);
-        const toRow   = state.elevRows.find(r => (r.pointName||"").trim() === toP);
-        const runM    = parseNumber(sr.distanceM);
+        const runM = parseNumber(sr.distanceM);
+        if (!Number.isFinite(runM) || runM <= 0) continue;
 
-        const fieldSlope = slopePercent(
-          normalizeElevToMeters(fromRow?.fieldElev),
-          normalizeElevToMeters(toRow?.fieldElev),
-          runM
-        );
-        const designSlope = slopePercent(
-          normalizeElevToMeters(fromRow?.designElev),
-          normalizeElevToMeters(toRow?.designElev),
-          runM
-        );
+        // Determine downhill direction using best elevations
+        const elevFrom = bestElevForPoint(fromP);
+        const elevTo   = bestElevForPoint(toP);
+        if (!Number.isFinite(elevFrom) || !Number.isFinite(elevTo)) continue;
 
-        const slopeToShow = Number.isFinite(fieldSlope) ? fieldSlope : (Number.isFinite(designSlope) ? designSlope : null);
-        if (!Number.isFinite(slopeToShow)) continue;
+        // Arrow always points from HIGH -> LOW
+        const highIsFrom = elevFrom >= elevTo;
+        const mkHigh = highIsFrom ? mkFrom : mkTo;
+        const mkLow  = highIsFrom ? mkTo   : mkFrom;
 
-        const A = pctToOverlay(mkA.xPct, mkA.yPct);
-        const B = pctToOverlay(mkB.xPct, mkB.yPct);
+        const slopeAbs = slopePercentAbs(Math.max(elevFrom,elevTo), Math.min(elevFrom,elevTo), runM);
+        if (!Number.isFinite(slopeAbs)) continue;
 
-        // line (RED)
+        const A = pctToOverlay(mkHigh.xPct, mkHigh.yPct);
+        const B = pctToOverlay(mkLow.xPct,  mkLow.yPct);
+
+        // smaller line
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
         line.setAttribute("x1", A.x);
         line.setAttribute("y1", A.y);
         line.setAttribute("x2", B.x);
         line.setAttribute("y2", B.y);
-        line.setAttribute("stroke", "rgba(239,68,68,0.90)");
-        line.setAttribute("stroke-width", "4");
+        line.setAttribute("stroke", "rgba(239,68,68,0.88)");
+        line.setAttribute("stroke-width", "2");
         line.setAttribute("stroke-linecap", "round");
         line.setAttribute("marker-end", "url(#arrowHead)");
         planOverlay.appendChild(line);
 
-        // label at midpoint (RED)
+        // smaller label at midpoint
         const mx = (A.x + B.x) / 2;
         const my = (A.y + B.y) / 2;
 
@@ -1362,14 +1135,14 @@
         text.setAttribute("text-anchor", "middle");
         text.setAttribute("dominant-baseline", "central");
         text.setAttribute("class", "slopeLabel");
-        text.textContent = `${fmtDash(slopeToShow, 2)}%`;
+        text.textContent = `${fmtDash(slopeAbs, 2)}%`;
         planOverlay.appendChild(text);
       }
     }
 
-    // -------- Render: plan (markers + overlay arrows) --------
+    // ---------- plan render ----------
     function renderPlan(){
-      planStage.querySelectorAll(".marker").forEach(m => m.remove());
+      planStage.querySelectorAll(".mkAnchor, .mkLabel").forEach(n => n.remove());
       clearPlanOverlay();
 
       if (!state.plan){
@@ -1386,158 +1159,86 @@
       planName.textContent = state.plan.name || "Plot plan";
       planType.textContent = state.plan.kind === "pdf" ? "PDF (page 1 rendered)" : "Image";
 
-      // enforce non-overlap before drawing
-      resolveAllMarkerCollisions();
+      // ensure each label has a seed position, then resolve overlaps
+      for (const m of state.markers) seedLabelPosition(m);
+      resolveLabelCollisions();
 
-      for (const mk of state.markers){
-        const cls = markerStatusClass(mk.fieldElev, mk.designElev);
+      for (const m of state.markers){
+        const cls = markerStatusClass(m.fieldElev, m.designElev);
 
-        const el = document.createElement("div");
-        el.className = "marker";
-        el.style.left = mk.xPct + "%";
-        el.style.top = mk.yPct + "%";
-        el.dataset.id = mk.id;
+        // Anchor at EXACT click location (point number)
+        const a = document.createElement("div");
+        a.className = "mkAnchor";
+        a.style.left = m.xPct + "%";
+        a.style.top  = m.yPct + "%";
+        a.dataset.id = m.id;
+        a.title = `Point ${m.point} (tap to edit/remove)`;
+        a.innerHTML = `<span>${escapeHtml(m.point)}</span>`;
+        planStage.appendChild(a);
 
-        el.title = `Point ${mk.point} | Field: ${mk.fieldElev} | Design: ${mk.designElev}`;
-        el.innerHTML = `
-          <div class="pt">${escapeHtml(mk.point)}</div>
-          <div class="el ${cls}">${escapeHtml(mk.fieldElev)}</div>
-        `;
-        planStage.appendChild(el);
+        // Label (elevation) auto-spread
+        const l = document.createElement("div");
+        l.className = "mkLabel";
+        l.style.left = m.labelXPct + "%";
+        l.style.top  = m.labelYPct + "%";
+        l.innerHTML = `<div class="el ${cls}">${escapeHtml(m.fieldElev || "")}</div>`;
+        planStage.appendChild(l);
       }
 
       drawPlanArrows();
       renderSummary();
+      saveToStorage();
     }
 
-    // -------- Render: photos --------
-    function renderPhotos(){
-      thumbGrid.innerHTML = "";
-      for (const p of state.photos){
-        const div = document.createElement("div");
-        div.className = "thumb";
-        div.dataset.id = p.id;
-        div.innerHTML = `
-          <img src="${p.dataUrl}" alt="Site photo" />
-          <div class="x" title="Remove">×</div>
-          <div class="cap">${escapeHtml(p.caption || "")}</div>
-        `;
-        thumbGrid.appendChild(div);
-      }
-      renderSummary();
-    }
-
-    // -------- Elevations --------
-    function stationPresetSelectHtml(row){
-      const cur = (row.preset || "").trim();
-      const opts = STATION_PRESETS.map(v => {
-        const sel = v === cur ? "selected" : "";
-        return `<option value="${escapeHtml(v)}" ${sel}>${escapeHtml(v)}</option>`;
-      }).join("");
-
-      return `
-        <select class="mini" data-k="preset" data-id="${row.id}" data-type="elev">
-          <option value="">Preset…</option>
-          ${opts}
-        </select>
-      `;
-    }
-
-    function pointNoteSelectHtml(row){
-      const cur = (row.pointNote || "").trim();
-      const opts = POINT_NOTE_PRESETS.map(v => {
-        const sel = v === cur ? "selected" : "";
-        const label = v || "Select…";
-        return `<option value="${escapeHtml(v)}" ${sel}>${escapeHtml(label)}</option>`;
-      }).join("");
-
-      return `
-        <select class="mini" data-k="pointNote" data-id="${row.id}" data-type="elev">
-          ${opts}
-        </select>
-      `;
-    }
-
-    function numAttrs(){
-      return numericKeypad.checked ? `type="number" step="any" inputmode="decimal" pattern="[0-9]*"` : `inputmode="decimal"`;
-    }
-
-    function renderElevations(fullRebuild=true){
-      sortElevRowsIfEnabled();
-      if (!fullRebuild){
-        renderSummary();
-        updateAllSlopesComputed();
-        return;
-      }
-
+    // ---------- elevations table ----------
+    function renderElevations(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
       elevBody.innerHTML = "";
 
-      for (const row of state.elevRows){
-        const designM = normalizeElevToMeters(row.designElev);
-        const fieldM  = normalizeElevToMeters(row.fieldElev);
-        const dCm     = calcDeltaCm(fieldM, designM);
-        const status  = passFail(dCm, tol);
-
-        const deltaClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
-        const statusClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
+      for (const r of state.elevRows){
+        const f = normalizeElevToMeters(r.fieldElev);
+        const d = normalizeElevToMeters(r.designElev);
+        const cm = calcDeltaCm(f,d);
+        const status = passFail(cm, tol);
+        const deltaClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
+        const statusClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
 
         const tr = document.createElement("tr");
-        tr.dataset.rowId = row.id;
-
+        tr.dataset.rowId = r.id;
         tr.innerHTML = `
-          <td><input type="checkbox" class="rowSel" data-id="${row.id}"></td>
-
-          <td>
-            <div style="display:grid; grid-template-columns: 1fr; gap:6px;">
-              ${stationPresetSelectHtml(row)}
-              <input class="mini" data-k="pointName" data-id="${row.id}" data-type="elev"
-                value="${escapeHtml(row.pointName||"")}" placeholder="Type point (e.g., 1, 2, RMOW)..." />
-            </div>
-          </td>
-
-          <td><input class="mini" ${numAttrs()} data-k="hi" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.hi||"")}" placeholder="HI" /></td>
-          <td><input class="mini" ${numAttrs()} data-k="fs" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.fs||"")}" placeholder="FS" /></td>
-          <td><input class="mini" ${numAttrs()} data-k="ifs" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.ifs||"")}" placeholder="IFS" /></td>
-
-          <td><input class="mini" ${numAttrs()} data-k="fieldElev" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.fieldElev||"")}" placeholder="Field Elev" /></td>
-          <td><input class="mini" ${numAttrs()} data-k="designElev" data-id="${row.id}" data-type="elev" value="${escapeHtml(row.designElev||"")}" placeholder="Design Elev" /></td>
-
-          <td><span class="delta ${deltaClass}" data-role="delta">${Number.isFinite(dCm) ? fmtDash(dCm,1) : "—"}</span></td>
+          <td><input type="checkbox" class="rowSel" data-id="${r.id}"></td>
+          <td><input class="mini" data-type="elev" data-k="pointName" data-id="${r.id}" value="${escapeHtml(r.pointName||"")}" placeholder="Point" /></td>
+          <td><input class="mini" ${numAttrs()} data-type="elev" data-k="fieldElev" data-id="${r.id}" value="${escapeHtml(r.fieldElev||"")}" placeholder="Field" /></td>
+          <td><input class="mini" ${numAttrs()} data-type="elev" data-k="designElev" data-id="${r.id}" value="${escapeHtml(r.designElev||"")}" placeholder="Design" /></td>
+          <td><span class="delta ${deltaClass}" data-role="delta">${Number.isFinite(cm) ? fmtDash(cm,1) : "—"}</span></td>
           <td><span class="status ${statusClass}" data-role="status">${status}</span></td>
-
-          <td>${pointNoteSelectHtml(row)}</td>
         `;
-
         elevBody.appendChild(tr);
       }
 
       renderSummary();
-      renderSlopes(true);
-      renderPlan();
+      renderPlan(); // keeps plan colors + downhill arrows in sync
     }
 
     function updateComputedRow(rowId){
-      const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(rowId)}"]`);
-      if (!tr) return;
-
       const tol = tolByAreaCm[state.meta.area] ?? 15;
-      const row = state.elevRows.find(r => r.id === rowId);
-      if (!row) return;
+      const r = state.elevRows.find(x => x.id === rowId);
+      const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(rowId)}"]`);
+      if (!r || !tr) return;
 
-      const designM = normalizeElevToMeters(row.designElev);
-      const fieldM  = normalizeElevToMeters(row.fieldElev);
-      const dCm     = calcDeltaCm(fieldM, designM);
-      const status  = passFail(dCm, tol);
+      const f = normalizeElevToMeters(r.fieldElev);
+      const d = normalizeElevToMeters(r.designElev);
+      const cm = calcDeltaCm(f,d);
+      const status = passFail(cm, tol);
 
       const deltaEl = tr.querySelector('[data-role="delta"]');
       const statusEl = tr.querySelector('[data-role="status"]');
 
-      const deltaClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
-      const statusClass = status === "PASS" ? "ok" : (status === "FAIL" ? "bad" : "na");
+      const deltaClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
+      const statusClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
 
       if (deltaEl){
-        deltaEl.textContent = Number.isFinite(dCm) ? fmtDash(dCm,1) : "—";
+        deltaEl.textContent = Number.isFinite(cm) ? fmtDash(cm,1) : "—";
         deltaEl.className = `delta ${deltaClass}`;
       }
       if (statusEl){
@@ -1545,105 +1246,69 @@
         statusEl.className = `status ${statusClass}`;
       }
 
-      // sync marker values by point name
-      const point = String(row.pointName || "").trim();
-      if (point){
-        const mk = state.markers.find(m => String(m.point||"").trim() === point);
+      // sync marker if exists
+      const p = String(r.pointName||"").trim();
+      if (p){
+        const mk = state.markers.find(m => String(m.point||"").trim() === p);
         if (mk){
-          mk.fieldElev = row.fieldElev || mk.fieldElev;
-          mk.designElev = row.designElev || mk.designElev;
+          mk.fieldElev = r.fieldElev || mk.fieldElev;
+          mk.designElev = r.designElev || mk.designElev;
         }
       }
 
       renderSummary();
-      updateAllSlopesComputed();
       renderPlan();
+      saveToStorage();
     }
 
-    // -------- Slopes --------
+    // ---------- slopes table ----------
     function pointNameOptions(){
-      const names = state.elevRows.map(r => (r.pointName || "").trim()).filter(Boolean);
-      const uniq = [];
-      const seen = new Set();
-      for (const n of names){
-        if (!seen.has(n)){ uniq.push(n); seen.add(n); }
-      }
-      return uniq;
+      const names = state.elevRows.map(r => (r.pointName||"").trim()).filter(Boolean);
+      return Array.from(new Set(names));
     }
-
     function selectHtml(rowId, key, current, options){
-      const cur = (current || "").trim();
-      const opts = options.map(n => {
-        const sel = n === cur ? "selected" : "";
-        return `<option value="${escapeHtml(n)}" ${sel}>${escapeHtml(n)}</option>`;
-      }).join("");
-      return `
-        <select class="mini" data-type="slope" data-k="${key}" data-id="${rowId}">
-          <option value="">Select…</option>
-          ${opts}
-        </select>
-      `;
+      const cur = (current||"").trim();
+      const opts = options.map(n => `<option value="${escapeHtml(n)}" ${n===cur?"selected":""}>${escapeHtml(n)}</option>`).join("");
+      return `<select class="mini" data-type="slope" data-k="${key}" data-id="${rowId}">
+        <option value="">Select…</option>${opts}
+      </select>`;
     }
 
-    function renderSlopes(rebuild=false){
-      if (!rebuild){
-        updateAllSlopesComputed();
-        return;
-      }
+    function slopePercentAbsFromPoints(fromP, toP, runM){
+      const eFrom = bestElevForPoint(fromP);
+      const eTo   = bestElevForPoint(toP);
+      if (!Number.isFinite(eFrom) || !Number.isFinite(eTo) || !Number.isFinite(runM) || runM<=0) return null;
+      const high = Math.max(eFrom,eTo);
+      const low  = Math.min(eFrom,eTo);
+      return slopePercentAbs(high, low, runM);
+    }
 
+    function renderSlopes(){
       const options = pointNameOptions();
       slopeBody.innerHTML = "";
 
-      for (const row of state.slopeRows){
-        const tr = document.createElement("tr");
-        tr.dataset.rowId = row.id;
+      for (const r of state.slopeRows){
+        const runM = parseNumber(r.distanceM);
+        const sAbs = slopePercentAbsFromPoints(r.fromPoint, r.toPoint, runM);
 
+        const tr = document.createElement("tr");
+        tr.dataset.rowId = r.id;
         tr.innerHTML = `
-          <td><input type="checkbox" class="slopeSel" data-id="${row.id}"></td>
-          <td><input class="mini" data-type="slope" data-k="segment" data-id="${row.id}" value="${escapeHtml(row.segment||"")}" placeholder="e.g., Front swale" /></td>
-          <td>${selectHtml(row.id, "fromPoint", row.fromPoint, options)}</td>
-          <td>${selectHtml(row.id, "toPoint", row.toPoint, options)}</td>
-          <td><input class="mini" ${numAttrs()} data-type="slope" data-k="distanceM" data-id="${row.id}" value="${escapeHtml(row.distanceM||"")}" placeholder="Run (m)" /></td>
-          <td><span class="delta na" data-role="designSlope">—</span></td>
-          <td><span class="delta na" data-role="fieldSlope">—</span></td>
-          <td><span class="delta na" data-role="deltaSlope">—</span></td>
+          <td><input type="checkbox" class="slopeSel" data-id="${r.id}"></td>
+          <td><input class="mini" data-type="slope" data-k="segment" data-id="${r.id}" value="${escapeHtml(r.segment||"")}" placeholder="e.g., Front swale" /></td>
+          <td>${selectHtml(r.id,"fromPoint",r.fromPoint,options)}</td>
+          <td>${selectHtml(r.id,"toPoint",r.toPoint,options)}</td>
+          <td><input class="mini" ${numAttrs()} data-type="slope" data-k="distanceM" data-id="${r.id}" value="${escapeHtml(r.distanceM||"")}" placeholder="Run (m)" /></td>
+          <td><span class="delta na">${Number.isFinite(sAbs) ? fmtDash(sAbs,2) : "—"}</span></td>
         `;
         slopeBody.appendChild(tr);
       }
 
-      updateAllSlopesComputed();
       drawPlanArrows();
+      saveToStorage();
     }
 
-    function updateAllSlopesComputed(){
-      for (const r of state.slopeRows) updateSlopeComputed(r.id);
-      drawPlanArrows();
-    }
-
-    function updateSlopeComputed(rowId){
-      const row = state.slopeRows.find(r => r.id === rowId);
-      const tr = slopeBody.querySelector(`tr[data-row-id="${CSS.escape(rowId)}"]`);
-      if (!row || !tr) return;
-
-      const from = state.elevRows.find(r => (r.pointName||"").trim() === (row.fromPoint||"").trim());
-      const to   = state.elevRows.find(r => (r.pointName||"").trim() === (row.toPoint||"").trim());
-      const runM = parseNumber(row.distanceM);
-
-      const designFromM = normalizeElevToMeters(from?.designElev);
-      const designToM   = normalizeElevToMeters(to?.designElev);
-      const fieldFromM  = normalizeElevToMeters(from?.fieldElev);
-      const fieldToM    = normalizeElevToMeters(to?.fieldElev);
-
-      const designSlope = slopePercent(designFromM, designToM, runM);
-      const fieldSlope  = slopePercent(fieldFromM, fieldToM, runM);
-      const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
-
-      tr.querySelector('[data-role="designSlope"]').textContent = Number.isFinite(designSlope) ? fmtDash(designSlope, 2) : "—";
-      tr.querySelector('[data-role="fieldSlope"]').textContent  = Number.isFinite(fieldSlope)  ? fmtDash(fieldSlope, 2)  : "—";
-      tr.querySelector('[data-role="deltaSlope"]').textContent  = Number.isFinite(deltaSlope)  ? fmtDash(deltaSlope, 2)  : "—";
-    }
-
-    // -------- Plan upload --------
+    // ---------- plot plan upload ----------
     async function fileToArrayBuffer(file){
       return new Promise((resolve, reject) => {
         const fr = new FileReader();
@@ -1664,13 +1329,10 @@
             const scale = Math.min(1, maxDim / Math.max(w, h));
             const cw = Math.round(w * scale);
             const ch = Math.round(h * scale);
-
             const canvas = document.createElement("canvas");
-            canvas.width = cw;
-            canvas.height = ch;
+            canvas.width = cw; canvas.height = ch;
             const ctx = canvas.getContext("2d", { alpha:false });
             ctx.drawImage(img, 0, 0, cw, ch);
-
             resolve(canvas.toDataURL("image/jpeg", quality));
           };
           img.onerror = () => reject(new Error("Image load failed"));
@@ -1681,48 +1343,27 @@
     }
 
     async function renderPdfFirstPageToDataUrl(file, maxWidth = 1200) {
-      if (!window.pdfjsLib) throw new Error("PDF.js did not load (offline or blocked).");
-
+      if (!window.pdfjsLib) throw new Error("PDF.js did not load.");
       const ab = await fileToArrayBuffer(file);
-      const loadingTask = pdfjsLib.getDocument({
-        data: ab,
-        disableAutoFetch: true,
-        disableStream: true
-      });
-
+      const loadingTask = pdfjsLib.getDocument({ data: ab, disableAutoFetch:true, disableStream:true });
       const pdf = await loadingTask.promise;
       const page = await pdf.getPage(1);
 
-      const attempts = [maxWidth, 900, 700];
-      let lastErr = null;
+      const viewport1 = page.getViewport({ scale: 1 });
+      const scale = Math.min(2.0, maxWidth / viewport1.width);
+      const viewport = page.getViewport({ scale });
 
-      for (const w of attempts) {
-        try {
-          const viewport1 = page.getViewport({ scale: 1 });
-          const scale = Math.min(2.0, w / viewport1.width);
-          const viewport = page.getViewport({ scale });
-
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d", { alpha: false });
-
-          canvas.width = Math.floor(viewport.width);
-          canvas.height = Math.floor(viewport.height);
-
-          await page.render({ canvasContext: ctx, viewport }).promise;
-          return canvas.toDataURL("image/jpeg", 0.85);
-        } catch (err) {
-          lastErr = err;
-        }
-      }
-
-      throw lastErr || new Error("PDF render failed.");
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { alpha:false });
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      return canvas.toDataURL("image/jpeg", 0.85);
     }
 
     async function setPlotPlanFromFile(file){
-      const isPdf = file.type === "application/pdf" || (file.name || "").toLowerCase().endsWith(".pdf");
-
-      let dataUrl = "";
-      let kind = "image";
+      const isPdf = file.type === "application/pdf" || (file.name||"").toLowerCase().endsWith(".pdf");
+      let dataUrl = "", kind = "image";
 
       if (isPdf){
         kind = "pdf";
@@ -1736,120 +1377,80 @@
 
       state.plan = { name: file.name || "plot-plan", kind, dataUrl };
       state.markers = [];
-
       state.meta.nextPoint = getMaxNumericPoint() + 1;
       if (state.meta.nextPoint < 1) state.meta.nextPoint = 1;
-
       renderPlan();
       saveToStorage();
     }
 
-    function clearPlan(){
-      if (!state.plan) return;
-      if (!confirm("Remove the attached plot plan?")) return;
-      state.plan = null;
-      state.markers = [];
-      renderPlan();
-      saveToStorage();
-    }
-
-    function clearMarkers(){
-      if (!state.markers.length) return;
-      if (!confirm("Clear all markers from the plot plan?")) return;
-      state.markers = [];
-      state.meta.nextPoint = getMaxNumericPoint() + 1;
-      renderPlan();
-      saveToStorage();
-    }
-
-    // -------- Markers + upsert rows (AUTO POINTS) --------
-    function promptFieldDesignForAutoPoint(autoPoint){
-      const field = prompt(`Field elevation for Point ${autoPoint} (e.g., 92.21 or 9221):`, "");
-      if (field === null) return null;
-      const fieldElev = String(field).trim();
+    // ---------- point placement ----------
+    function promptFieldDesign(point){
+      const f = prompt(`Field elevation for Point ${point} (e.g., 92.21 or 9221):`, "");
+      if (f === null) return null;
+      const fieldElev = String(f).trim();
       if (!fieldElev){ alert("Field elevation is required."); return null; }
 
-      const design = prompt(`Design elevation for Point ${autoPoint} (Plot Plan) (e.g., 92.21 or 9221):`, "");
-      if (design === null) return null;
-      const designElev = String(design).trim();
+      const d = prompt(`Design elevation for Point ${point} (Plot Plan):`, "");
+      if (d === null) return null;
+      const designElev = String(d).trim();
       if (!designElev){ alert("Design elevation is required."); return null; }
 
-      return { point: String(autoPoint), fieldElev, designElev };
+      return { fieldElev, designElev };
     }
 
-    function upsertPointRow(pointStr, fieldElevStr, designElevStr){
-      const p = String(pointStr || "").trim();
+    function upsertElevRow(point, fieldElev, designElev){
+      const p = String(point||"").trim();
       if (!p) return;
 
-      let row = state.elevRows.find(r => String(r.pointName||"").trim() === p);
-      if (!row){
-        row = { id: uid(), pointName: p, preset:"", hi:"", fs:"", ifs:"", fieldElev:"", designElev:"", pointNote:"" };
-        state.elevRows.push(row);
+      let r = state.elevRows.find(x => String(x.pointName||"").trim() === p);
+      if (!r){
+        r = { id: uid(), pointName: p, fieldElev:"", designElev:"" };
+        state.elevRows.push(r);
       }
-
-      row.fieldElev  = String(fieldElevStr  || "").trim();
-      row.designElev = String(designElevStr || "").trim();
-
-      if (autoSortPoints.checked) renderElevations(true);
-      else {
-        const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(row.id)}"]`);
-        if (tr){
-          const fe = tr.querySelector('input[data-k="fieldElev"]');
-          const de = tr.querySelector('input[data-k="designElev"]');
-          if (fe) fe.value = row.fieldElev;
-          if (de) de.value = row.designElev;
-          updateComputedRow(row.id);
-        } else {
-          renderElevations(true);
-        }
-      }
-
-      saveToStorage();
+      r.fieldElev = String(fieldElev||"").trim();
+      r.designElev = String(designElev||"").trim();
     }
 
-    function addMarkerAtClick(evt){
+    function addPointAtClick(evt){
       if (!state.plan) return;
 
       const rect = planStage.getBoundingClientRect();
       const x = (evt.clientX - rect.left) / rect.width;
       const y = (evt.clientY - rect.top) / rect.height;
+      const xPct = Math.max(0, Math.min(100, x * 100));
+      const yPct = Math.max(0, Math.min(100, y * 100));
 
-      const baseX = Math.max(0, Math.min(100, x * 100));
-      const baseY = Math.max(0, Math.min(100, y * 100));
-
-      const autoPoint = nextAutoPoint();
-      const data = promptFieldDesignForAutoPoint(autoPoint);
-
-      if (!data) {
-        state.meta.nextPoint = Math.max(1, (state.meta.nextPoint || 2) - 1);
+      const point = nextAutoPoint();
+      const data = promptFieldDesign(point);
+      if (!data){
+        state.meta.nextPoint = Math.max(1, (state.meta.nextPoint||2) - 1);
         saveToStorage();
         return;
       }
 
       const mk = {
         id: uid(),
-        xPct: baseX,
-        yPct: baseY,
-        point: data.point,
+        xPct, yPct,                // anchor EXACT click
+        labelXPct: xPct,
+        labelYPct: Math.max(0, yPct - 3.0),
+        point,
         fieldElev: data.fieldElev,
         designElev: data.designElev
       };
 
-      // Place without overlapping existing labels
       state.markers.push(mk);
-      placeMarkerNonOverlapping(mk);
-      resolveAllMarkerCollisions();
-
-      upsertPointRow(data.point, data.fieldElev, data.designElev);
+      upsertElevRow(point, data.fieldElev, data.designElev);
+      renderElevations();
+      renderSlopes();
       renderPlan();
       saveToStorage();
     }
 
-    function editOrRemoveMarker(markerId){
+    function editOrRemovePoint(markerId){
       const mk = state.markers.find(m => m.id === markerId);
       if (!mk) return;
 
-      const action = prompt(`Marker ${mk.point}: type "edit" to change values, or "remove" to delete it.`, "edit");
+      const action = prompt(`Point ${mk.point}: type "edit" to change elevations, or "remove" to delete.`, "edit");
       if (action === null) return;
 
       const a = action.trim().toLowerCase();
@@ -1862,119 +1463,29 @@
       }
 
       if (a === "edit"){
-        const field = prompt(`Field elevation for Point ${mk.point}:`, mk.fieldElev || "");
-        if (field === null) return;
-        const design = prompt(`Design elevation for Point ${mk.point}:`, mk.designElev || "");
-        if (design === null) return;
+        const f = prompt(`Field elevation for Point ${mk.point}:`, mk.fieldElev || "");
+        if (f === null) return;
+        const d = prompt(`Design elevation for Point ${mk.point}:`, mk.designElev || "");
+        if (d === null) return;
 
-        mk.fieldElev = String(field).trim();
-        mk.designElev = String(design).trim();
-
-        upsertPointRow(mk.point, mk.fieldElev, mk.designElev);
-        resolveAllMarkerCollisions();
+        mk.fieldElev = String(f).trim();
+        mk.designElev = String(d).trim();
+        upsertElevRow(mk.point, mk.fieldElev, mk.designElev);
+        renderElevations();
+        renderSlopes();
         renderPlan();
         saveToStorage();
       }
     }
 
-    // -------- Photos --------
-    function addPhotos(files){
-      const list = Array.from(files || []);
-      if (list.length === 0) return;
-
-      (async () => {
-        for (const f of list){
-          try{
-            const dataUrl = await compressImageToDataUrl(f, 1600, 0.85);
-            state.photos.push({ id: uid(), dataUrl, caption: "", ts: Date.now() });
-          }catch(e){}
-        }
-        renderPhotos();
-        saveToStorage();
-      })();
-    }
-
-    function clearPhotos(){
-      if (!state.photos.length) return;
-      if (!confirm("Clear all site photos?")) return;
-      state.photos = [];
-      renderPhotos();
-      saveToStorage();
-    }
-
-    // -------- Office Summary --------
-    function buildOfficeSummaryText(){
-      const tol = tolByAreaCm[state.meta.area] ?? 15;
-
-      let pointsChecked = 0, fails = 0;
-      let worstAbs = null, worstSigned = null, worstPoint = null;
-
-      const failLines = [];
-      for (const r of state.elevRows){
-        const designM = normalizeElevToMeters(r.designElev);
-        const fieldM  = normalizeElevToMeters(r.fieldElev);
-        const dCm = calcDeltaCm(fieldM, designM);
-        if (!Number.isFinite(dCm)) continue;
-
-        pointsChecked++;
-        const status = Math.abs(dCm) <= tol ? "PASS" : "FAIL";
-        if (status === "FAIL"){
-          fails++;
-          failLines.push(`${(r.pointName||"").trim()}: ${fmtDash(dCm,1)} cm${r.pointNote ? `, ${r.pointNote}` : ""}`);
-        }
-
-        const abs = Math.abs(dCm);
-        if (worstAbs === null || abs > worstAbs){
-          worstAbs = abs;
-          worstSigned = dCm;
-          worstPoint = (r.pointName||"").trim() || null;
-        }
-      }
-
-      const slopeLines = [];
-      for (const sr of state.slopeRows){
-        const from = state.elevRows.find(r => (r.pointName||"").trim() === (sr.fromPoint||"").trim());
-        const to   = state.elevRows.find(r => (r.pointName||"").trim() === (sr.toPoint||"").trim());
-        const runM = parseNumber(sr.distanceM);
-
-        const designFromM = normalizeElevToMeters(from?.designElev);
-        const designToM   = normalizeElevToMeters(to?.designElev);
-        const fieldFromM  = normalizeElevToMeters(from?.fieldElev);
-        const fieldToM    = normalizeElevToMeters(to?.fieldElev);
-
-        const designSlope = slopePercent(designFromM, designToM, runM);
-        const fieldSlope  = slopePercent(fieldFromM, fieldToM, runM);
-        const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
-
-        if (Number.isFinite(designSlope) || Number.isFinite(fieldSlope)){
-          slopeLines.push(`${(sr.segment||"").trim() || "Slope"} (${(sr.fromPoint||"").trim()}→${(sr.toPoint||"").trim()}): Design ${fmtDash(designSlope,2)}%, Field ${fmtDash(fieldSlope,2)}%, Δ ${fmtDash(deltaSlope,2)}%`);
-        }
-      }
-
-      const templateTexts = NOTE_TEMPLATES.filter(t => state.meta.templates[t.id]).map(t => t.text);
-      const notesText = (state.meta.notes || "").trim();
-      const areaName = state.meta.area ? (state.meta.area[0].toUpperCase() + state.meta.area.slice(1)) : "Area";
-
-      const lines = [];
-      lines.push(`${areaName} (±${tol} cm). ${pointsChecked} points checked, ${fails} out of tolerance.`);
-      if (worstPoint && worstSigned !== null) lines.push(`Largest variance ${fmtDash(worstSigned,1)} cm at ${worstPoint}.`);
-      if (failLines.length) lines.push(`Out-of-tolerance items: ${failLines.join("; ")}.`);
-      if (slopeLines.length) lines.push(`Slope checks: ${slopeLines.join("; ")}.`);
-      lines.push(`${state.photos.length} site photos attached.`);
-      if (templateTexts.length) lines.push(templateTexts.join(" "));
-      if (notesText) lines.push(`Crew notes: ${notesText}`);
-
-      return lines.join("\n");
-    }
-
-    // -------- PDF export + share (separate pages) --------
+    // ---------- PDF export (with plan markings) ----------
     function waitImagesLoaded(container){
       const imgs = Array.from(container.querySelectorAll("img"));
-      if (imgs.length === 0) return Promise.resolve();
+      if (!imgs.length) return Promise.resolve();
       return Promise.all(imgs.map(img => {
         if (img.complete && img.naturalWidth > 0) return Promise.resolve();
-        return new Promise(resolve => {
-          const done = () => resolve();
+        return new Promise(res => {
+          const done = () => res();
           img.addEventListener("load", done, { once:true });
           img.addEventListener("error", done, { once:true });
         });
@@ -1983,15 +1494,12 @@
 
     function buildReportElement(){
       exportHost.innerHTML = "";
-
       const tol = tolByAreaCm[state.meta.area] ?? 15;
-      const wrap = document.createElement("div");
-      wrap.className = "report";
 
-      const summaryText = (officeSummary.value || "").trim() || buildOfficeSummaryText();
+      const root = document.createElement("div");
+      root.className = "report";
 
-      // PAGE 1: Check Report
-      wrap.innerHTML = `
+      root.innerHTML = `
         <div class="reportHeader">
           <div class="reportLogo"><img src="vista-geomatics.png" alt="Logo"/></div>
           <div>
@@ -2001,69 +1509,77 @@
         </div>
 
         <div class="reportMeta">
-          <div><b>Job Number:</b> ${escapeHtml(state.meta.jobNo || "")}</div>
-          <div><b>Date:</b> ${escapeHtml(state.meta.jobDate || "")}</div>
-          <div><b>Community:</b> ${escapeHtml(state.meta.community || "")}</div>
-          <div><b>Address:</b> ${escapeHtml(state.meta.address || "")}</div>
-          <div><b>Lot/Block/Plan:</b> ${escapeHtml(state.meta.lotBlockPlan || "")}</div>
-          <div><b>Crew Chief:</b> ${escapeHtml(state.meta.crewChief || "")}</div>
+          <div><b>Job Number:</b> ${escapeHtml(state.meta.jobNo||"")}</div>
+          <div><b>Date:</b> ${escapeHtml(state.meta.jobDate||"")}</div>
+          <div><b>Community:</b> ${escapeHtml(state.meta.community||"")}</div>
+          <div><b>Address:</b> ${escapeHtml(state.meta.address||"")}</div>
+          <div><b>Lot/Block/Plan:</b> ${escapeHtml(state.meta.lotBlockPlan||"")}</div>
+          <div><b>Crew Chief:</b> ${escapeHtml(state.meta.crewChief||"")}</div>
         </div>
 
         <div class="reportSectionTitle">Office Summary</div>
-        <div style="border:1px solid #d6dee9; border-radius:12px; padding:10px 10px; font-size:11px; color:#334155; white-space:pre-wrap; background:#fbfdff;">${escapeHtml(summaryText)}</div>
+        <div style="border:1px solid #d6dee9; border-radius:12px; padding:10px; font-size:11px; color:#334155; white-space:pre-wrap; background:#fbfdff;">
+          ${escapeHtml((officeSummary.value||"").trim())}
+        </div>
       `;
 
-      // PAGE 2: Plot Plan (all markings export)
+      // plot plan page (with ALL points + labels + downhill arrows)
       if (state.plan){
-        // ensure non-overlap positions are current before printing
-        resolveAllMarkerCollisions();
+        // re-resolve label overlap for print too
+        for (const m of state.markers) seedLabelPosition(m);
+        resolveLabelCollisions();
 
-        const planPage = document.createElement("div");
-        planPage.className = "pageBreak";
-        planPage.innerHTML = `
+        const page = document.createElement("div");
+        page.className = "pageBreak";
+        page.innerHTML = `
           <div class="reportSectionTitle">Marked Up Plot Plan</div>
           <div class="planPrintWrap">
-            <div class="planPrintStage" id="planPrintStage">
+            <div class="planPrintStage" id="pps">
               <img src="${state.plan.dataUrl}" alt="${escapeHtml(state.plan.name)}" />
-              <svg class="planPrintOverlay" id="planPrintOverlay" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
+              <svg class="planPrintOverlay" id="ppo" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
             </div>
             <div style="padding:8px 10px; font-size:11px; color:#334155; border-top:1px solid #e5edf7; background:#fafcff;">
               ${escapeHtml(state.plan.name)}
             </div>
           </div>
         `;
-        wrap.appendChild(planPage);
+        root.appendChild(page);
 
-        const stage = planPage.querySelector("#planPrintStage");
-        for (const mk of state.markers){
-          const cls = markerStatusClass(mk.fieldElev, mk.designElev);
-          const el = document.createElement("div");
-          el.className = "planPrintMarker";
-          el.style.left = mk.xPct + "%";
-          el.style.top = mk.yPct + "%";
-          el.innerHTML = `
-            <div class="pt">${escapeHtml(mk.point)}</div>
-            <div class="el ${cls}">${escapeHtml(mk.fieldElev)}</div>
-          `;
-          stage.appendChild(el);
+        const stage = page.querySelector("#pps");
+        const overlay = page.querySelector("#ppo");
+
+        for (const m of state.markers){
+          const cls = markerStatusClass(m.fieldElev, m.designElev);
+
+          const a = document.createElement("div");
+          a.className = "mkAnchorPrint";
+          a.style.left = m.xPct + "%";
+          a.style.top  = m.yPct + "%";
+          a.innerHTML = `<span>${escapeHtml(m.point)}</span>`;
+          stage.appendChild(a);
+
+          const l = document.createElement("div");
+          l.className = "mkLabelPrint";
+          l.style.left = m.labelXPct + "%";
+          l.style.top  = m.labelYPct + "%";
+          l.innerHTML = `<div class="el ${cls}">${escapeHtml(m.fieldElev||"")}</div>`;
+          stage.appendChild(l);
         }
 
-        // print slope arrows + % in RED
-        const overlay = planPage.querySelector("#planPrintOverlay");
-
+        // smaller arrowhead for print
         const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
         const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
         marker.setAttribute("id", "arrowHeadPrint");
-        marker.setAttribute("markerWidth", "10");
-        marker.setAttribute("markerHeight", "10");
-        marker.setAttribute("refX", "8");
-        marker.setAttribute("refY", "3");
+        marker.setAttribute("markerWidth", "7");
+        marker.setAttribute("markerHeight", "7");
+        marker.setAttribute("refX", "5.5");
+        marker.setAttribute("refY", "2.5");
         marker.setAttribute("orient", "auto");
         marker.setAttribute("markerUnits", "strokeWidth");
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", "M0,0 L10,3 L0,6 Z");
-        path.setAttribute("fill", "rgba(239,68,68,0.95)");
+        path.setAttribute("d", "M0,0 L7,2.5 L0,5 Z");
+        path.setAttribute("fill", "rgba(239,68,68,0.92)");
         marker.appendChild(path);
         defs.appendChild(marker);
         overlay.appendChild(defs);
@@ -2073,43 +1589,40 @@
           const toP   = (sr.toPoint||"").trim();
           if (!fromP || !toP) continue;
 
-          const mkA = markerByPoint(fromP);
-          const mkB = markerByPoint(toP);
-          if (!mkA || !mkB) continue;
+          const mkFrom = markerByPoint(fromP);
+          const mkTo   = markerByPoint(toP);
+          if (!mkFrom || !mkTo) continue;
 
-          const fromRow = state.elevRows.find(r => (r.pointName||"").trim() === fromP);
-          const toRow   = state.elevRows.find(r => (r.pointName||"").trim() === toP);
-          const runM    = parseNumber(sr.distanceM);
+          const runM = parseNumber(sr.distanceM);
+          if (!Number.isFinite(runM) || runM <= 0) continue;
 
-          const fieldSlope = slopePercent(
-            normalizeElevToMeters(fromRow?.fieldElev),
-            normalizeElevToMeters(toRow?.fieldElev),
-            runM
-          );
-          const designSlope = slopePercent(
-            normalizeElevToMeters(fromRow?.designElev),
-            normalizeElevToMeters(toRow?.designElev),
-            runM
-          );
-          const slopeToShow = Number.isFinite(fieldSlope) ? fieldSlope : (Number.isFinite(designSlope) ? designSlope : null);
-          if (!Number.isFinite(slopeToShow)) continue;
+          const elevFrom = bestElevForPoint(fromP);
+          const elevTo   = bestElevForPoint(toP);
+          if (!Number.isFinite(elevFrom) || !Number.isFinite(elevTo)) continue;
 
-          const A = pctToOverlay(mkA.xPct, mkA.yPct);
-          const B = pctToOverlay(mkB.xPct, mkB.yPct);
+          const highIsFrom = elevFrom >= elevTo;
+          const mkHigh = highIsFrom ? mkFrom : mkTo;
+          const mkLow  = highIsFrom ? mkTo   : mkFrom;
+
+          const slopeAbs = slopePercentAbs(Math.max(elevFrom,elevTo), Math.min(elevFrom,elevTo), runM);
+          if (!Number.isFinite(slopeAbs)) continue;
+
+          const A = pctToOverlay(mkHigh.xPct, mkHigh.yPct);
+          const B = pctToOverlay(mkLow.xPct,  mkLow.yPct);
 
           const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
           line.setAttribute("x1", A.x);
           line.setAttribute("y1", A.y);
           line.setAttribute("x2", B.x);
           line.setAttribute("y2", B.y);
-          line.setAttribute("stroke", "rgba(239,68,68,0.90)");
-          line.setAttribute("stroke-width", "4");
+          line.setAttribute("stroke", "rgba(239,68,68,0.88)");
+          line.setAttribute("stroke-width", "2");
           line.setAttribute("stroke-linecap", "round");
           line.setAttribute("marker-end", "url(#arrowHeadPrint)");
           overlay.appendChild(line);
 
-          const mx = (A.x + B.x) / 2;
-          const my = (A.y + B.y) / 2;
+          const mx = (A.x + B.x)/2;
+          const my = (A.y + B.y)/2;
 
           const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
           text.setAttribute("x", mx);
@@ -2119,169 +1632,84 @@
           text.setAttribute("fill", "rgba(239,68,68,0.98)");
           text.setAttribute("font-family", "Inter, sans-serif");
           text.setAttribute("font-weight", "900");
-          text.setAttribute("font-size", "10");
+          text.setAttribute("font-size", "8");
           text.setAttribute("paint-order", "stroke");
           text.setAttribute("stroke", "rgba(0,0,0,0.55)");
-          text.setAttribute("stroke-width", "3");
-          text.textContent = `${fmtDash(slopeToShow, 2)}%`;
+          text.setAttribute("stroke-width", "2");
+          text.textContent = `${fmtDash(slopeAbs,2)}%`;
           overlay.appendChild(text);
         }
       }
 
-      // PAGE 3: Tables
-      const tablesPage = document.createElement("div");
-      tablesPage.className = "pageBreak";
-      wrap.appendChild(tablesPage);
-
-      const elevTitle = document.createElement("div");
-      elevTitle.className = "reportSectionTitle";
-      elevTitle.textContent = "Elevation Comparison Table";
-      tablesPage.appendChild(elevTitle);
-
-      const tolCm = tolByAreaCm[state.meta.area] ?? 15;
-      const elevTable = document.createElement("table");
-      elevTable.className = "reportTable";
-      elevTable.innerHTML = `
-        <thead>
-          <tr>
-            <th>Station / Point</th>
-            <th>HI</th>
-            <th>FS</th>
-            <th>IFS</th>
-            <th>Field Elev</th>
-            <th>Design Elev</th>
-            <th>Δ (cm)</th>
-            <th>Status</th>
-            <th>Point Note</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${state.elevRows.map(r => {
-            const designM = normalizeElevToMeters(r.designElev);
-            const fieldM  = normalizeElevToMeters(r.fieldElev);
-            const dCm     = calcDeltaCm(fieldM, designM);
-            const status  = passFail(dCm, tolCm);
-            const pill = status === "PASS" ? 'pillSmall ok' : (status === "FAIL" ? 'pillSmall bad' : 'pillSmall');
-            return `
-              <tr>
-                <td>${escapeHtml((r.pointName||"").trim())}</td>
-                <td>${escapeHtml((r.hi||"").trim())}</td>
-                <td>${escapeHtml((r.fs||"").trim())}</td>
-                <td>${escapeHtml((r.ifs||"").trim())}</td>
-                <td>${escapeHtml((r.fieldElev||"").trim())}</td>
-                <td>${escapeHtml((r.designElev||"").trim())}</td>
-                <td>${escapeHtml(Number.isFinite(dCm) ? fmtDash(dCm,1) : "—")}</td>
+      // tables page
+      const tables = document.createElement("div");
+      tables.className = "pageBreak";
+      tables.innerHTML = `
+        <div class="reportSectionTitle">Elevation Table</div>
+        <table class="reportTable">
+          <thead><tr><th>Point</th><th>Field</th><th>Design</th><th>Δ (cm)</th><th>Status</th></tr></thead>
+          <tbody>
+            ${state.elevRows.map(r=>{
+              const tol = tolByAreaCm[state.meta.area] ?? 15;
+              const f = normalizeElevToMeters(r.fieldElev);
+              const d = normalizeElevToMeters(r.designElev);
+              const cm = calcDeltaCm(f,d);
+              const status = passFail(cm,tol);
+              const pill = status==="PASS" ? "pillSmall ok" : (status==="FAIL" ? "pillSmall bad" : "pillSmall");
+              return `<tr>
+                <td>${escapeHtml(r.pointName||"")}</td>
+                <td>${escapeHtml(r.fieldElev||"")}</td>
+                <td>${escapeHtml(r.designElev||"")}</td>
+                <td>${escapeHtml(Number.isFinite(cm)?fmtDash(cm,1):"—")}</td>
                 <td><span class="${pill}">${escapeHtml(status)}</span></td>
-                <td>${escapeHtml((r.pointNote||"").trim())}</td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+
+        <div class="reportSectionTitle">Slope Table</div>
+        <table class="reportTable">
+          <thead><tr><th>Segment</th><th>From</th><th>To</th><th>Run (m)</th><th>Downhill %</th></tr></thead>
+          <tbody>
+            ${state.slopeRows.map(r=>{
+              const runM = parseNumber(r.distanceM);
+              const sAbs = slopePercentAbsFromPoints(r.fromPoint, r.toPoint, runM);
+              return `<tr>
+                <td>${escapeHtml(r.segment||"")}</td>
+                <td>${escapeHtml(r.fromPoint||"")}</td>
+                <td>${escapeHtml(r.toPoint||"")}</td>
+                <td>${escapeHtml(r.distanceM||"")}</td>
+                <td>${escapeHtml(Number.isFinite(sAbs)?fmtDash(sAbs,2):"—")}</td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
       `;
-      tablesPage.appendChild(elevTable);
+      root.appendChild(tables);
 
-      const slopeTitle = document.createElement("div");
-      slopeTitle.className = "reportSectionTitle";
-      slopeTitle.textContent = "Slope Table";
-      tablesPage.appendChild(slopeTitle);
-
-      const slopeTable = document.createElement("table");
-      slopeTable.className = "reportTable";
-      slopeTable.innerHTML = `
-        <thead>
-          <tr>
-            <th>Segment</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Distance (m)</th>
-            <th>Design Slope %</th>
-            <th>Field Slope %</th>
-            <th>Δ Slope %</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${state.slopeRows.map(sr => {
-            const from = state.elevRows.find(r => (r.pointName||"").trim() === (sr.fromPoint||"").trim());
-            const to   = state.elevRows.find(r => (r.pointName||"").trim() === (sr.toPoint||"").trim());
-            const runM = parseNumber(sr.distanceM);
-
-            const designFromM = normalizeElevToMeters(from?.designElev);
-            const designToM   = normalizeElevToMeters(to?.designElev);
-            const fieldFromM  = normalizeElevToMeters(from?.fieldElev);
-            const fieldToM    = normalizeElevToMeters(to?.fieldElev);
-
-            const designSlope = slopePercent(designFromM, designToM, runM);
-            const fieldSlope  = slopePercent(fieldFromM, fieldToM, runM);
-            const deltaSlope  = (Number.isFinite(designSlope) && Number.isFinite(fieldSlope)) ? (fieldSlope - designSlope) : null;
-
-            return `
-              <tr>
-                <td>${escapeHtml((sr.segment||"").trim())}</td>
-                <td>${escapeHtml((sr.fromPoint||"").trim())}</td>
-                <td>${escapeHtml((sr.toPoint||"").trim())}</td>
-                <td>${escapeHtml((sr.distanceM||"").trim())}</td>
-                <td>${escapeHtml(Number.isFinite(designSlope) ? fmtDash(designSlope,2) : "—")}</td>
-                <td>${escapeHtml(Number.isFinite(fieldSlope) ? fmtDash(fieldSlope,2) : "—")}</td>
-                <td>${escapeHtml(Number.isFinite(deltaSlope) ? fmtDash(deltaSlope,2) : "—")}</td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      `;
-      tablesPage.appendChild(slopeTable);
-
-      // Photos pages (4 per page)
-      if (state.photos.length){
-        const perPage = 4;
-        for (let i = 0; i < state.photos.length; i += perPage){
-          const page = document.createElement("div");
-          page.className = "pageBreak";
-          page.innerHTML = `<div class="reportSectionTitle">Site Photos</div><div class="photoGridPrint"></div>`;
-          const grid = page.querySelector(".photoGridPrint");
-          for (const p of state.photos.slice(i, i + perPage)){
-            const card = document.createElement("div");
-            card.className = "photoBig";
-            card.innerHTML = `
-              <img src="${p.dataUrl}" alt="Photo" />
-              <div class="label">${escapeHtml(p.caption || "")}</div>
-            `;
-            grid.appendChild(card);
-          }
-          wrap.appendChild(page);
-        }
-      }
-
-      exportHost.appendChild(wrap);
-      return wrap;
+      exportHost.appendChild(root);
+      return root;
     }
 
     async function exportPDF(){
-      if (typeof html2pdf === "undefined"){
-        alert("PDF export library failed to load. Connect once and refresh.");
-        return;
-      }
-
+      if (typeof html2pdf === "undefined"){ alert("PDF export library failed to load."); return; }
       const reportEl = buildReportElement();
       await waitImagesLoaded(reportEl);
 
       const filename = defaultFileName("pdf");
-
       btnPDF.textContent = "Exporting...";
       btnPDF.disabled = true;
 
       try{
-        await html2pdf()
-          .set({
-            margin: [10, 10, 10, 10],
-            filename,
-            image: { type: "jpeg", quality: 0.95 },
-            html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
-            jsPDF: { unit: "mm", format: "letter", orientation: "portrait" },
-            pagebreak: { mode: ["css", "legacy"] }
-          })
-          .from(reportEl)
-          .save();
-      } finally{
+        await html2pdf().set({
+          margin: [10,10,10,10],
+          filename,
+          image: { type:"jpeg", quality:0.95 },
+          html2canvas: { scale: 2, useCORS:true, backgroundColor:"#ffffff" },
+          jsPDF: { unit:"mm", format:"letter", orientation:"portrait" },
+          pagebreak: { mode:["css","legacy"] }
+        }).from(reportEl).save();
+      } finally {
         btnPDF.textContent = "Export PDF";
         btnPDF.disabled = false;
         exportHost.innerHTML = "";
@@ -2289,10 +1717,7 @@
     }
 
     async function sharePDF(){
-      if (typeof html2pdf === "undefined"){
-        alert("Share requires the PDF export library (online once to load).");
-        return;
-      }
+      if (typeof html2pdf === "undefined"){ alert("Share requires the PDF export library."); return; }
 
       const reportEl = buildReportElement();
       await waitImagesLoaded(reportEl);
@@ -2303,51 +1728,277 @@
 
       try{
         const opt = {
-          margin: [10, 10, 10, 10],
-          image: { type: "jpeg", quality: 0.95 },
-          html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
-          jsPDF: { unit: "mm", format: "letter", orientation: "portrait" },
-          pagebreak: { mode: ["css", "legacy"] }
+          margin: [10,10,10,10],
+          image: { type:"jpeg", quality:0.95 },
+          html2canvas: { scale: 2, useCORS:true, backgroundColor:"#ffffff" },
+          jsPDF: { unit:"mm", format:"letter", orientation:"portrait" },
+          pagebreak: { mode:["css","legacy"] }
         };
 
         const worker = html2pdf().set(opt).from(reportEl);
-        const pdfBlob = await worker.outputPdf("blob");
-        const file = new File([pdfBlob], filename, { type: "application/pdf" });
+        const blob = await worker.outputPdf("blob");
+        const file = new File([blob], filename, { type:"application/pdf" });
 
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })){
-          await navigator.share({
-            title: "Vista Geomatics – Grading Check",
-            text: "Grading check report attached.",
-            files: [file]
-          });
+        if (navigator.share && navigator.canShare && navigator.canShare({ files:[file] })){
+          await navigator.share({ title:"Vista Geomatics – Grading Check", text:"Grading check report attached.", files:[file] });
         } else {
           await html2pdf().set({ ...opt, filename }).from(reportEl).save();
-          alert("Share isn't available in this browser, the PDF was downloaded instead.");
+          alert("Share not available in this browser, PDF downloaded instead.");
         }
-      } finally{
+      } finally {
         btnShare.textContent = "Share PDF";
         btnShare.disabled = false;
         exportHost.innerHTML = "";
       }
     }
 
-    // -------- Defaults + Sync --------
-    function initDefaults(){
-      if (!state.meta.templates) state.meta.templates = {};
-      if (!state.meta.jobDate) state.meta.jobDate = todayISO();
+    // ---------- office summary ----------
+    function buildOfficeSummaryText(){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+      let checked=0, fails=0, worstAbs=null, worst=null, worstPoint=null;
 
-      if (!Number.isFinite(state.meta.nextPoint) || state.meta.nextPoint < 1){
-        state.meta.nextPoint = 1;
+      const failList = [];
+      for (const r of state.elevRows){
+        const f = normalizeElevToMeters(r.fieldElev);
+        const d = normalizeElevToMeters(r.designElev);
+        const cm = calcDeltaCm(f,d);
+        if (!Number.isFinite(cm)) continue;
+        checked++;
+        if (Math.abs(cm) > tol){
+          fails++;
+          failList.push(`${(r.pointName||"").trim()}: ${fmtDash(cm,1)} cm`);
+        }
+        const abs = Math.abs(cm);
+        if (worstAbs===null || abs>worstAbs){
+          worstAbs = abs; worst = cm; worstPoint = (r.pointName||"").trim();
+        }
       }
 
+      const slopeLines = [];
+      for (const s of state.slopeRows){
+        const run = parseNumber(s.distanceM);
+        const p = slopePercentAbsFromPoints(s.fromPoint, s.toPoint, run);
+        if (Number.isFinite(p)){
+          slopeLines.push(`${(s.segment||"Slope").trim()} (${(s.fromPoint||"").trim()}↔${(s.toPoint||"").trim()}): ${fmtDash(p,2)}% downhill`);
+        }
+      }
+
+      const lines = [];
+      lines.push(`Tolerance ±${tol} cm. ${checked} points checked, ${fails} out of tolerance.`);
+      if (worstPoint && worst!==null) lines.push(`Largest variance ${fmtDash(worst,1)} cm at ${worstPoint}.`);
+      if (failList.length) lines.push(`Out-of-tolerance: ${failList.join("; ")}.`);
+      if (slopeLines.length) lines.push(`Slopes: ${slopeLines.join("; ")}.`);
+      return lines.join("\n");
+    }
+
+    // ---------- events ----------
+    areaSelect.addEventListener("change", () => {
+      state.meta.area = areaSelect.value;
+      renderTolerance();
+      renderElevations();
+      renderSlopes();
+      renderPlan();
+      saveToStorage();
+    });
+
+    function bindMetaInput(el, key){
+      el.addEventListener("input", () => { state.meta[key] = el.value; saveToStorage(); });
+    }
+    bindMetaInput(jobNo,"jobNo");
+    bindMetaInput(jobDate,"jobDate");
+    bindMetaInput(community,"community");
+    bindMetaInput(address,"address");
+    bindMetaInput(lotBlockPlan,"lotBlockPlan");
+    bindMetaInput(crewChief,"crewChief");
+
+    btnSave.addEventListener("click", () => saveToStorage(true));
+
+    btnReset.addEventListener("click", () => {
+      if (!confirm("Clear this grading check from this device?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state.meta = { area:"calgary", jobNo:"", jobDate:todayISO(), community:"", address:"", lotBlockPlan:"", crewChief:"", officeSummary:"", nextPoint:1 };
+      state.plan = null;
+      state.markers = [];
+      state.elevRows = [];
+      state.slopeRows = [];
+      initDefaults();
+      syncMetaToUI();
+      renderTolerance();
+      renderElevations();
+      renderSlopes();
+      renderPlan();
+      saveToStorage();
+    });
+
+    btnPDF.addEventListener("click", () => exportPDF());
+    btnShare.addEventListener("click", () => sharePDF());
+
+    btnGenSummary.addEventListener("click", () => {
+      officeSummary.value = buildOfficeSummaryText();
+      state.meta.officeSummary = officeSummary.value;
+      saveToStorage();
+    });
+
+    btnCopySummary.addEventListener("click", async () => {
+      const text = (officeSummary.value||"").trim() || buildOfficeSummaryText();
+      try{ await navigator.clipboard.writeText(text); }
+      catch(e){
+        officeSummary.focus(); officeSummary.select();
+        document.execCommand("copy");
+      }
+    });
+
+    officeSummary.addEventListener("input", () => {
+      state.meta.officeSummary = officeSummary.value;
+      saveToStorage();
+    });
+
+    planInput.addEventListener("change", async (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      try{ await setPlotPlanFromFile(f); }
+      catch(err){ alert("Could not process that file. Try a smaller PDF or export it flattened."); }
+      finally{ planInput.value = ""; }
+    });
+
+    btnClearPlan.addEventListener("click", () => {
+      if (!state.plan) return;
+      if (!confirm("Remove the attached plot plan?")) return;
+      state.plan = null;
+      state.markers = [];
+      renderPlan();
+      saveToStorage();
+    });
+
+    btnClearMarkers.addEventListener("click", () => {
+      if (!state.markers.length) return;
+      if (!confirm("Clear all points from the plot plan?")) return;
+      state.markers = [];
+      state.meta.nextPoint = getMaxNumericPoint() + 1;
+      renderPlan();
+      saveToStorage();
+    });
+
+    // click on plan: add point (unless clicking anchor)
+    planStage.addEventListener("click", (e) => {
+      const anchor = e.target.closest(".mkAnchor");
+      if (anchor) return;
+      addPointAtClick(e);
+    });
+
+    // tap anchor: edit/remove
+    planStage.addEventListener("click", (e) => {
+      const anchor = e.target.closest(".mkAnchor");
+      if (!anchor) return;
+      editOrRemovePoint(anchor.dataset.id);
+    });
+
+    // elevations table handlers
+    elevBody.addEventListener("focusin", (e) => {
+      const t = e.target;
+      if (t && t.tagName === "INPUT") t.select?.();
+    });
+
+    elevBody.addEventListener("input", (e) => {
+      const t = e.target;
+      if (!t?.dataset?.id) return;
+      if (t.dataset.type !== "elev") return;
+      const row = state.elevRows.find(r => r.id === t.dataset.id);
+      if (!row) return;
+      row[t.dataset.k] = t.value;
+
+      // sync marker by point name
+      if (t.dataset.k === "fieldElev" || t.dataset.k === "designElev" || t.dataset.k === "pointName"){
+        const p = String(row.pointName||"").trim();
+        const mk = state.markers.find(m => String(m.point||"").trim() === p);
+        if (mk){
+          mk.fieldElev = row.fieldElev;
+          mk.designElev = row.designElev;
+        }
+      }
+
+      updateComputedRow(row.id);
+      renderSlopes();
+    });
+
+    document.getElementById("btnAddRow").addEventListener("click", () => {
+      state.elevRows.push({ id: uid(), pointName:"", fieldElev:"", designElev:"" });
+      renderElevations();
+      renderSlopes();
+      saveToStorage();
+    });
+
+    document.getElementById("btnRemoveSelected").addEventListener("click", () => {
+      const ids = new Set(Array.from(document.querySelectorAll(".rowSel:checked")).map(x => x.dataset.id));
+      state.elevRows = state.elevRows.filter(r => !ids.has(r.id));
+      renderElevations();
+      renderSlopes();
+      saveToStorage();
+    });
+
+    // slopes table handlers
+    slopeBody.addEventListener("input", (e) => {
+      const t = e.target;
+      if (!t?.dataset?.id) return;
+      if (t.dataset.type !== "slope") return;
+      const row = state.slopeRows.find(r => r.id === t.dataset.id);
+      if (!row) return;
+      row[t.dataset.k] = t.value;
+      renderSlopes();
+      renderPlan();
+      saveToStorage();
+    });
+
+    slopeBody.addEventListener("change", (e) => {
+      const t = e.target;
+      if (!t?.dataset?.id) return;
+      if (t.dataset.type !== "slope") return;
+      const row = state.slopeRows.find(r => r.id === t.dataset.id);
+      if (!row) return;
+      row[t.dataset.k] = t.value;
+      renderSlopes();
+      renderPlan();
+      saveToStorage();
+    });
+
+    btnAddSlope.addEventListener("click", () => {
+      state.slopeRows.push({ id: uid(), segment:"", fromPoint:"", toPoint:"", distanceM:"" });
+      renderSlopes();
+      saveToStorage();
+    });
+
+    btnRemoveSlopeSelected.addEventListener("click", () => {
+      const ids = new Set(Array.from(document.querySelectorAll(".slopeSel:checked")).map(x => x.dataset.id));
+      state.slopeRows = state.slopeRows.filter(r => !ids.has(r.id));
+      renderSlopes();
+      renderPlan();
+      saveToStorage();
+    });
+
+    numericKeypad.addEventListener("change", () => {
+      renderElevations();
+      renderSlopes();
+      saveToStorage();
+    });
+
+    window.addEventListener("resize", () => {
+      if (!state.plan) return;
+      renderPlan();
+    });
+
+    // ---------- init ----------
+    function initDefaults(){
+      if (!state.meta.jobDate) state.meta.jobDate = todayISO();
+      if (!Number.isFinite(state.meta.nextPoint) || state.meta.nextPoint < 1) state.meta.nextPoint = 1;
+
       if (state.elevRows.length === 0){
-        state.elevRows.push({ id: uid(), pointName: "RMOW", preset:"RMOW", hi:"", fs:"", ifs:"", fieldElev:"", designElev:"", pointNote:"" });
+        state.elevRows.push({ id: uid(), pointName:"1", fieldElev:"", designElev:"" });
       }
       if (state.slopeRows.length === 0){
         state.slopeRows.push({ id: uid(), segment:"Front swale", fromPoint:"1", toPoint:"2", distanceM:"5.0" });
       }
 
-      state.meta.nextPoint = Math.max(state.meta.nextPoint, getMaxNumericPoint() + 1);
+      state.meta.nextPoint = Math.max(state.meta.nextPoint, getMaxNumericPoint()+1);
     }
 
     function syncMetaToUI(){
@@ -2358,321 +2009,21 @@
       address.value = state.meta.address || "";
       lotBlockPlan.value = state.meta.lotBlockPlan || "";
       crewChief.value = state.meta.crewChief || "";
-      notes.value = state.meta.notes || "";
       officeSummary.value = state.meta.officeSummary || "";
     }
 
-    // -------- Events --------
-    areaSelect.addEventListener("change", () => {
-      state.meta.area = areaSelect.value;
-      renderTolerance();
-      renderElevations(true);
-      saveToStorage();
-    });
-
-    function bindMetaInput(el, key){
-      el.addEventListener("input", () => {
-        state.meta[key] = el.value;
-        saveToStorage();
-      });
-    }
-    bindMetaInput(jobNo, "jobNo");
-    bindMetaInput(jobDate, "jobDate");
-    bindMetaInput(community, "community");
-    bindMetaInput(address, "address");
-    bindMetaInput(lotBlockPlan, "lotBlockPlan");
-    bindMetaInput(crewChief, "crewChief");
-
-    notes.addEventListener("input", () => {
-      state.meta.notes = notes.value;
-      saveToStorage();
-    });
-
-    officeSummary.addEventListener("input", () => {
-      state.meta.officeSummary = officeSummary.value;
-      saveToStorage();
-    });
-
-    templateGrid.addEventListener("change", (e) => {
-      const cb = e.target;
-      if (!cb?.dataset?.tpl) return;
-      state.meta.templates[cb.dataset.tpl] = cb.checked;
-      saveToStorage();
-    });
-
-    btnApplyTemplates.addEventListener("click", () => {
-      applyTemplatesToNotes();
-      saveToStorage();
-    });
-
-    btnClearTemplates.addEventListener("click", () => clearTemplateChecks());
-
-    autoSortPoints.addEventListener("change", () => {
-      renderElevations(true);
-      saveToStorage();
-    });
-
-    numericKeypad.addEventListener("change", () => {
-      renderElevations(true);
-      renderSlopes(true);
-      saveToStorage();
-    });
-
-    // Select-all on focus (speeds editing)
-    elevBody.addEventListener("focusin", (e) => {
-      const t = e.target;
-      if (t && t.tagName === "INPUT" && t.dataset?.type === "elev") {
-        t.select?.();
-      }
-    });
-
-    // IMPORTANT: input handler does NOT full-rerender per keystroke
-    elevBody.addEventListener("input", (e) => {
-      const t = e.target;
-      if (!t?.dataset?.id) return;
-      if (t.dataset.type !== "elev") return;
-
-      const id = t.dataset.id;
-      const k = t.dataset.k;
-      const rowIndex = state.elevRows.findIndex(r => r.id === id);
-      if (rowIndex < 0) return;
-
-      const row = state.elevRows[rowIndex];
-      row[k] = t.value;
-
-      if (k === "pointName" && autoSortPoints.checked){
-        renderElevations(true);
-      } else {
-        updateComputedRow(id);
-      }
-
-      saveToStorage();
-    });
-
-    elevBody.addEventListener("change", (e) => {
-      const t = e.target;
-      if (!t?.dataset?.id) return;
-      if (t.dataset.type !== "elev") return;
-
-      const id = t.dataset.id;
-      const k = t.dataset.k;
-      const row = state.elevRows.find(r => r.id === id);
-      if (!row) return;
-
-      if (k === "preset"){
-        row.preset = t.value;
-        if (t.value){
-          row.pointName = t.value;
-          const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(id)}"]`);
-          const pn = tr?.querySelector('input[data-k="pointName"]');
-          if (pn) pn.value = row.pointName;
-          if (autoSortPoints.checked) renderElevations(true);
-          else updateComputedRow(id);
-        }
-      }
-
-      if (k === "pointNote"){
-        row.pointNote = t.value;
-      }
-
-      renderSlopes(true);
-      saveToStorage();
-    });
-
-    btnAddRow.addEventListener("click", () => {
-      state.elevRows.push({ id: uid(), pointName: "", preset:"", hi:"", fs:"", ifs:"", fieldElev:"", designElev:"", pointNote:"" });
-      renderElevations(true);
-      saveToStorage();
-    });
-
-    btnRemoveSelected.addEventListener("click", () => {
-      const checks = Array.from(document.querySelectorAll(".rowSel:checked"));
-      const ids = new Set(checks.map(c => c.dataset.id));
-      state.elevRows = state.elevRows.filter(r => !ids.has(r.id));
-      state.meta.nextPoint = getMaxNumericPoint() + 1;
-      renderElevations(true);
-      saveToStorage();
-    });
-
-    // Slopes (live)
-    slopeBody.addEventListener("input", (e) => {
-      const t = e.target;
-      if (!t?.dataset?.id) return;
-      if (t.dataset.type !== "slope") return;
-
-      const id = t.dataset.id;
-      const k = t.dataset.k;
-      const row = state.slopeRows.find(r => r.id === id);
-      if (!row) return;
-
-      row[k] = t.value;
-      updateSlopeComputed(id);
-      drawPlanArrows();
-      saveToStorage();
-    });
-
-    slopeBody.addEventListener("change", (e) => {
-      const t = e.target;
-      if (!t?.dataset?.id) return;
-      if (t.dataset.type !== "slope") return;
-
-      const id = t.dataset.id;
-      const k = t.dataset.k;
-      const row = state.slopeRows.find(r => r.id === id);
-      if (!row) return;
-
-      row[k] = t.value;
-      renderSlopes(true);
-      saveToStorage();
-    });
-
-    btnAddSlope.addEventListener("click", () => {
-      state.slopeRows.push({ id: uid(), segment:"", fromPoint:"", toPoint:"", distanceM:"" });
-      renderSlopes(true);
-      saveToStorage();
-    });
-
-    btnRemoveSlopeSelected.addEventListener("click", () => {
-      const checks = Array.from(document.querySelectorAll(".slopeSel:checked"));
-      const ids = new Set(checks.map(c => c.dataset.id));
-      state.slopeRows = state.slopeRows.filter(r => !ids.has(r.id));
-      renderSlopes(true);
-      saveToStorage();
-    });
-
-    btnSave.addEventListener("click", () => saveToStorage(true));
-
-    btnReset.addEventListener("click", () => {
-      if (!confirm("Clear this grading check from this device?")) return;
-      localStorage.removeItem(STORAGE_KEY);
-
-      state.meta = { area:"calgary", jobNo:"", jobDate:todayISO(), community:"", address:"", lotBlockPlan:"", crewChief:"", notes:"", templates:{}, officeSummary:"", nextPoint:1 };
-      state.plan = null;
-      state.markers = [];
-      state.photos = [];
-      state.elevRows = [];
-      state.slopeRows = [];
-
-      initDefaults();
-      syncMetaToUI();
-
-      renderTolerance();
-      renderTemplates();
-      renderPlan();
-      renderPhotos();
-      renderElevations(true);
-      saveToStorage();
-    });
-
-    btnPDF.addEventListener("click", () => exportPDF());
-    btnShare.addEventListener("click", () => sharePDF());
-
-    btnGenSummary.addEventListener("click", () => {
-      const text = buildOfficeSummaryText();
-      officeSummary.value = text;
-      state.meta.officeSummary = text;
-      saveToStorage();
-    });
-
-    btnCopySummary.addEventListener("click", async () => {
-      const text = (officeSummary.value || "").trim() || buildOfficeSummaryText();
-      try{
-        await navigator.clipboard.writeText(text);
-      }catch(e){
-        officeSummary.focus();
-        officeSummary.select();
-        document.execCommand("copy");
-      }
-    });
-
-    // Plot plan upload
-    planInput.addEventListener("change", async (e) => {
-      const f = e.target.files && e.target.files[0];
-      if (!f) return;
-
-      try {
-        await setPlotPlanFromFile(f);
-      } catch (err) {
-        const msg = String(err?.message || err || "");
-        if (msg.toLowerCase().includes("pdf.js")) {
-          alert("Plot plan upload failed because the PDF viewer library didn’t load. If you’re offline or the network blocks CDNs, upload a screenshot (image) instead.");
-        } else if (msg.toLowerCase().includes("password") || msg.toLowerCase().includes("encrypted")) {
-          alert("This PDF appears to be protected. Please Print to PDF (flatten) and upload the new file, or upload a screenshot.");
-        } else {
-          alert("Could not process this PDF. Try: Print to PDF (flatten), export a lower-resolution PDF, or upload a screenshot image.\n\nDetails: " + msg);
-        }
-      } finally {
-        planInput.value = "";
-      }
-    });
-
-    btnClearPlan.addEventListener("click", () => clearPlan());
-    btnClearMarkers.addEventListener("click", () => clearMarkers());
-
-    // Click-to-add markers
-    planStage.addEventListener("click", (e) => {
-      const mk = e.target.closest(".marker");
-      if (mk) return;
-      addMarkerAtClick(e);
-    });
-    planStage.addEventListener("click", (e) => {
-      const mk = e.target.closest(".marker");
-      if (!mk) return;
-      editOrRemoveMarker(mk.dataset.id);
-    });
-
-    // Photos upload
-    photoInput.addEventListener("change", (e) => {
-      addPhotos(e.target.files);
-      photoInput.value = "";
-    });
-
-    thumbGrid.addEventListener("click", (e) => {
-      const thumb = e.target.closest(".thumb");
-      if (!thumb) return;
-      const id = thumb.dataset.id;
-      const p = state.photos.find(x => x.id === id);
-      if (!p) return;
-
-      if (e.target.classList.contains("x")){
-        state.photos = state.photos.filter(x => x.id !== id);
-        renderPhotos();
-        saveToStorage();
-        return;
-      }
-
-      const cap = prompt("Photo caption (optional):", p.caption || "");
-      if (cap === null) return;
-      p.caption = String(cap).trim();
-      renderPhotos();
-      saveToStorage();
-    });
-
-    btnClearPhotos.addEventListener("click", () => clearPhotos());
-
-    // Keep markers spread out on resize (so they still don't overlap)
-    window.addEventListener("resize", () => {
-      if (!state.plan) return;
-      resolveAllMarkerCollisions();
-      renderPlan();
-    });
-
-    // -------- Boot --------
-    function loadAndInit(){
+    function boot(){
       loadFromStorage();
       initDefaults();
       syncMetaToUI();
-
       renderTolerance();
-      renderTemplates();
+      renderElevations();
+      renderSlopes();
       renderPlan();
-      renderPhotos();
-      renderElevations(true);
-
       saveToStorage();
     }
 
-    loadAndInit();
+    boot();
   </script>
 </body>
 </html>
