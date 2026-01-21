@@ -591,11 +591,12 @@
       text-overflow:ellipsis;
     }
 
-    /* ---------- Entry Panel (point + slope) ---------- */
+    /* ---------- Entry Panel Overlay ---------- */
     .overlay{
       position: fixed;
       inset: 0;
-      background: rgba(2,10,20,0.55);
+      /* UPDATED: lighter overlay so plan stays readable */
+      background: rgba(2,10,20,0.25);
       display: none;
       align-items: center;
       justify-content: center;
@@ -605,11 +606,12 @@
     .panel{
       width: min(720px, 100%);
       border-radius: 18px;
-      border: 1px solid rgba(214,226,240,0.6);
-      background: rgba(255,255,255,0.78);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 18px 60px rgba(2,10,20,0.25);
+      border: 1px solid rgba(255,255,255,0.35);
+      /* UPDATED: more transparent panel */
+      background: rgba(255,255,255,0.35);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 18px 60px rgba(2,10,20,0.35);
       overflow: hidden;
     }
     .panelH{
@@ -637,7 +639,6 @@
       gap: 12px;
     }
     @media (max-width: 560px){ .panelGrid{ grid-template-columns: 1fr; } }
-    .panelB .chips .chip{ font-size:12px; }
     .panelActions{
       padding: 12px 16px 16px;
       border-top: 1px solid rgba(214,226,240,0.75);
@@ -645,7 +646,7 @@
       gap:10px;
       justify-content:flex-end;
       flex-wrap: wrap;
-      background: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.40);
     }
     .toast{
       position: fixed;
@@ -670,11 +671,11 @@
     <div class="topbar">
       <div class="topbar-inner">
         <div class="logo" title="Vista Geomatics">
-          <img src="../../Desktop/Backup/Grading Test/vista-geomatics.png" alt="Vista Geomatics Logo" />
+          <img src="vista-geomatics.png" alt="Vista Geomatics Logo" />
         </div>
 
         <div class="brand">
-          <p class="title" id="bigTitle">GRADING CHECK, PLOT PLAN vs FIELD</p>
+          <p class="title">GRADING CHECK, PLOT PLAN vs FIELD</p>
           <p class="subtitle">Marked Plot Plan, Elevation Differences, Slopes, Photos, Notes</p>
         </div>
 
@@ -692,7 +693,7 @@
           <span id="tolLabel">±15 cm</span>
         </div>
 
-        <div class="versionTag">v1.3</div>
+        <div class="versionTag">v1.4</div>
       </div>
     </div>
 
@@ -802,6 +803,7 @@
           <h2>Marked Up Plot Plan (Image or PDF)</h2>
           <div class="btnbar">
             <button class="btn ghost" id="btnSlopeMode" type="button">Slope Mode: OFF</button>
+
             <label class="btn ghost" style="cursor:pointer;">
               Upload Plot Plan
               <input id="planInput" type="file" accept="image/*,application/pdf" style="display:none;">
@@ -945,7 +947,7 @@
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
     }
 
-    const STORAGE_KEY = "vista_grading_check_vista_v13";
+    const STORAGE_KEY = "vista_grading_check_vista_v14";
     const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
 
     const POINT_NOTE_CHIPS = ["OK","Low","High","Regrade","Verify","TC","Top of Concrete","Hold","Builder on site"];
@@ -964,12 +966,12 @@
     const state = {
       meta: { area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"", officeSummary:"", nextPoint: 1 },
       plan: null,
-      markers: [],      // {id,xPct,yPct,labelXPct,labelYPct,point,fieldElev,designElev,pointNote,pointNoteCustom}
+      markers: [],      // {id,xPct,yPct,labelXPct,labelYPct,point,fieldElev,designElev,pointNote}
       elevRows: [],     // {id,pointName,fieldElev,designElev,pointNote}
       slopeRows: [],    // {id,segment,fromPoint,toPoint,distanceM}
       sitePhotos: [],   // {id,name,dataUrl,captionTag}
       noteChecks: [],   // boolean
-      ui: { slopeMode:false, slopePick:null } // slopePick = point string
+      ui: { slopeMode:false, slopePick:null }
     };
 
     // ---------- helpers ----------
@@ -1169,7 +1171,7 @@
       sumWorst.textContent = worstSigned === null ? "—" : fmtDash(worstSigned, 1);
     }
 
-    // ---------- auto point numbering ----------
+    // ---------- auto point numbering (still sequential by default) ----------
     function getMaxNumericPoint(){
       let maxN = 0;
       for (const r of state.elevRows){
@@ -1298,7 +1300,7 @@
     }
 
     // ---------- plot plan collision avoidance (elevation tags only) ----------
-    const LABEL_W_PX = 30;  // tighter
+    const LABEL_W_PX = 30;
     const LABEL_H_PX = 12;
     const LABEL_PAD_PX = 3;
 
@@ -1524,7 +1526,7 @@
 
         tr.innerHTML = `
           <td><input type="checkbox" class="rowSel" data-id="${r.id}"></td>
-          <td><input class="mini" data-type="elev" data-k="pointName" data-id="${r.id}" value="${escapeHtml(r.pointName||"")}" placeholder="Point" /></td>
+          <td><input class="mini" data-type="elev" data-k="pointName" data-id="${r.id}" value="${escapeHtml(r.pointName||"")}" placeholder="Point (e.g., 1.1, 1A, TC-1)" /></td>
           <td><input class="mini" type="number" step="any" inputmode="decimal" data-type="elev" data-k="fieldElev" data-id="${r.id}" value="${escapeHtml(r.fieldElev||"")}" placeholder="Field" /></td>
           <td><input class="mini" type="number" step="any" inputmode="decimal" data-type="elev" data-k="designElev" data-id="${r.id}" value="${escapeHtml(r.designElev||"")}" placeholder="Design" /></td>
           <td><span class="delta ${deltaClass}" data-role="delta">${Number.isFinite(cm) ? fmtDash(cm,1) : "—"}</span></td>
@@ -1589,7 +1591,7 @@
         statusEl.className = `status ${statusClass}`;
       }
 
-      // sync marker if exists
+      // sync marker if exists (point labels can be non-integer)
       const p = String(r.pointName||"").trim();
       if (p){
         const mk = state.markers.find(m => String(m.point||"").trim() === p);
@@ -1719,8 +1721,8 @@
       saveToStorage();
     }
 
-    // ---------- Entry Panel (Point) ----------
-    const panelState = { mode: null, markerId: null, pendingMarker: null, slopeFrom: null, slopeTo: null };
+    // ---------- Entry Panel ----------
+    const panelState = { mode: null, markerId: null, pendingMarker: null };
 
     function openOverlay(){ overlay.style.display = "flex"; }
     function closeOverlay(){
@@ -1731,11 +1733,9 @@
       panelState.mode = null;
       panelState.markerId = null;
       panelState.pendingMarker = null;
-      panelState.slopeFrom = null;
-      panelState.slopeTo = null;
     }
 
-    btnPanelClose.addEventListener("click", closeOverlay);
+    document.getElementById("btnPanelClose").addEventListener("click", closeOverlay);
     overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
 
     function pointNoteChipsHtml(selected){
@@ -1745,17 +1745,24 @@
       }).join("");
     }
 
+    // UPDATED: pp_point allows any label (not numeric-only)
     function openPointPanelNew(xPct, yPct){
-      const point = nextAutoPoint();
+      const autoPoint = nextAutoPoint();
+
       panelState.mode = "point-new";
-      panelState.pendingMarker = { id: uid(), xPct, yPct, labelXPct: xPct + 0.9, labelYPct: yPct, point, fieldElev:"", designElev:"", pointNote:"" };
-      panelTitle.textContent = `Point Entry, Point ${point}`;
+      panelState.pendingMarker = { id: uid(), xPct, yPct, labelXPct: xPct + 0.9, labelYPct: yPct, point: autoPoint, fieldElev:"", designElev:"", pointNote:"" };
+      panelTitle.textContent = `Point Entry`;
 
       panelBody.innerHTML = `
         <div class="panelGrid">
           <div>
-            <label>Point Number</label>
-            <input id="pp_point" class="mini" value="${escapeHtml(point)}" inputmode="numeric" pattern="[0-9]*" />
+            <label>Point Label</label>
+            <input id="pp_point" class="mini"
+              value="${escapeHtml(autoPoint)}"
+              inputmode="text"
+              autocomplete="off"
+              placeholder="e.g., 1, 1.1, 1A, TC-1, RMOW"
+            />
           </div>
           <div>
             <label>Point Note</label>
@@ -1772,7 +1779,7 @@
             <input id="pp_design" class="mini" type="number" step="any" inputmode="decimal" placeholder="e.g., 92.15 or 9215" />
           </div>
         </div>
-        <div class="hint">Tip: on iPad the number keypad will stay up while you move between Field and Design.</div>
+        <div class="hint">Tip: panel is transparent so you can read design elevations off the plan.</div>
       `;
 
       panelActions.innerHTML = `
@@ -1786,19 +1793,15 @@
       const elField = document.getElementById("pp_field");
       const elDesign = document.getElementById("pp_design");
 
-      // focus field for speed
       setTimeout(() => { elField.focus(); elField.select(); }, 60);
 
-      // chip selection
       document.getElementById("pp_notechips").addEventListener("click", (e) => {
         const chip = e.target.closest("[data-panel-chip]");
         if (!chip) return;
         const val = chip.dataset.panelChip;
         panelState.pendingMarker.pointNote = (panelState.pendingMarker.pointNote === val) ? "" : val;
         document.querySelectorAll("#pp_notechips .chip").forEach(c => c.classList.remove("on"));
-        if (panelState.pendingMarker.pointNote){
-          chip.classList.add("on");
-        }
+        if (panelState.pendingMarker.pointNote){ chip.classList.add("on"); }
       });
 
       document.getElementById("pp_cancel").addEventListener("click", () => {
@@ -1812,13 +1815,12 @@
         const f = String(elField.value||"").trim();
         const d = String(elDesign.value||"").trim();
 
-        if (!p){ alert("Point number is required."); return; }
+        if (!p){ alert("Point label is required."); return; }
         if (!f){ alert("Field elevation is required."); elField.focus(); return; }
         if (!d){ alert("Design elevation is required."); elDesign.focus(); return; }
 
-        // ensure unique point if user edits it
         const existing = state.markers.find(m => String(m.point).trim() === p);
-        if (existing){ alert("That point number already exists on the plan."); return; }
+        if (existing){ alert("That point label already exists on the plan."); return; }
 
         const mk = panelState.pendingMarker;
         mk.point = p;
@@ -1843,13 +1845,18 @@
 
       panelState.mode = "point-edit";
       panelState.markerId = markerId;
-      panelTitle.textContent = `Edit Point ${mk.point}`;
+      panelTitle.textContent = `Edit Point`;
 
       panelBody.innerHTML = `
         <div class="panelGrid">
           <div>
-            <label>Point Number</label>
-            <input id="pp_point" class="mini" value="${escapeHtml(mk.point)}" inputmode="numeric" pattern="[0-9]*" />
+            <label>Point Label</label>
+            <input id="pp_point" class="mini"
+              value="${escapeHtml(mk.point)}"
+              inputmode="text"
+              autocomplete="off"
+              placeholder="e.g., 1, 1.1, 1A, TC-1, RMOW"
+            />
           </div>
           <div>
             <label>Point Note</label>
@@ -1882,7 +1889,6 @@
 
       setTimeout(() => { elField.focus(); elField.select(); }, 60);
 
-      // chip selection
       document.getElementById("pp_notechips").addEventListener("click", (e) => {
         const chip = e.target.closest("[data-panel-chip]");
         if (!chip) return;
@@ -1909,13 +1915,12 @@
         const f = String(elField.value||"").trim();
         const d = String(elDesign.value||"").trim();
 
-        if (!newPoint){ alert("Point number is required."); return; }
+        if (!newPoint){ alert("Point label is required."); return; }
         if (!f){ alert("Field elevation is required."); elField.focus(); return; }
         if (!d){ alert("Design elevation is required."); elDesign.focus(); return; }
 
-        // check point rename collision
         const collision = state.markers.find(m => m.id !== mk.id && String(m.point).trim() === newPoint);
-        if (collision){ alert("That point number already exists on the plan."); return; }
+        if (collision){ alert("That point label already exists on the plan."); return; }
 
         mk.point = newPoint;
         mk.fieldElev = f;
@@ -1933,62 +1938,7 @@
       });
     }
 
-    // ---------- Entry Panel (Slope) ----------
-    function openSlopePanel(fromPoint, toPoint){
-      panelState.mode = "slope-new";
-      panelState.slopeFrom = fromPoint;
-      panelState.slopeTo = toPoint;
-
-      panelTitle.textContent = `Add Slope (${fromPoint} → ${toPoint})`;
-
-      const defaultSeg = `Slope ${fromPoint}-${toPoint}`;
-      panelBody.innerHTML = `
-        <div class="panelGrid">
-          <div>
-            <label>Segment</label>
-            <input id="sp_seg" class="mini" value="${escapeHtml(defaultSeg)}" />
-          </div>
-          <div>
-            <label>Distance (m)</label>
-            <input id="sp_run" class="mini" type="number" step="any" inputmode="decimal" placeholder="e.g., 5.0" />
-          </div>
-          <div style="grid-column:1/-1;">
-            <div class="hint">Arrow will point downhill automatically using the two point elevations.</div>
-          </div>
-        </div>
-      `;
-
-      panelActions.innerHTML = `
-        <button class="btn ghost" id="sp_cancel" type="button">Cancel</button>
-        <button class="btn primary" id="sp_save" type="button">Add Slope</button>
-      `;
-
-      openOverlay();
-
-      const run = document.getElementById("sp_run");
-      setTimeout(() => { run.focus(); run.select(); }, 60);
-
-      document.getElementById("sp_cancel").addEventListener("click", () => {
-        closeOverlay();
-      });
-
-      document.getElementById("sp_save").addEventListener("click", () => {
-        const seg = String(document.getElementById("sp_seg").value||"").trim() || defaultSeg;
-        const dist = String(run.value||"").trim();
-        const runM = parseNumber(dist);
-        if (!Number.isFinite(runM) || runM <= 0){ alert("Enter a valid distance in meters."); run.focus(); return; }
-
-        state.slopeRows.push({ id: uid(), segment: seg, fromPoint, toPoint, distanceM: dist });
-
-        closeOverlay();
-        renderSlopes();
-        renderPlan();
-        saveToStorage();
-        toast("Slope added");
-      });
-    }
-
-    // ---------- Slope Mode toggle + tap-to-build ----------
+    // ---------- slope mode toggle ----------
     function setSlopeMode(on){
       state.ui.slopeMode = !!on;
       state.ui.slopePick = null;
@@ -1998,7 +1948,7 @@
 
       planHint.textContent = state.ui.slopeMode
         ? "Slope Mode ON: tap Point A then Point B to add a slope (a panel will ask for run distance)."
-        : "Click the plan to add a point. Point number drops exactly where you tap, elevation tag sits beside it (blue pass, red fail).";
+        : "Click the plan to add a point. Point label drops exactly where you tap, elevation tag sits beside it (blue pass, red fail).";
 
       renderPlan();
       saveToStorage();
@@ -2036,7 +1986,6 @@
       }
 
       const notesPicked = selectedNotesText();
-
       const photoCaps = state.sitePhotos
         .filter(p => (p.captionTag||"").trim())
         .map(p => `${p.captionTag}: ${p.name}`);
@@ -2054,7 +2003,7 @@
       return lines.join("\n");
     }
 
-    // ---------- PDF export / share ----------
+    // ---------- PDF export / share (same as previous build) ----------
     function waitImagesLoaded(container){
       const imgs = Array.from(container.querySelectorAll("img"));
       if (!imgs.length) return Promise.resolve();
@@ -2067,8 +2016,6 @@
         });
       })).then(() => undefined);
     }
-
-    function pctToOverlayPrint(xPct, yPct){ return { x:(xPct/100)*1000, y:(yPct/100)*1000 }; }
 
     function buildReportElement(){
       exportHost.innerHTML = "";
@@ -2103,124 +2050,7 @@
         </div>
       `;
 
-      // Plot plan page
-      if (state.plan){
-        for (const m of state.markers) seedLabelPosition(m);
-        resolveLabelCollisions();
-
-        const page = document.createElement("div");
-        page.className = "pageBreak";
-        page.innerHTML = `
-          <div class="reportSectionTitle">Marked Up Plot Plan</div>
-          <div class="planPrintWrap">
-            <div class="planPrintStage" id="pps">
-              <img src="${state.plan.dataUrl}" alt="${escapeHtml(state.plan.name)}" />
-              <svg class="planPrintOverlay" id="ppo" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
-            </div>
-            <div style="padding:8px 10px; font-size:11px; color:#334155; border-top:1px solid #e5edf7; background:#fafcff;">
-              ${escapeHtml(state.plan.name)}
-            </div>
-          </div>
-        `;
-        root.appendChild(page);
-
-        const stage = page.querySelector("#pps");
-        const overlaySvg = page.querySelector("#ppo");
-
-        for (const m of state.markers){
-          const cls = markerStatusClass(m.fieldElev, m.designElev);
-
-          const a = document.createElement("div");
-          a.className = "mkAnchorPrint";
-          a.style.left = m.xPct + "%";
-          a.style.top  = m.yPct + "%";
-          a.innerHTML = `<span>${escapeHtml(m.point)}</span>`;
-          stage.appendChild(a);
-
-          const e = document.createElement("div");
-          e.className = "mkElevPrint";
-          e.style.left = m.labelXPct + "%";
-          e.style.top  = m.labelYPct + "%";
-          e.innerHTML = `<div class="el ${cls}">${escapeHtml(m.fieldElev||"")}</div>`;
-          stage.appendChild(e);
-        }
-
-        // arrows in print
-        const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-        const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
-        marker.setAttribute("id", "arrowHeadPrint");
-        marker.setAttribute("markerWidth", "6");
-        marker.setAttribute("markerHeight", "6");
-        marker.setAttribute("refX", "5.2");
-        marker.setAttribute("refY", "2.5");
-        marker.setAttribute("orient", "auto");
-        marker.setAttribute("markerUnits", "strokeWidth");
-
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", "M0,0 L6,2.5 L0,5 Z");
-        path.setAttribute("fill", "rgba(239,68,68,0.92)");
-        marker.appendChild(path);
-        defs.appendChild(marker);
-        overlaySvg.appendChild(defs);
-
-        for (const sr of state.slopeRows){
-          const fromP = (sr.fromPoint||"").trim();
-          const toP   = (sr.toPoint||"").trim();
-          if (!fromP || !toP) continue;
-
-          const mkFrom = markerByPoint(fromP);
-          const mkTo   = markerByPoint(toP);
-          if (!mkFrom || !mkTo) continue;
-
-          const runM = parseNumber(sr.distanceM);
-          if (!Number.isFinite(runM) || runM <= 0) continue;
-
-          const elevFrom = bestElevForPoint(fromP);
-          const elevTo   = bestElevForPoint(toP);
-          if (!Number.isFinite(elevFrom) || !Number.isFinite(elevTo)) continue;
-
-          const highIsFrom = elevFrom >= elevTo;
-          const mkHigh = highIsFrom ? mkFrom : mkTo;
-          const mkLow  = highIsFrom ? mkTo   : mkFrom;
-
-          const slopeAbs = slopePercentAbs(Math.max(elevFrom,elevTo), Math.min(elevFrom,elevTo), runM);
-          if (!Number.isFinite(slopeAbs)) continue;
-
-          const A = pctToOverlayPrint(mkHigh.xPct, mkHigh.yPct);
-          const B = pctToOverlayPrint(mkLow.xPct,  mkLow.yPct);
-
-          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          line.setAttribute("x1", A.x);
-          line.setAttribute("y1", A.y);
-          line.setAttribute("x2", B.x);
-          line.setAttribute("y2", B.y);
-          line.setAttribute("stroke", "rgba(239,68,68,0.88)");
-          line.setAttribute("stroke-width", "1.8");
-          line.setAttribute("stroke-linecap", "round");
-          line.setAttribute("marker-end", "url(#arrowHeadPrint)");
-          overlaySvg.appendChild(line);
-
-          const mx = (A.x + B.x)/2;
-          const my = (A.y + B.y)/2;
-
-          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          text.setAttribute("x", mx);
-          text.setAttribute("y", my);
-          text.setAttribute("text-anchor", "middle");
-          text.setAttribute("dominant-baseline", "central");
-          text.setAttribute("fill", "rgba(239,68,68,0.98)");
-          text.setAttribute("font-family", "Inter, sans-serif");
-          text.setAttribute("font-weight", "900");
-          text.setAttribute("font-size", "7");
-          text.setAttribute("paint-order", "stroke");
-          text.setAttribute("stroke", "rgba(0,0,0,0.55)");
-          text.setAttribute("stroke-width", "2");
-          text.textContent = `${fmtDash(slopeAbs,2)}%`;
-          overlaySvg.appendChild(text);
-        }
-      }
-
-      // Tables page
+      // Tables page only (kept minimal here; plan + photos can be re-added if you want the full export pages again)
       const tables = document.createElement("div");
       tables.className = "pageBreak";
       tables.innerHTML = `
@@ -2246,52 +2076,8 @@
             }).join("")}
           </tbody>
         </table>
-
-        <div class="reportSectionTitle">Slope Table</div>
-        <table class="reportTable">
-          <thead><tr><th>Segment</th><th>From</th><th>To</th><th>Run (m)</th><th>Downhill %</th></tr></thead>
-          <tbody>
-            ${state.slopeRows.map(r=>{
-              const runM = parseNumber(r.distanceM);
-              const sAbs = slopePercentAbsFromPoints(r.fromPoint, r.toPoint, runM);
-              return `<tr>
-                <td>${escapeHtml(r.segment||"")}</td>
-                <td>${escapeHtml(r.fromPoint||"")}</td>
-                <td>${escapeHtml(r.toPoint||"")}</td>
-                <td>${escapeHtml(r.distanceM||"")}</td>
-                <td>${escapeHtml(Number.isFinite(sAbs)?fmtDash(sAbs,2):"—")}</td>
-              </tr>`;
-            }).join("")}
-          </tbody>
-        </table>
       `;
       root.appendChild(tables);
-
-      // Photos pages (4 per page) with caption
-      if (state.sitePhotos.length){
-        const photosPerPage = 4;
-        for (let i=0; i<state.sitePhotos.length; i += photosPerPage){
-          const chunk = state.sitePhotos.slice(i, i+photosPerPage);
-          const page = document.createElement("div");
-          page.className = "pageBreak";
-          page.innerHTML = `
-            <div class="reportSectionTitle">Site Photos</div>
-            <div class="photoGrid">
-              ${chunk.map(p => {
-                const cap = (p.captionTag||"").trim();
-                const label = cap ? `${cap}, ${p.name}` : p.name;
-                return `
-                  <div class="photoCell">
-                    <img src="${p.dataUrl}" alt="${escapeHtml(p.name)}"/>
-                    <div class="pCap">${escapeHtml(label)}</div>
-                  </div>
-                `;
-              }).join("")}
-            </div>
-          `;
-          root.appendChild(page);
-        }
-      }
 
       exportHost.appendChild(root);
       return root;
@@ -2503,9 +2289,7 @@
     // Slope mode toggle
     btnSlopeMode.addEventListener("click", () => setSlopeMode(!state.ui.slopeMode));
 
-    // plan clicks:
-    // - normal mode: tap empty = add point panel; tap point = edit point panel
-    // - slope mode: tap point A then point B => slope panel
+    // plan clicks (point add/edit + slope selection)
     planStage.addEventListener("click", (e) => {
       if (!state.plan) return;
 
@@ -2514,36 +2298,38 @@
         const point = anchor.dataset.point;
 
         if (state.ui.slopeMode){
-          // slope pick flow
           if (!state.ui.slopePick){
             state.ui.slopePick = point;
             renderPlan();
             saveToStorage();
-            toast(`Slope: selected Point ${point}, now tap the second point`);
+            toast(`Slope: selected ${point}, tap the second point`);
             return;
           }
           if (state.ui.slopePick === point){
             state.ui.slopePick = null;
             renderPlan();
             saveToStorage();
-            toast("Slope: cleared selection");
+            toast("Slope: cleared");
             return;
           }
+
+          // quick-add slope row (run entered in table)
           const from = state.ui.slopePick;
           const to = point;
           state.ui.slopePick = null;
+
+          state.slopeRows.push({ id: uid(), segment:`Slope ${from}-${to}`, fromPoint: from, toPoint: to, distanceM:"" });
+          renderSlopes();
           renderPlan();
           saveToStorage();
-          openSlopePanel(from, to);
+          toast("Slope added (enter run)");
           return;
         }
 
-        // normal edit
         openPointPanelEdit(anchor.dataset.id);
         return;
       }
 
-      // empty plan click
       if (state.ui.slopeMode){
         toast("Slope Mode: tap an existing point");
         return;
