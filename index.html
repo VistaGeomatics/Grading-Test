@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VistaGeomatics – Grading Check</title>
+  <title>VistaGeomatics – Grading Check Report</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
@@ -20,8 +20,8 @@
       --vista-blue-light:#2a7fa3;
       --vista-blue-dark:#0b3045;
 
-      --pass-blue:#1f9cf0;
-      --fail-red:#ef4444;
+      --pass-blue:#1f9cf0;  /* blue */
+      --fail-red:#ef4444;   /* red */
 
       --bg-body:#eef3f9;
       --bg-card:#ffffff;
@@ -73,6 +73,7 @@
       font-family:"Montserrat", sans-serif;
       font-weight:700; letter-spacing:0.5px;
       font-size: 18px; margin:0; line-height:1.2;
+      text-transform: uppercase;
     }
     .brand .subtitle{ margin:4px 0 0; opacity:0.9; font-size: 13px; }
 
@@ -90,7 +91,7 @@
       padding: 8px 12px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       opacity: 0.95;
     }
 
@@ -155,11 +156,12 @@
       border: 1px solid rgba(255,255,255,0);
       border-radius: 12px;
       padding: 10px 12px;
-      font-weight:600;
+      font-weight:700;
       cursor:pointer;
       transition: transform 0.05s ease, opacity 0.15s ease, background 0.15s ease;
       user-select:none;
       white-space: nowrap;
+      font-family: "Inter", sans-serif;
     }
     .btn:active{ transform: translateY(1px); }
     .btn.primary{ background: linear-gradient(135deg, var(--vista-blue), var(--vista-blue-light)); color:#fff; }
@@ -204,7 +206,7 @@
     }
 
     .status{
-      font-weight: 800;
+      font-weight: 900;
       font-size: 12px;
       padding: 6px 10px;
       border-radius: 999px;
@@ -241,7 +243,7 @@
       padding: 6px 10px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
       color:#334155;
       cursor:pointer;
       user-select:none;
@@ -269,13 +271,8 @@
     .noteItem b{ display:block; font-size: 13px; margin-bottom:2px; }
     .noteItem span{ display:block; font-size: 12px; color: var(--text-muted); line-height: 1.25; }
 
-    /* Site photos */
-    .photoRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
+    /* Site photos thumbs */
+    .photoRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
     .thumb{
       width: 170px;
       border-radius: 14px;
@@ -344,7 +341,7 @@
       pointer-events:none;
     }
 
-    /* Smaller markers: number pinned at click */
+    /* Point marker (small) */
     .mkAnchor{
       position:absolute;
       transform: translate(-50%, -50%);
@@ -373,7 +370,7 @@
       outline-offset: 2px;
     }
 
-    /* elevation tag sits near number, collision-adjusted, smaller */
+    /* Elevation tag sits beside number (collision-adjusted) */
     .mkElev{
       position:absolute;
       transform: translate(0, -50%);
@@ -410,7 +407,7 @@
       flex-wrap:wrap;
     }
 
-    /* Slope label smaller */
+    /* Slope label small red */
     .slopeLabel{
       font-family:"Inter", sans-serif;
       font-weight: 900;
@@ -423,12 +420,85 @@
     }
 
     .bottomActions{
-      margin-top: 16px;
+      margin-top: 10px;
       display:flex;
       gap:10px;
       justify-content:flex-end;
       flex-wrap:wrap;
-      padding: 12px 0 0;
+      padding: 8px 0 0;
+    }
+
+    /* ---------- Entry Panel Overlay ---------- */
+    .overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(2,10,20,0.25);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .panel{
+      width: min(760px, 100%);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.35); /* transparent so crews can read plan */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 18px 60px rgba(2,10,20,0.35);
+      overflow: hidden;
+    }
+    .panelH{
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(11,48,69,0.10), rgba(22,95,125,0.10));
+      border-bottom: 1px solid rgba(214,226,240,0.75);
+      display:flex;
+      gap:12px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+    .panelH h3{
+      margin:0;
+      font-size: 13px;
+      letter-spacing:0.2px;
+      color:#0b3045;
+      font-family:"Montserrat", sans-serif;
+      font-weight:700;
+      text-transform: uppercase;
+    }
+    .panelB{ padding: 14px 16px 16px; }
+    .panelGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 560px){ .panelGrid{ grid-template-columns: 1fr; } }
+    .panelActions{
+      padding: 12px 16px 16px;
+      border-top: 1px solid rgba(214,226,240,0.75);
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,0.40);
+    }
+
+    .toast{
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(2,10,20,0.75);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      z-index: 10000;
+      display:none;
+      max-width: calc(100% - 40px);
+      text-align:center;
     }
 
     /* Export host (hidden) */
@@ -457,6 +527,7 @@
       font-family:"Montserrat", sans-serif;
       font-weight:700; letter-spacing:0.5px;
       margin:0; font-size: 16px; color:#0b3045;
+      text-transform: uppercase;
     }
     .reportSub{ margin:4px 0 0; font-size: 12px; color:#475569; }
 
@@ -471,6 +542,7 @@
       font-family:"Montserrat", sans-serif;
       font-weight:700; font-size: 13px;
       color:#0b3045; margin: 14px 0 8px;
+      text-transform: uppercase;
     }
 
     .reportTable{
@@ -521,7 +593,6 @@
       height:100%;
       pointer-events:none;
     }
-
     .mkAnchorPrint{
       position:absolute;
       transform: translate(-50%, -50%);
@@ -558,7 +629,6 @@
     .mkElevPrint .el.fail{ color: var(--fail-red); }
     .mkElevPrint .el.na{ color: rgba(255,255,255,0.92); }
 
-    /* Export photo grid */
     .photoGrid{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -590,79 +660,6 @@
       overflow:hidden;
       text-overflow:ellipsis;
     }
-
-    /* ---------- Entry Panel Overlay ---------- */
-    .overlay{
-      position: fixed;
-      inset: 0;
-      /* UPDATED: lighter overlay so plan stays readable */
-      background: rgba(2,10,20,0.25);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      z-index: 9999;
-    }
-    .panel{
-      width: min(720px, 100%);
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.35);
-      /* UPDATED: more transparent panel */
-      background: rgba(255,255,255,0.35);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 18px 60px rgba(2,10,20,0.35);
-      overflow: hidden;
-    }
-    .panelH{
-      padding: 14px 16px;
-      background: linear-gradient(135deg, rgba(11,48,69,0.10), rgba(22,95,125,0.10));
-      border-bottom: 1px solid rgba(214,226,240,0.75);
-      display:flex;
-      gap:12px;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap: wrap;
-    }
-    .panelH h3{
-      margin:0;
-      font-size: 13px;
-      letter-spacing:0.2px;
-      color:#0b3045;
-      font-family:"Montserrat", sans-serif;
-      font-weight:700;
-    }
-    .panelB{ padding: 14px 16px 16px; }
-    .panelGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    @media (max-width: 560px){ .panelGrid{ grid-template-columns: 1fr; } }
-    .panelActions{
-      padding: 12px 16px 16px;
-      border-top: 1px solid rgba(214,226,240,0.75);
-      display:flex;
-      gap:10px;
-      justify-content:flex-end;
-      flex-wrap: wrap;
-      background: rgba(255,255,255,0.40);
-    }
-    .toast{
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(2,10,20,0.75);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      z-index: 10000;
-      display:none;
-      max-width: calc(100% - 40px);
-      text-align:center;
-    }
   </style>
 </head>
 
@@ -675,8 +672,8 @@
         </div>
 
         <div class="brand">
-          <p class="title">GRADING CHECK, PLOT PLAN vs FIELD</p>
-          <p class="subtitle">Marked Plot Plan, Elevation Differences, Slopes, Photos, Notes</p>
+          <p class="title">Grading Check Report</p>
+          <p class="subtitle">Plot Plan Markups, Setups & Shots, Differences, Slopes, Photos</p>
         </div>
 
         <div class="pill">
@@ -693,7 +690,7 @@
           <span id="tolLabel">±15 cm</span>
         </div>
 
-        <div class="versionTag">v1.4</div>
+        <div class="versionTag">v1.6</div>
       </div>
     </div>
 
@@ -705,7 +702,7 @@
           <h2>Job Details</h2>
           <div class="btnbar">
             <button class="btn ghost" id="btnSave" type="button">Save</button>
-            <button class="btn danger" id="btnReset" type="button">Clear</button>
+            <button class="btn danger" id="btnResetTop" type="button">Clear</button>
           </div>
         </div>
         <div class="card-b">
@@ -737,13 +734,13 @@
           </div>
 
           <div class="summary" style="margin-top:14px;">
-            <div><div class="k">Points Checked</div><div class="v" id="sumPoints">0</div></div>
+            <div><div class="k">Shots</div><div class="v" id="sumShots">0</div></div>
             <div><div class="k">Fails</div><div class="v" id="sumFails">0</div></div>
             <div><div class="k">Worst Δ (cm)</div><div class="v" id="sumWorst">—</div></div>
           </div>
 
           <div class="hint">
-            Saves on this device. If plot plan PDFs are large, upload a screenshot image or Print to PDF (flatten) first.
+            Storage-limit issue fixed by saving Plot Plan + Photos in IndexedDB (not localStorage).
           </div>
         </div>
       </div>
@@ -761,7 +758,7 @@
           <label>Auto-generated summary for office & drafters</label>
           <textarea id="officeSummary" placeholder="Click Generate to build a consistent summary..."></textarea>
           <div class="hint">
-            Includes tolerance, pass/fails, worst deltas, slopes, notes checkboxes, and photo count/captions.
+            Includes tolerance, setup count, out-of-tolerance shots, slopes, site notes, and photo captions.
           </div>
         </div>
       </div>
@@ -773,14 +770,62 @@
         </div>
         <div class="card-b">
           <div class="noteList" id="noteList"></div>
-          <div class="hint">Tip: keep notes consistent for office and drafters, use point note chips for details.</div>
+        </div>
+      </div>
+
+      <!-- Setups + Shots -->
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-h">
+          <h2>Level Setups & Shots (HI-based IFS/Elev)</h2>
+          <div class="btnbar">
+            <button class="btn ghost" id="btnAddSetup" type="button">Add Setup</button>
+            <button class="btn ghost" id="btnAddShot" type="button">Add Shot</button>
+            <button class="btn danger" id="btnRemoveSelectedShots" type="button">Remove Selected</button>
+          </div>
+        </div>
+        <div class="card-b">
+          <div class="hint" style="margin-top:0;">
+            Works both ways: enter <b>HI + Elev → IFS auto</b>, or <b>HI + IFS → Elev auto</b>. Each shot uses the HI from its setup.
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px;">
+            <div style="min-width:260px; flex: 0 0 auto;">
+              <label>Active Setup</label>
+              <select id="activeSetup"></select>
+            </div>
+            <div class="hint" style="margin-top:18px;">
+              Plot plan clicks add shots to the active setup.
+            </div>
+          </div>
+
+          <div style="margin-top:12px; overflow:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:44px;">Sel</th>
+                  <th style="min-width:120px;">Type</th>
+                  <th style="min-width:140px;">STA / Point</th>
+                  <th style="min-width:120px;">BS</th>
+                  <th style="min-width:120px;">HI</th>
+                  <th style="min-width:120px;">FS</th>
+                  <th style="min-width:120px;">IFS</th>
+                  <th style="min-width:120px;">ELEV</th>
+                  <th style="min-width:140px;">Designed Elev</th>
+                  <th style="min-width:110px;">Δ (cm)</th>
+                  <th style="min-width:110px;">Status</th>
+                  <th style="min-width:340px;">Point Notes</th>
+                </tr>
+              </thead>
+              <tbody id="shotsBody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Site Photos -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
-          <h2>Site Photos (with Captions)</h2>
+          <h2>Site Photos (Thumbnails + Export)</h2>
           <div class="btnbar">
             <label class="btn ghost" style="cursor:pointer;">
               Upload Photos
@@ -791,7 +836,7 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Photos show as thumbnails. Add quick captions using chips, export includes larger photos, 4 per page.
+            Photos save to IndexedDB, export includes larger images 4 per page.
           </div>
           <div class="photoRow" id="photoRow"></div>
         </div>
@@ -803,7 +848,6 @@
           <h2>Marked Up Plot Plan (Image or PDF)</h2>
           <div class="btnbar">
             <button class="btn ghost" id="btnSlopeMode" type="button">Slope Mode: OFF</button>
-
             <label class="btn ghost" style="cursor:pointer;">
               Upload Plot Plan
               <input id="planInput" type="file" accept="image/*,application/pdf" style="display:none;">
@@ -814,7 +858,7 @@
         </div>
         <div class="card-b">
           <div class="hint" id="planHint" style="margin-top:0;">
-            Click the plan to add a point. Point number drops exactly where you tap, elevation tag sits beside it (blue pass, red fail).
+            Tap the plan to add a shot: point label drops at your tap, elevation displays beside it (blue pass, red fail).
           </div>
 
           <div id="planEmpty" style="margin-top:12px; padding:14px; border:1px dashed var(--border-soft); border-radius:14px; background:#fbfdff; color:var(--text-muted);">
@@ -841,39 +885,6 @@
         </div>
       </div>
 
-      <!-- Elevations -->
-      <div class="card" style="grid-column: 1 / -1;">
-        <div class="card-h">
-          <h2>Elevation Comparison</h2>
-          <div class="btnbar">
-            <button class="btn ghost" id="btnAddRow" type="button">Add Row</button>
-            <button class="btn danger" id="btnRemoveSelected" type="button">Remove Selected</button>
-          </div>
-        </div>
-        <div class="card-b">
-          <div class="hint" style="margin-top:0;">
-            Δ (cm) = (Field − Design) × 100. Use one-click chips for Point Notes.
-          </div>
-
-          <div style="margin-top:12px; overflow:auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:44px;">Sel</th>
-                  <th style="min-width:120px;">Point</th>
-                  <th style="min-width:140px;">Field</th>
-                  <th style="min-width:140px;">Design</th>
-                  <th style="min-width:110px;">Δ (cm)</th>
-                  <th style="min-width:110px;">Status</th>
-                  <th style="min-width:340px;">Point Notes</th>
-                </tr>
-              </thead>
-              <tbody id="elevBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
       <!-- Slopes -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
@@ -885,7 +896,7 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Arrow points downhill (higher elev → lower elev). Uses Field elev when available, otherwise Design elev.
+            Slope% = |Δ elev (cm)| ÷ run (m). Arrow always points downhill.
           </div>
 
           <div style="margin-top:12px; overflow:auto;">
@@ -910,11 +921,12 @@
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-b">
           <div class="bottomActions">
+            <button class="btn ghost" id="btnResetBottom" type="button">Clear Form</button>
             <button class="btn primary" id="btnPDF" type="button">Download PDF</button>
             <button class="btn primary" id="btnShare" type="button">Share PDF</button>
           </div>
           <div class="hint" style="text-align:right;">
-            Export includes separate pages, Check Report, Plot Plan, Tables, Photos.
+            Export includes separate pages: Check Report, Plot Plan, Tables, Photos.
           </div>
         </div>
       </div>
@@ -926,7 +938,7 @@
   <div class="overlay" id="overlay">
     <div class="panel" id="panel">
       <div class="panelH">
-        <h3 id="panelTitle">Point Entry</h3>
+        <h3 id="panelTitle">Entry</h3>
         <div class="btnbar" style="justify-content:flex-end;">
           <button class="btn ghost" id="btnPanelClose" type="button">Close</button>
         </div>
@@ -937,17 +949,84 @@
   </div>
 
   <div class="toast" id="toast">Saved</div>
-
   <div id="exportHost" aria-hidden="true"></div>
 
   <script>
-    // PDF.js worker
+    // ---------------- PDF.js worker ----------------
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
     }
 
-    const STORAGE_KEY = "vista_grading_check_vista_v14";
+    // ---------------- IndexedDB (fixes storage limit) ----------------
+    const DB_NAME = "vista_grading_db";
+    const DB_VER = 1;
+    const STORE_FILES = "files";
+
+    function openDB(){
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VER);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(STORE_FILES)) db.createObjectStore(STORE_FILES);
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function idbPut(key, value){
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_FILES, "readwrite");
+        tx.objectStore(STORE_FILES).put(value, key);
+        tx.oncomplete = () => { db.close(); resolve(); };
+        tx.onerror = () => { db.close(); reject(tx.error); };
+      });
+    }
+
+    async function idbGet(key){
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_FILES, "readonly");
+        const req = tx.objectStore(STORE_FILES).get(key);
+        req.onsuccess = () => { db.close(); resolve(req.result ?? null); };
+        req.onerror = () => { db.close(); reject(req.error); };
+      });
+    }
+
+    async function idbDel(key){
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_FILES, "readwrite");
+        tx.objectStore(STORE_FILES).delete(key);
+        tx.oncomplete = () => { db.close(); resolve(); };
+        tx.onerror = () => { db.close(); reject(tx.error); };
+      });
+    }
+
+    async function idbClearAll(){
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_FILES, "readwrite");
+        tx.objectStore(STORE_FILES).clear();
+        tx.oncomplete = () => { db.close(); resolve(); };
+        tx.onerror = () => { db.close(); reject(tx.error); };
+      });
+    }
+
+    function blobToObjectURL(blob){
+      if (!blob) return null;
+      return URL.createObjectURL(blob);
+    }
+
+    async function dataUrlToBlob(dataUrl){
+      const res = await fetch(dataUrl);
+      return await res.blob();
+    }
+
+    // ---------------- App State ----------------
+    const STORAGE_KEY = "vista_grading_check_v16_meta";
     const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
 
     const POINT_NOTE_CHIPS = ["OK","Low","High","Regrade","Verify","TC","Top of Concrete","Hold","Builder on site"];
@@ -964,65 +1043,77 @@
     ];
 
     const state = {
-      meta: { area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"", officeSummary:"", nextPoint: 1 },
-      plan: null,
-      markers: [],      // {id,xPct,yPct,labelXPct,labelYPct,point,fieldElev,designElev,pointNote}
-      elevRows: [],     // {id,pointName,fieldElev,designElev,pointNote}
-      slopeRows: [],    // {id,segment,fromPoint,toPoint,distanceM}
-      sitePhotos: [],   // {id,name,dataUrl,captionTag}
-      noteChecks: [],   // boolean
+      meta: {
+        area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"",
+        officeSummary:"",
+        nextPoint: 1,
+        activeSetupId: ""
+      },
+      noteChecks: [],
+
+      // Plot plan is stored in IndexedDB. meta only stores keys + kind.
+      plan: null, // { key, name, kind } (blob stored in idb as image/jpeg)
+      planObjectURL: null, // runtime URL
+
+      // site photos stored in IndexedDB, each photo stores key
+      sitePhotos: [], // {id, name, key, captionTag}
+
+      // plan markers tied to shots
+      markers: [], // {id, xPct, yPct, labelXPct, labelYPct, pointLabel, shotId}
+
+      setups: [
+        // setup: { id, name, bs, hi, fs, elev, shots:[ {id, label, ifs, elev, designElev, note} ] }
+      ],
+
+      slopeRows: [], // {id, segment, fromLabel, toLabel, distanceM}
       ui: { slopeMode:false, slopePick:null }
     };
 
-    // ---------- helpers ----------
+    // ---------------- Helpers ----------------
     function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+
     function todayISO(){
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
     }
+
     function safeName(s){
       return String(s ?? "").trim().replace(/[\\/:*?"<>|]+/g,"").replace(/\s+/g," ").replaceAll(" ","_").slice(0,80) || "Grading_Check";
     }
+
     function defaultFileName(ext){
       const job = safeName(state.meta.jobNo || "Job");
       const crew = safeName(state.meta.crewChief || "Crew");
       return `${job}_${crew}_${todayISO()}.${ext}`;
     }
+
     function escapeHtml(s){
       return String(s ?? "")
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
+
     function parseNumber(v){
       const s = String(v ?? "").trim();
       if (!s) return null;
       const n = Number(s.replace(",", "."));
       return Number.isFinite(n) ? n : null;
     }
-    function normalizeElevToMeters(v){
-      const n = parseNumber(v);
-      if (!Number.isFinite(n)) return null;
-      return n > 1000 ? n / 100 : n;
+
+    // Elevations are treated as "cm-style" integers like 9221, 9267 (differences are in cm)
+    function calcDeltaCm(field, design){
+      const f = parseNumber(field);
+      const d = parseNumber(design);
+      if (!Number.isFinite(f) || !Number.isFinite(d)) return null;
+      return f - d; // cm
     }
-    function fmtDash(n, d=2){ return Number.isFinite(n) ? Number(n).toFixed(d) : "—"; }
-    function calcDeltaCm(fieldM, designM){
-      if (!Number.isFinite(fieldM) || !Number.isFinite(designM)) return null;
-      return (fieldM - designM) * 100;
-    }
+
     function passFail(deltaCmVal, tolCm){
       if (!Number.isFinite(deltaCmVal)) return "N/A";
       return Math.abs(deltaCmVal) <= tolCm ? "PASS" : "FAIL";
     }
-    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
-    function markerStatusClass(fieldElev, designElev){
-      const tol = tolByAreaCm[state.meta.area] ?? 15;
-      const f = normalizeElevToMeters(fieldElev);
-      const d = normalizeElevToMeters(designElev);
-      const cm = calcDeltaCm(f,d);
-      if (!Number.isFinite(cm)) return "na";
-      return Math.abs(cm) <= tol ? "pass" : "fail";
-    }
+    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
     function toast(msg){
       const t = document.getElementById("toast");
@@ -1032,26 +1123,33 @@
       toast._tm = setTimeout(() => t.style.display = "none", 1200);
     }
 
-    function bestElevForPoint(pointName){
-      const p = String(pointName||"").trim();
-      if (!p) return null;
-
-      const r = state.elevRows.find(x => String(x.pointName||"").trim() === p);
-      const f = normalizeElevToMeters(r?.fieldElev);
-      const d = normalizeElevToMeters(r?.designElev);
-      if (Number.isFinite(f)) return f;
-      if (Number.isFinite(d)) return d;
-
-      const mk = state.markers.find(m => String(m.point||"").trim() === p);
-      const mf = normalizeElevToMeters(mk?.fieldElev);
-      const md = normalizeElevToMeters(mk?.designElev);
-      if (Number.isFinite(mf)) return mf;
-      if (Number.isFinite(md)) return md;
-
-      return null;
+    // HI math (works both ways)
+    // If HI and Elev entered -> IFS = HI - Elev
+    // If HI and IFS entered -> Elev = HI - IFS
+    function computeIFS(hi, elev){
+      const H = parseNumber(hi), E = parseNumber(elev);
+      if (!Number.isFinite(H) || !Number.isFinite(E)) return null;
+      return H - E;
+    }
+    function computeElev(hi, ifs){
+      const H = parseNumber(hi), I = parseNumber(ifs);
+      if (!Number.isFinite(H) || !Number.isFinite(I)) return null;
+      return H - I;
     }
 
-    // ---------- elements ----------
+    // Optional: BS + Elev -> HI, HI - BS -> Elev
+    function computeHIFromBS(bs, elev){
+      const B = parseNumber(bs), E = parseNumber(elev);
+      if (!Number.isFinite(B) || !Number.isFinite(E)) return null;
+      return B + E;
+    }
+    function computeElevFromBS(hi, bs){
+      const H = parseNumber(hi), B = parseNumber(bs);
+      if (!Number.isFinite(H) || !Number.isFinite(B)) return null;
+      return H - B;
+    }
+
+    // ---------------- Elements ----------------
     const areaSelect = document.getElementById("areaSelect");
     const tolLabel = document.getElementById("tolLabel");
 
@@ -1062,12 +1160,13 @@
     const lotBlockPlan = document.getElementById("lotBlockPlan");
     const crewChief = document.getElementById("crewChief");
 
-    const sumPoints = document.getElementById("sumPoints");
+    const sumShots = document.getElementById("sumShots");
     const sumFails = document.getElementById("sumFails");
     const sumWorst = document.getElementById("sumWorst");
 
     const btnSave = document.getElementById("btnSave");
-    const btnReset = document.getElementById("btnReset");
+    const btnResetTop = document.getElementById("btnResetTop");
+    const btnResetBottom = document.getElementById("btnResetBottom");
 
     const btnPDF = document.getElementById("btnPDF");
     const btnShare = document.getElementById("btnShare");
@@ -1077,6 +1176,12 @@
     const btnCopySummary = document.getElementById("btnCopySummary");
 
     const noteList = document.getElementById("noteList");
+
+    const activeSetup = document.getElementById("activeSetup");
+    const shotsBody = document.getElementById("shotsBody");
+    const btnAddSetup = document.getElementById("btnAddSetup");
+    const btnAddShot = document.getElementById("btnAddShot");
+    const btnRemoveSelectedShots = document.getElementById("btnRemoveSelectedShots");
 
     const photoInput = document.getElementById("photoInput");
     const btnClearPhotos = document.getElementById("btnClearPhotos");
@@ -1095,117 +1200,70 @@
     const btnSlopeMode = document.getElementById("btnSlopeMode");
     const planHint = document.getElementById("planHint");
 
-    const elevBody = document.getElementById("elevBody");
-    const btnAddRow = document.getElementById("btnAddRow");
-    const btnRemoveSelected = document.getElementById("btnRemoveSelected");
-
     const slopeBody = document.getElementById("slopeBody");
     const btnAddSlope = document.getElementById("btnAddSlope");
     const btnRemoveSlopeSelected = document.getElementById("btnRemoveSlopeSelected");
 
     const exportHost = document.getElementById("exportHost");
 
-    // entry panel
+    // panel
     const overlay = document.getElementById("overlay");
     const panelTitle = document.getElementById("panelTitle");
     const panelBody = document.getElementById("panelBody");
     const panelActions = document.getElementById("panelActions");
     const btnPanelClose = document.getElementById("btnPanelClose");
 
-    // ---------- storage ----------
-    function saveToStorage(showToast=false){
+    // ---------------- Persistence (meta only in localStorage) ----------------
+    function saveMeta(showToast=false){
       try{
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        if (showToast){
-          btnSave.textContent = "Saved";
-          setTimeout(() => btnSave.textContent = "Save", 900);
-        }
+        const payload = {
+          meta: state.meta,
+          noteChecks: state.noteChecks,
+          plan: state.plan,
+          sitePhotos: state.sitePhotos,
+          markers: state.markers,
+          setups: state.setups,
+          slopeRows: state.slopeRows,
+          ui: state.ui
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        if (showToast) toast("Saved");
       }catch(e){
-        alert("Save failed (storage limit). Clear photos or use smaller files.");
+        // This should rarely happen now (no big base64 strings in localStorage)
+        alert("Save failed (storage). If this persists, clear browser site data for this page.");
       }
     }
-    function loadFromStorage(){
+
+    function loadMeta(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return false;
         const p = JSON.parse(raw);
         if (!p || typeof p !== "object") return false;
+
         state.meta = Object.assign(state.meta, p.meta || {});
-        state.plan = p.plan || null;
-        state.markers = Array.isArray(p.markers) ? p.markers : [];
-        state.elevRows = Array.isArray(p.elevRows) ? p.elevRows : [];
-        state.slopeRows = Array.isArray(p.slopeRows) ? p.slopeRows : [];
-        state.sitePhotos = Array.isArray(p.sitePhotos) ? p.sitePhotos : [];
         state.noteChecks = Array.isArray(p.noteChecks) ? p.noteChecks : [];
+        state.plan = p.plan || null;
+        state.sitePhotos = Array.isArray(p.sitePhotos) ? p.sitePhotos : [];
+        state.markers = Array.isArray(p.markers) ? p.markers : [];
+        state.setups = Array.isArray(p.setups) ? p.setups : [];
+        state.slopeRows = Array.isArray(p.slopeRows) ? p.slopeRows : [];
         state.ui = Object.assign(state.ui, p.ui || {});
         return true;
       }catch(e){ return false; }
     }
 
-    // ---------- tolerance + summary ----------
+    // ---------------- UI Rendering ----------------
     function renderTolerance(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
       tolLabel.textContent = `±${tol} cm`;
     }
 
-    function renderSummary(){
-      const tol = tolByAreaCm[state.meta.area] ?? 15;
-      let pointsChecked = 0, fails = 0;
-      let worstAbs = null, worstSigned = null;
-
-      for (const r of state.elevRows){
-        const f = normalizeElevToMeters(r.fieldElev);
-        const d = normalizeElevToMeters(r.designElev);
-        const cm = calcDeltaCm(f,d);
-        if (!Number.isFinite(cm)) continue;
-        pointsChecked++;
-        if (Math.abs(cm) > tol) fails++;
-        const abs = Math.abs(cm);
-        if (worstAbs === null || abs > worstAbs){
-          worstAbs = abs;
-          worstSigned = cm;
-        }
-      }
-      sumPoints.textContent = String(pointsChecked);
-      sumFails.textContent = String(fails);
-      sumWorst.textContent = worstSigned === null ? "—" : fmtDash(worstSigned, 1);
-    }
-
-    // ---------- auto point numbering (still sequential by default) ----------
-    function getMaxNumericPoint(){
-      let maxN = 0;
-      for (const r of state.elevRows){
-        const s = String(r.pointName||"").trim();
-        if (/^\d+$/.test(s)) maxN = Math.max(maxN, parseInt(s,10));
-      }
-      for (const m of state.markers){
-        const s = String(m.point||"").trim();
-        if (/^\d+$/.test(s)) maxN = Math.max(maxN, parseInt(s,10));
-      }
-      return maxN;
-    }
-    function nextAutoPoint(){
-      if (!Number.isFinite(state.meta.nextPoint) || state.meta.nextPoint < 1){
-        state.meta.nextPoint = getMaxNumericPoint() + 1;
-        if (state.meta.nextPoint < 1) state.meta.nextPoint = 1;
-      }
-      const n = state.meta.nextPoint;
-      state.meta.nextPoint += 1;
-      saveToStorage();
-      return String(n);
-    }
-    function undoAutoPoint(){
-      state.meta.nextPoint = Math.max(1, (state.meta.nextPoint || 2) - 1);
-      saveToStorage();
-    }
-
-    // ---------- Notes rendering ----------
     function renderNotes(){
       noteList.innerHTML = "";
       if (!Array.isArray(state.noteChecks) || state.noteChecks.length !== NOTE_CHECKS.length){
         state.noteChecks = NOTE_CHECKS.map(() => false);
       }
-
       NOTE_CHECKS.forEach((n, idx) => {
         const row = document.createElement("div");
         row.className = "noteItem";
@@ -1220,16 +1278,205 @@
       });
     }
 
-    function selectedNotesText(){
-      const picked = [];
-      NOTE_CHECKS.forEach((n, i) => {
-        if (state.noteChecks[i]) picked.push(`${n.title}: ${n.text}`);
-      });
-      return picked;
+    function shotsFlat(){
+      const out = [];
+      for (const s of state.setups){
+        out.push({ type:"setup", setupId:s.id, rowId:s.id });
+        for (const sh of (s.shots || [])){
+          out.push({ type:"shot", setupId:s.id, rowId:sh.id });
+        }
+      }
+      return out;
     }
 
-    // ---------- site photos + caption chips ----------
-    function compressImageFileToDataUrl(file, maxDim=1400, quality=0.84){
+    function calcShotStatus(setup, shot){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+      const delta = calcDeltaCm(shot.elev, shot.designElev);
+      const status = passFail(delta, tol);
+      return { delta, status };
+    }
+
+    function renderSummary(){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+      let shots = 0, fails = 0;
+      let worstAbs = null, worstSigned = null;
+
+      for (const setup of state.setups){
+        for (const sh of (setup.shots || [])){
+          const delta = calcDeltaCm(sh.elev, sh.designElev);
+          if (!Number.isFinite(delta)) continue;
+          shots++;
+          if (Math.abs(delta) > tol) fails++;
+          const abs = Math.abs(delta);
+          if (worstAbs === null || abs > worstAbs){
+            worstAbs = abs;
+            worstSigned = delta;
+          }
+        }
+      }
+      sumShots.textContent = String(shots);
+      sumFails.textContent = String(fails);
+      sumWorst.textContent = worstSigned === null ? "—" : String(Math.round(worstSigned * 10) / 10);
+    }
+
+    function renderActiveSetupSelect(){
+      activeSetup.innerHTML = "";
+      if (!state.setups.length){
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No setups, add one";
+        activeSetup.appendChild(opt);
+        state.meta.activeSetupId = "";
+        return;
+      }
+
+      for (const s of state.setups){
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = s.name || "Setup";
+        activeSetup.appendChild(opt);
+      }
+
+      if (!state.meta.activeSetupId || !state.setups.find(s => s.id === state.meta.activeSetupId)){
+        state.meta.activeSetupId = state.setups[0].id;
+      }
+      activeSetup.value = state.meta.activeSetupId;
+    }
+
+    function fmt(n, d=0){
+      return Number.isFinite(n) ? n.toFixed(d) : "";
+    }
+
+    function pointNoteChips(selected, dataRow){
+      return POINT_NOTE_CHIPS.map(c => {
+        const on = (selected||"") === c;
+        return `<span class="chip ${on ? "on":""}" data-chip="${escapeHtml(c)}" data-row="${dataRow}">${escapeHtml(c)}</span>`;
+      }).join("");
+    }
+
+    function renderShotsTable(){
+      shotsBody.innerHTML = "";
+
+      for (const setup of state.setups){
+        // setup row
+        const trS = document.createElement("tr");
+        trS.dataset.type = "setup";
+        trS.dataset.setupId = setup.id;
+
+        const hi = parseNumber(setup.hi);
+        const bs = parseNumber(setup.bs);
+        const elev = parseNumber(setup.elev);
+
+        // if HI blank but BS+Elev exists -> compute HI
+        if (!Number.isFinite(hi)){
+          const autoHI = computeHIFromBS(setup.bs, setup.elev);
+          if (Number.isFinite(autoHI)) setup.hi = String(autoHI);
+        }
+        // if Elev blank but HI+BS exists -> compute Elev
+        if (!Number.isFinite(elev)){
+          const autoElev = computeElevFromBS(setup.hi, setup.bs);
+          if (Number.isFinite(autoElev)) setup.elev = String(autoElev);
+        }
+
+        trS.innerHTML = `
+          <td><input type="checkbox" class="selRow" data-kind="setup" data-setup="${setup.id}" data-id="${setup.id}"></td>
+          <td><span class="status na">SETUP</span></td>
+          <td><input class="mini" data-kind="setup" data-k="name" data-setup="${setup.id}" value="${escapeHtml(setup.name||"")}" placeholder="e.g., RMOW, TP, LMOW"/></td>
+          <td><input class="mini" data-kind="setup" data-k="bs" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.bs||"")}" placeholder="BS"/></td>
+          <td><input class="mini" data-kind="setup" data-k="hi" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.hi||"")}" placeholder="HI"/></td>
+          <td><input class="mini" data-kind="setup" data-k="fs" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.fs||"")}" placeholder="FS"/></td>
+          <td><input class="mini" data-kind="setup" data-k="ifs" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.ifs||"")}" placeholder="IFS"/></td>
+          <td><input class="mini" data-kind="setup" data-k="elev" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.elev||"")}" placeholder="ELEV"/></td>
+          <td></td>
+          <td><span class="delta na">—</span></td>
+          <td><span class="status na">—</span></td>
+          <td><div class="hint" style="margin:0;">BS/HI/IFS/ELEV auto-calc where possible</div></td>
+        `;
+        shotsBody.appendChild(trS);
+
+        // shot rows
+        for (const sh of (setup.shots || [])){
+          // enforce HI-based calc:
+          const H = parseNumber(setup.hi);
+          const I = parseNumber(sh.ifs);
+          const E = parseNumber(sh.elev);
+
+          // if HI & Elev -> compute IFS
+          if (Number.isFinite(H) && Number.isFinite(E) && !Number.isFinite(I)){
+            const autoI = computeIFS(H, E);
+            if (Number.isFinite(autoI)) sh.ifs = String(autoI);
+          }
+          // if HI & IFS -> compute Elev
+          if (Number.isFinite(H) && Number.isFinite(I) && !Number.isFinite(E)){
+            const autoE = computeElev(H, I);
+            if (Number.isFinite(autoE)) sh.elev = String(autoE);
+          }
+
+          const { delta, status } = calcShotStatus(setup, sh);
+          const deltaClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
+          const statusClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
+
+          const tr = document.createElement("tr");
+          tr.dataset.type = "shot";
+          tr.dataset.setupId = setup.id;
+          tr.dataset.shotId = sh.id;
+
+          tr.innerHTML = `
+            <td><input type="checkbox" class="selRow" data-kind="shot" data-setup="${setup.id}" data-id="${sh.id}"></td>
+            <td><span class="status na">SHOT</span></td>
+            <td><input class="mini" data-kind="shot" data-k="label" data-setup="${setup.id}" data-id="${sh.id}" value="${escapeHtml(sh.label||"")}" placeholder="Point (auto)"/></td>
+            <td></td>
+            <td><span class="hint" style="margin:0; font-weight:900; color:#0b3045;">${escapeHtml(setup.hi||"")}</span></td>
+            <td></td>
+            <td><input class="mini" data-kind="shot" data-k="ifs" data-setup="${setup.id}" data-id="${sh.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(sh.ifs||"")}" placeholder="IFS"/></td>
+            <td><input class="mini" data-kind="shot" data-k="elev" data-setup="${setup.id}" data-id="${sh.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(sh.elev||"")}" placeholder="ELEV"/></td>
+            <td><input class="mini" data-kind="shot" data-k="designElev" data-setup="${setup.id}" data-id="${sh.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(sh.designElev||"")}" placeholder="Designed"/></td>
+            <td><span class="delta ${deltaClass}">${Number.isFinite(delta)? (Math.round(delta*10)/10) : "—"}</span></td>
+            <td><span class="status ${statusClass}">${status}</span></td>
+            <td>
+              <div class="chips" data-chip-row="${sh.id}">
+                ${pointNoteChips(sh.note||"", sh.id)}
+                <input class="mini" style="margin-top:6px;" data-kind="shot" data-k="note" data-setup="${setup.id}" data-id="${sh.id}" value="${escapeHtml(sh.note||"")}" placeholder="Custom note (optional)" />
+              </div>
+            </td>
+          `;
+          shotsBody.appendChild(tr);
+        }
+      }
+
+      renderSummary();
+      renderPlan(); // sync marker colors/elev display
+      saveMeta();
+    }
+
+    // ---------------- Auto point numbering ----------------
+    function getMaxNumericPoint(){
+      let maxN = 0;
+      for (const setup of state.setups){
+        for (const sh of (setup.shots || [])){
+          const s = String(sh.label||"").trim();
+          if (/^\d+$/.test(s)) maxN = Math.max(maxN, parseInt(s,10));
+        }
+      }
+      return maxN;
+    }
+    function nextAutoPoint(){
+      if (!Number.isFinite(state.meta.nextPoint) || state.meta.nextPoint < 1){
+        state.meta.nextPoint = getMaxNumericPoint() + 1;
+        if (state.meta.nextPoint < 1) state.meta.nextPoint = 1;
+      }
+      const n = state.meta.nextPoint;
+      state.meta.nextPoint += 1;
+      saveMeta();
+      return String(n);
+    }
+    function undoAutoPoint(){
+      state.meta.nextPoint = Math.max(1, (state.meta.nextPoint || 2) - 1);
+      saveMeta();
+    }
+
+    // ---------------- Site Photos (IndexedDB) ----------------
+    async function compressImageFileToDataUrl(file, maxDim=1100, quality=0.78){
       return new Promise((resolve, reject) => {
         const fr = new FileReader();
         fr.onerror = () => reject(new Error("File read failed"));
@@ -1253,9 +1500,42 @@
       });
     }
 
-    function renderPhotos(){
+    async function addPhotos(files){
+      for (const f of files){
+        if (!f.type.startsWith("image/")) continue;
+        const dataUrl = await compressImageFileToDataUrl(f, 1100, 0.78);
+        const blob = await dataUrlToBlob(dataUrl);
+        const key = "photo_" + uid();
+        await idbPut(key, blob);
+        state.sitePhotos.push({ id: uid(), name: f.name || "photo", key, captionTag: "" });
+      }
+      await renderPhotos();
+      saveMeta();
+      toast("Photos added");
+    }
+
+    async function removePhoto(photoId){
+      const p = state.sitePhotos.find(x => x.id === photoId);
+      if (p) await idbDel(p.key);
+      state.sitePhotos = state.sitePhotos.filter(x => x.id !== photoId);
+      await renderPhotos();
+      saveMeta();
+    }
+
+    function setPhotoCaption(photoId, tag){
+      const p = state.sitePhotos.find(x => x.id === photoId);
+      if (!p) return;
+      p.captionTag = (p.captionTag === tag) ? "" : tag;
+      renderPhotos();
+      saveMeta();
+    }
+
+    async function renderPhotos(){
       photoRow.innerHTML = "";
       for (const p of state.sitePhotos){
+        const blob = await idbGet(p.key);
+        const url = blobToObjectURL(blob);
+
         const chipsHtml = PHOTO_CAPTION_CHIPS.map(tag => {
           const on = (p.captionTag || "") === tag;
           return `<span class="chip ${on ? "on":""}" data-photo-chip="${escapeHtml(tag)}" data-photo-id="${p.id}">${escapeHtml(tag)}</span>`;
@@ -1265,41 +1545,86 @@
         d.className = "thumb";
         d.innerHTML = `
           <button class="x" type="button" data-photo-remove="${p.id}" title="Remove">×</button>
-          <img src="${p.dataUrl}" alt="${escapeHtml(p.name)}"/>
+          <img src="${url}" alt="${escapeHtml(p.name)}"/>
           <div class="cap">${escapeHtml(p.name)}</div>
           <div class="photoChips">
             <div class="chips">${chipsHtml}</div>
           </div>
         `;
         photoRow.appendChild(d);
+
+        // avoid URL leaks
+        d.querySelector("img").addEventListener("load", () => URL.revokeObjectURL(url), { once:true });
+        d.querySelector("img").addEventListener("error", () => URL.revokeObjectURL(url), { once:true });
       }
     }
 
-    async function addPhotos(files){
-      for (const f of files){
-        if (!f.type.startsWith("image/")) continue;
-        const dataUrl = await compressImageFileToDataUrl(f, 1400, 0.84);
-        state.sitePhotos.push({ id: uid(), name: f.name || "photo", dataUrl, captionTag: "" });
+    // ---------------- Plot Plan (IndexedDB) ----------------
+    async function fileToArrayBuffer(file){
+      return new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onerror = () => reject(new Error("Read failed"));
+        fr.onload = () => resolve(fr.result);
+        fr.readAsArrayBuffer(file);
+      });
+    }
+
+    async function compressImageToBlob(file, maxDim=1500, quality=0.78){
+      const dataUrl = await compressImageFileToDataUrl(file, maxDim, quality);
+      return await dataUrlToBlob(dataUrl);
+    }
+
+    async function renderPdfFirstPageToBlob(file, maxWidth = 1000) {
+      if (!window.pdfjsLib) throw new Error("PDF.js did not load.");
+      const ab = await fileToArrayBuffer(file);
+      const loadingTask = pdfjsLib.getDocument({ data: ab, disableAutoFetch:true, disableStream:true });
+      const pdf = await loadingTask.promise;
+      const page = await pdf.getPage(1);
+
+      const viewport1 = page.getViewport({ scale: 1 });
+      const scale = Math.min(2.0, maxWidth / viewport1.width);
+      const viewport = page.getViewport({ scale });
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { alpha:false });
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      return await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.80));
+    }
+
+    async function setPlotPlanFromFile(file){
+      const isPdf = file.type === "application/pdf" || (file.name||"").toLowerCase().endsWith(".pdf");
+      let blob, kind = "image";
+
+      if (isPdf){
+        kind = "pdf";
+        blob = await renderPdfFirstPageToBlob(file, 1000);
+      } else if (file.type.startsWith("image/")){
+        kind = "image";
+        blob = await compressImageToBlob(file, 1500, 0.78);
+      } else {
+        throw new Error("Unsupported file type");
       }
-      renderPhotos();
-      saveToStorage();
+
+      const key = "plan_" + uid();
+      await idbPut(key, blob);
+
+      // cleanup old plan blob
+      if (state.plan?.key) await idbDel(state.plan.key);
+
+      state.plan = { key, name: file.name || "plot-plan", kind };
+      state.markers = [];
+      state.ui.slopePick = null;
+      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
+
+      await renderPlan();
+      saveMeta();
+      toast("Plot plan loaded");
     }
 
-    function removePhoto(photoId){
-      state.sitePhotos = state.sitePhotos.filter(p => p.id !== photoId);
-      renderPhotos();
-      saveToStorage();
-    }
-
-    function setPhotoCaption(photoId, tag){
-      const p = state.sitePhotos.find(x => x.id === photoId);
-      if (!p) return;
-      p.captionTag = (p.captionTag === tag) ? "" : tag;
-      renderPhotos();
-      saveToStorage();
-    }
-
-    // ---------- plot plan collision avoidance (elevation tags only) ----------
+    // ---------------- Plan Markers + Collisions ----------------
     const LABEL_W_PX = 30;
     const LABEL_H_PX = 12;
     const LABEL_PAD_PX = 3;
@@ -1311,7 +1636,6 @@
       return { wPct, hPct };
     }
     function boxesOverlap(a,b){ return !(a.x2 <= b.x1 || a.x1 >= b.x2 || a.y2 <= b.y1 || a.y1 >= b.y2); }
-
     function elevBox(m, wPct, hPct){
       const x1 = m.labelXPct;
       const x2 = m.labelXPct + wPct;
@@ -1319,12 +1643,10 @@
       const y2 = m.labelYPct + hPct/2;
       return { x1,y1,x2,y2 };
     }
-
     function seedLabelPosition(m){
       m.labelXPct = (m.labelXPct ?? clamp(m.xPct + 0.9, 0, 100));
       m.labelYPct = (m.labelYPct ?? m.yPct);
     }
-
     function resolveLabelCollisions(){
       if (!state.plan || state.markers.length < 2) return;
       const { wPct, hPct } = labelDimsPct();
@@ -1364,27 +1686,37 @@
       }
     }
 
-    // ---------- slope overlay ----------
+    // ---------------- Slope overlay ----------------
     function clearPlanOverlay(){ planOverlay.innerHTML = ""; }
     function pctToOverlay(xPct, yPct){ return { x:(xPct/100)*1000, y:(yPct/100)*1000 }; }
 
-    function slopePercentAbs(elevHighM, elevLowM, runM){
-      if (!Number.isFinite(elevHighM) || !Number.isFinite(elevLowM) || !Number.isFinite(runM) || runM <= 0) return null;
-      return Math.abs(((elevLowM - elevHighM) / runM) * 100);
+    function markerByLabel(label){
+      const p = String(label||"").trim();
+      return state.markers.find(m => String(m.pointLabel||"").trim() === p) || null;
     }
 
-    function markerByPoint(pointName){
-      const p = String(pointName||"").trim();
-      return state.markers.find(m => String(m.point||"").trim() === p) || null;
+    function shotByLabel(label){
+      const p = String(label||"").trim();
+      for (const setup of state.setups){
+        for (const sh of (setup.shots||[])){
+          if (String(sh.label||"").trim() === p) return { setup, shot: sh };
+        }
+      }
+      return null;
     }
 
-    function slopePercentAbsFromPoints(fromP, toP, runM){
-      const eFrom = bestElevForPoint(fromP);
-      const eTo   = bestElevForPoint(toP);
-      if (!Number.isFinite(eFrom) || !Number.isFinite(eTo) || !Number.isFinite(runM) || runM<=0) return null;
-      const high = Math.max(eFrom,eTo);
-      const low  = Math.min(eFrom,eTo);
-      return slopePercentAbs(high, low, runM);
+    function slopePercentFromLabels(fromLabel, toLabel, runM){
+      const A = shotByLabel(fromLabel);
+      const B = shotByLabel(toLabel);
+      if (!A || !B) return null;
+
+      const eA = parseNumber(A.shot.elev);
+      const eB = parseNumber(B.shot.elev);
+      const run = parseNumber(runM);
+      if (!Number.isFinite(eA) || !Number.isFinite(eB) || !Number.isFinite(run) || run <= 0) return null;
+
+      // elev diff in cm, run in m -> slope% = |cm| / m
+      return Math.abs(eB - eA) / run;
     }
 
     function drawPlanArrows(){
@@ -1409,44 +1741,47 @@
       planOverlay.appendChild(defs);
 
       for (const sr of state.slopeRows){
-        const fromP = (sr.fromPoint||"").trim();
-        const toP   = (sr.toPoint||"").trim();
-        if (!fromP || !toP) continue;
+        const from = (sr.fromLabel||"").trim();
+        const to   = (sr.toLabel||"").trim();
+        const run  = parseNumber(sr.distanceM);
+        if (!from || !to || !Number.isFinite(run) || run<=0) continue;
 
-        const mkFrom = markerByPoint(fromP);
-        const mkTo   = markerByPoint(toP);
+        const mkFrom = markerByLabel(from);
+        const mkTo   = markerByLabel(to);
         if (!mkFrom || !mkTo) continue;
 
-        const runM = parseNumber(sr.distanceM);
-        if (!Number.isFinite(runM) || runM <= 0) continue;
+        const Ashot = shotByLabel(from);
+        const Bshot = shotByLabel(to);
+        if (!Ashot || !Bshot) continue;
 
-        const elevFrom = bestElevForPoint(fromP);
-        const elevTo   = bestElevForPoint(toP);
-        if (!Number.isFinite(elevFrom) || !Number.isFinite(elevTo)) continue;
+        const eA = parseNumber(Ashot.shot.elev);
+        const eB = parseNumber(Bshot.shot.elev);
+        if (!Number.isFinite(eA) || !Number.isFinite(eB)) continue;
 
-        const highIsFrom = elevFrom >= elevTo;
+        // arrow points downhill: higher elev -> lower elev
+        const highIsFrom = eA >= eB;
         const mkHigh = highIsFrom ? mkFrom : mkTo;
         const mkLow  = highIsFrom ? mkTo   : mkFrom;
 
-        const slopeAbs = slopePercentAbs(Math.max(elevFrom,elevTo), Math.min(elevFrom,elevTo), runM);
-        if (!Number.isFinite(slopeAbs)) continue;
+        const sPct = slopePercentFromLabels(from, to, run);
+        if (!Number.isFinite(sPct)) continue;
 
-        const A = pctToOverlay(mkHigh.xPct, mkHigh.yPct);
-        const B = pctToOverlay(mkLow.xPct,  mkLow.yPct);
+        const P1 = pctToOverlay(mkHigh.xPct, mkHigh.yPct);
+        const P2 = pctToOverlay(mkLow.xPct,  mkLow.yPct);
 
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", A.x);
-        line.setAttribute("y1", A.y);
-        line.setAttribute("x2", B.x);
-        line.setAttribute("y2", B.y);
+        line.setAttribute("x1", P1.x);
+        line.setAttribute("y1", P1.y);
+        line.setAttribute("x2", P2.x);
+        line.setAttribute("y2", P2.y);
         line.setAttribute("stroke", "rgba(239,68,68,0.88)");
         line.setAttribute("stroke-width", "1.8");
         line.setAttribute("stroke-linecap", "round");
         line.setAttribute("marker-end", "url(#arrowHead)");
         planOverlay.appendChild(line);
 
-        const mx = (A.x + B.x) / 2;
-        const my = (A.y + B.y) / 2;
+        const mx = (P1.x + P2.x) / 2;
+        const my = (P1.y + P2.y) / 2;
 
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute("x", mx);
@@ -1454,27 +1789,46 @@
         text.setAttribute("text-anchor", "middle");
         text.setAttribute("dominant-baseline", "central");
         text.setAttribute("class", "slopeLabel");
-        text.textContent = `${fmtDash(slopeAbs, 2)}%`;
+        text.textContent = `${(Math.round(sPct*100)/100).toFixed(2)}%`;
         planOverlay.appendChild(text);
       }
     }
 
-    // ---------- plan render ----------
-    function renderPlan(){
+    // ---------------- Plan render ----------------
+    function markerPassFail(label){
+      const tol = tolByAreaCm[state.meta.area] ?? 15;
+      const ref = shotByLabel(label);
+      if (!ref) return "na";
+      const delta = calcDeltaCm(ref.shot.elev, ref.shot.designElev);
+      if (!Number.isFinite(delta)) return "na";
+      return Math.abs(delta) <= tol ? "pass" : "fail";
+    }
+
+    async function renderPlan(){
       planStage.querySelectorAll(".mkAnchor, .mkElev").forEach(n => n.remove());
       clearPlanOverlay();
 
       if (!state.plan){
         planWrap.style.display = "none";
         planEmpty.style.display = "block";
-        renderSummary();
         return;
       }
+
+      // load plan blob from idb -> object URL for display
+      const blob = await idbGet(state.plan.key);
+      if (!blob){
+        planWrap.style.display = "none";
+        planEmpty.style.display = "block";
+        return;
+      }
+
+      if (state.planObjectURL) URL.revokeObjectURL(state.planObjectURL);
+      state.planObjectURL = blobToObjectURL(blob);
 
       planWrap.style.display = "block";
       planEmpty.style.display = "none";
 
-      planImg.src = state.plan.dataUrl;
+      planImg.src = state.planObjectURL;
       planName.textContent = state.plan.name || "Plot plan";
       planType.textContent = state.plan.kind === "pdf" ? "PDF (page 1 rendered)" : "Image";
 
@@ -1482,134 +1836,485 @@
       resolveLabelCollisions();
 
       for (const m of state.markers){
-        const cls = markerStatusClass(m.fieldElev, m.designElev);
+        const cls = markerPassFail(m.pointLabel);
 
         const a = document.createElement("div");
         a.className = "mkAnchor";
-        if (state.ui.slopePick && state.ui.slopePick === m.point) a.classList.add("sel");
+        if (state.ui.slopePick && state.ui.slopePick === m.pointLabel) a.classList.add("sel");
         a.style.left = m.xPct + "%";
         a.style.top  = m.yPct + "%";
         a.dataset.id = m.id;
-        a.dataset.point = m.point;
-        a.title = `Point ${m.point}`;
-        a.innerHTML = `<span>${escapeHtml(m.point)}</span>`;
+        a.dataset.point = m.pointLabel;
+        a.title = `Point ${m.pointLabel}`;
+        a.innerHTML = `<span>${escapeHtml(m.pointLabel)}</span>`;
         planStage.appendChild(a);
+
+        const ref = shotByLabel(m.pointLabel);
+        const elevTxt = ref?.shot?.elev ? String(ref.shot.elev) : "";
 
         const e = document.createElement("div");
         e.className = "mkElev";
         e.style.left = m.labelXPct + "%";
         e.style.top  = m.labelYPct + "%";
-        e.innerHTML = `<div class="el ${cls}">${escapeHtml(m.fieldElev || "")}</div>`;
+        e.innerHTML = `<div class="el ${cls}">${escapeHtml(elevTxt)}</div>`;
         planStage.appendChild(e);
       }
 
       drawPlanArrows();
-      renderSummary();
-      saveToStorage();
+      saveMeta();
     }
 
-    // ---------- elevations table ----------
-    function renderElevations(){
-      const tol = tolByAreaCm[state.meta.area] ?? 15;
-      elevBody.innerHTML = "";
-
-      for (const r of state.elevRows){
-        const f = normalizeElevToMeters(r.fieldElev);
-        const d = normalizeElevToMeters(r.designElev);
-        const cm = calcDeltaCm(f,d);
-        const status = passFail(cm, tol);
-        const deltaClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
-        const statusClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
-
-        const tr = document.createElement("tr");
-        tr.dataset.rowId = r.id;
-
-        tr.innerHTML = `
-          <td><input type="checkbox" class="rowSel" data-id="${r.id}"></td>
-          <td><input class="mini" data-type="elev" data-k="pointName" data-id="${r.id}" value="${escapeHtml(r.pointName||"")}" placeholder="Point (e.g., 1.1, 1A, TC-1)" /></td>
-          <td><input class="mini" type="number" step="any" inputmode="decimal" data-type="elev" data-k="fieldElev" data-id="${r.id}" value="${escapeHtml(r.fieldElev||"")}" placeholder="Field" /></td>
-          <td><input class="mini" type="number" step="any" inputmode="decimal" data-type="elev" data-k="designElev" data-id="${r.id}" value="${escapeHtml(r.designElev||"")}" placeholder="Design" /></td>
-          <td><span class="delta ${deltaClass}" data-role="delta">${Number.isFinite(cm) ? fmtDash(cm,1) : "—"}</span></td>
-          <td><span class="status ${statusClass}" data-role="status">${status}</span></td>
-          <td>
-            <div class="chips" data-chip-row="${r.id}">
-              ${POINT_NOTE_CHIPS.map(c => {
-                const on = (r.pointNote||"") === c;
-                return `<span class="chip ${on ? "on":""}" data-chip="${escapeHtml(c)}" data-row="${r.id}">${escapeHtml(c)}</span>`;
-              }).join("")}
-              <input class="mini" style="margin-top:6px;" data-type="elev" data-k="pointNote" data-id="${r.id}" value="${escapeHtml(r.pointNote||"")}" placeholder="Custom note (optional)" />
-            </div>
-          </td>
-        `;
-        elevBody.appendChild(tr);
-      }
-
-      renderSummary();
-      renderPlan();
-      saveToStorage();
+    // ---------------- Setup & Shot add/remove ----------------
+    function addSetup(){
+      const s = {
+        id: uid(),
+        name: "Setup",
+        bs: "",
+        hi: "",
+        fs: "",
+        ifs: "",
+        elev: "",
+        shots: []
+      };
+      state.setups.push(s);
+      state.meta.activeSetupId = s.id;
+      renderActiveSetupSelect();
+      renderShotsTable();
+      saveMeta();
+      toast("Setup added");
     }
 
-    function upsertElevRow(point, fieldElev, designElev, pointNote=""){
-      const p = String(point||"").trim();
-      if (!p) return;
+    function addShotToActiveSetup(labelOverride=null){
+      const setup = state.setups.find(x => x.id === state.meta.activeSetupId) || state.setups[0];
+      if (!setup) { addSetup(); return; }
 
-      let r = state.elevRows.find(x => String(x.pointName||"").trim() === p);
-      if (!r){
-        r = { id: uid(), pointName: p, fieldElev:"", designElev:"", pointNote:"" };
-        state.elevRows.push(r);
-      }
-      r.fieldElev = String(fieldElev||"").trim();
-      r.designElev = String(designElev||"").trim();
-      if (pointNote !== null && pointNote !== undefined && String(pointNote).trim() !== "") {
-        r.pointNote = String(pointNote).trim();
-      }
+      const label = labelOverride ? String(labelOverride).trim() : nextAutoPoint();
+      const sh = {
+        id: uid(),
+        label,
+        ifs: "",
+        elev: "",
+        designElev: "",
+        note: ""
+      };
+      setup.shots.push(sh);
+      renderShotsTable();
+      saveMeta();
+      toast("Shot added");
     }
 
-    function updateComputedRow(rowId){
-      const tol = tolByAreaCm[state.meta.area] ?? 15;
-      const r = state.elevRows.find(x => x.id === rowId);
-      const tr = elevBody.querySelector(`tr[data-row-id="${CSS.escape(rowId)}"]`);
-      if (!r || !tr) return;
+    function removeSelectedRows(){
+      const sels = Array.from(document.querySelectorAll(".selRow:checked"));
+      if (!sels.length) return;
 
-      const f = normalizeElevToMeters(r.fieldElev);
-      const d = normalizeElevToMeters(r.designElev);
-      const cm = calcDeltaCm(f,d);
-      const status = passFail(cm, tol);
+      // remove shots first, then setups
+      const toRemoveShots = sels.filter(x => x.dataset.kind === "shot").map(x => ({ setupId:x.dataset.setup, id:x.dataset.id }));
+      const toRemoveSetups = sels.filter(x => x.dataset.kind === "setup").map(x => x.dataset.setup);
 
-      const deltaEl = tr.querySelector('[data-role="delta"]');
-      const statusEl = tr.querySelector('[data-role="status"]');
+      // remove shots + related markers
+      for (const r of toRemoveShots){
+        const setup = state.setups.find(s => s.id === r.setupId);
+        if (!setup) continue;
 
-      const deltaClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
-      const statusClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
+        const shot = (setup.shots||[]).find(sh => sh.id === r.id);
+        const label = shot?.label;
 
-      if (deltaEl){
-        deltaEl.textContent = Number.isFinite(cm) ? fmtDash(cm,1) : "—";
-        deltaEl.className = `delta ${deltaClass}`;
-      }
-      if (statusEl){
-        statusEl.textContent = status;
-        statusEl.className = `status ${statusClass}`;
-      }
+        setup.shots = (setup.shots||[]).filter(sh => sh.id !== r.id);
 
-      // sync marker if exists (point labels can be non-integer)
-      const p = String(r.pointName||"").trim();
-      if (p){
-        const mk = state.markers.find(m => String(m.point||"").trim() === p);
-        if (mk){
-          mk.fieldElev = r.fieldElev || mk.fieldElev;
-          mk.designElev = r.designElev || mk.designElev;
-          mk.pointNote = r.pointNote || mk.pointNote;
+        if (label){
+          state.markers = state.markers.filter(m => String(m.pointLabel||"") !== String(label));
         }
       }
 
-      renderSummary();
+      // remove setups + their shots + markers
+      for (const sid of toRemoveSetups){
+        const setup = state.setups.find(s => s.id === sid);
+        if (!setup) continue;
+
+        const labels = new Set((setup.shots||[]).map(sh => String(sh.label||"")));
+        state.markers = state.markers.filter(m => !labels.has(String(m.pointLabel||"")));
+        state.setups = state.setups.filter(s => s.id !== sid);
+      }
+
+      // reset active setup if missing
+      if (state.setups.length){
+        if (!state.setups.find(s => s.id === state.meta.activeSetupId)){
+          state.meta.activeSetupId = state.setups[0].id;
+        }
+      } else {
+        state.meta.activeSetupId = "";
+      }
+
+      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
+      renderActiveSetupSelect();
+      renderShotsTable();
+      renderSlopes();
       renderPlan();
-      saveToStorage();
+      saveMeta();
+      toast("Removed");
     }
 
-    // ---------- slopes table ----------
-    function pointNameOptions(){
-      const names = state.elevRows.map(r => (r.pointName||"").trim()).filter(Boolean);
+    // ---------------- Editing + auto-calc behavior ----------------
+    function findSetupById(id){ return state.setups.find(s => s.id === id) || null; }
+    function findShot(setupId, shotId){
+      const setup = findSetupById(setupId);
+      if (!setup) return null;
+      const shot = (setup.shots||[]).find(sh => sh.id === shotId) || null;
+      return { setup, shot };
+    }
+
+    function normalizeLabel(label){
+      return String(label||"").trim();
+    }
+
+    // Keep marker label in sync if label changed
+    function syncMarkerLabel(oldLabel, newLabel){
+      for (const m of state.markers){
+        if (String(m.pointLabel||"") === String(oldLabel)){
+          m.pointLabel = newLabel;
+        }
+      }
+      // slope rows reference labels too
+      for (const sr of state.slopeRows){
+        if (sr.fromLabel === oldLabel) sr.fromLabel = newLabel;
+        if (sr.toLabel === oldLabel) sr.toLabel = newLabel;
+      }
+    }
+
+    // ---------------- Plot plan point panel ----------------
+    const panelState = { mode:null, markerId:null, pending:null };
+
+    function openOverlay(){ overlay.style.display = "flex"; }
+    function closeOverlay(){
+      overlay.style.display = "none";
+      panelBody.innerHTML = "";
+      panelActions.innerHTML = "";
+      panelTitle.textContent = "Entry";
+      panelState.mode = null;
+      panelState.markerId = null;
+      panelState.pending = null;
+    }
+    btnPanelClose.addEventListener("click", closeOverlay);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
+
+    function openShotPanelNew(xPct, yPct){
+      const setup = state.setups.find(s => s.id === state.meta.activeSetupId);
+      if (!setup){
+        addSetup();
+        return openShotPanelNew(xPct, yPct);
+      }
+
+      const autoPoint = nextAutoPoint();
+      panelState.mode = "shot-new";
+      panelState.pending = { xPct, yPct, labelXPct: xPct + 0.9, labelYPct: yPct, pointLabel:autoPoint, ifs:"", elev:"", designElev:"", note:"" };
+
+      panelTitle.textContent = `Add Shot to ${setup.name || "Setup"}`;
+
+      panelBody.innerHTML = `
+        <div class="panelGrid">
+          <div>
+            <label>Point Label</label>
+            <input id="pp_point" class="mini" value="${escapeHtml(autoPoint)}" inputmode="text" autocomplete="off"
+              placeholder="e.g., 1, 1.1, 1A, TC-1" />
+          </div>
+          <div>
+            <label>Point Note</label>
+            <div class="chips" id="pp_notechips">${POINT_NOTE_CHIPS.map(c => `<span class="chip" data-panel-chip="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("")}</div>
+          </div>
+
+          <div>
+            <label>IFS (optional)</label>
+            <input id="pp_ifs" class="mini" type="number" step="any" inputmode="decimal" placeholder="IFS" />
+          </div>
+
+          <div>
+            <label>Field Elevation (optional)</label>
+            <input id="pp_elev" class="mini" type="number" step="any" inputmode="decimal" placeholder="ELEV" />
+          </div>
+
+          <div>
+            <label>Design Elevation (required)</label>
+            <input id="pp_design" class="mini" type="number" step="any" inputmode="decimal" placeholder="Designed" />
+          </div>
+
+          <div>
+            <label>Setup HI (used for calc)</label>
+            <input class="mini" value="${escapeHtml(setup.hi||"")}" disabled />
+          </div>
+        </div>
+        <div class="hint">Enter either IFS or ELEV (one is enough). With HI, the form will compute the other.</div>
+      `;
+
+      panelActions.innerHTML = `
+        <button class="btn ghost" id="pp_cancel" type="button">Cancel</button>
+        <button class="btn primary" id="pp_save" type="button">Save Shot</button>
+      `;
+
+      openOverlay();
+
+      const elPoint = document.getElementById("pp_point");
+      const elIFS = document.getElementById("pp_ifs");
+      const elElev = document.getElementById("pp_elev");
+      const elDesign = document.getElementById("pp_design");
+
+      // focus to design (they read from plan), but keep numeric keypad for elevs
+      setTimeout(() => { elDesign.focus(); elDesign.select(); }, 60);
+
+      // chips
+      document.getElementById("pp_notechips").addEventListener("click", (e) => {
+        const chip = e.target.closest("[data-panel-chip]");
+        if (!chip) return;
+        const val = chip.dataset.panelChip;
+        panelState.pending.note = (panelState.pending.note === val) ? "" : val;
+        document.querySelectorAll("#pp_notechips .chip").forEach(c => c.classList.remove("on"));
+        if (panelState.pending.note){ chip.classList.add("on"); }
+      });
+
+      // auto-calc as user types (HI-based)
+      function recalc(){
+        const H = parseNumber(setup.hi);
+        const I = parseNumber(elIFS.value);
+        const E = parseNumber(elElev.value);
+
+        if (Number.isFinite(H) && Number.isFinite(E) && !Number.isFinite(I)){
+          const autoI = computeIFS(H, E);
+          if (Number.isFinite(autoI)) elIFS.value = String(autoI);
+        } else if (Number.isFinite(H) && Number.isFinite(I) && !Number.isFinite(E)){
+          const autoE = computeElev(H, I);
+          if (Number.isFinite(autoE)) elElev.value = String(autoE);
+        }
+      }
+      elIFS.addEventListener("input", recalc);
+      elElev.addEventListener("input", recalc);
+
+      document.getElementById("pp_cancel").addEventListener("click", () => {
+        undoAutoPoint();
+        closeOverlay();
+      });
+
+      document.getElementById("pp_save").addEventListener("click", () => {
+        const p = normalizeLabel(elPoint.value);
+        const ifs = String(elIFS.value||"").trim();
+        const elev = String(elElev.value||"").trim();
+        const des = String(elDesign.value||"").trim();
+
+        if (!p){ alert("Point label is required."); return; }
+        if (!des){ alert("Design elevation is required."); elDesign.focus(); return; }
+
+        // require either ifs or elev
+        if (!ifs && !elev){
+          alert("Enter either IFS or Field Elevation.");
+          return;
+        }
+
+        // ensure unique point label across all shots
+        const exists = shotByLabel(p);
+        if (exists){ alert("That point label already exists."); return; }
+
+        // compute missing if possible
+        const H = parseNumber(setup.hi);
+        let finalIFS = parseNumber(ifs);
+        let finalElev = parseNumber(elev);
+
+        if (Number.isFinite(H)){
+          if (Number.isFinite(finalElev) && !Number.isFinite(finalIFS)){
+            finalIFS = computeIFS(H, finalElev);
+          } else if (Number.isFinite(finalIFS) && !Number.isFinite(finalElev)){
+            finalElev = computeElev(H, finalIFS);
+          }
+        }
+
+        const sh = { id: uid(), label: p, ifs: Number.isFinite(finalIFS)? String(finalIFS): (ifs||""), elev: Number.isFinite(finalElev)? String(finalElev): (elev||""), designElev: des, note: panelState.pending.note || "" };
+        setup.shots.push(sh);
+
+        // add marker tied to shot
+        state.markers.push({
+          id: uid(),
+          xPct: panelState.pending.xPct,
+          yPct: panelState.pending.yPct,
+          labelXPct: panelState.pending.labelXPct,
+          labelYPct: panelState.pending.labelYPct,
+          pointLabel: p,
+          shotId: sh.id
+        });
+
+        closeOverlay();
+        renderShotsTable();
+        renderSlopes();
+        renderPlan();
+        saveMeta();
+        toast("Shot saved");
+      });
+    }
+
+    function openShotPanelEdit(markerId){
+      const mk = state.markers.find(m => m.id === markerId);
+      if (!mk) return;
+
+      const found = shotByLabel(mk.pointLabel);
+      if (!found) return;
+
+      const { setup, shot } = found;
+      panelState.mode = "shot-edit";
+      panelState.markerId = markerId;
+
+      panelTitle.textContent = `Edit Shot (${setup.name || "Setup"})`;
+
+      panelBody.innerHTML = `
+        <div class="panelGrid">
+          <div>
+            <label>Point Label</label>
+            <input id="pp_point" class="mini" value="${escapeHtml(shot.label||"")}" inputmode="text" autocomplete="off" />
+          </div>
+
+          <div>
+            <label>Point Note</label>
+            <div class="chips" id="pp_notechips">
+              ${POINT_NOTE_CHIPS.map(c => `<span class="chip ${shot.note===c?"on":""}" data-panel-chip="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("")}
+            </div>
+          </div>
+
+          <div>
+            <label>IFS</label>
+            <input id="pp_ifs" class="mini" type="number" step="any" inputmode="decimal" value="${escapeHtml(shot.ifs||"")}" />
+          </div>
+
+          <div>
+            <label>Field Elevation</label>
+            <input id="pp_elev" class="mini" type="number" step="any" inputmode="decimal" value="${escapeHtml(shot.elev||"")}" />
+          </div>
+
+          <div>
+            <label>Design Elevation</label>
+            <input id="pp_design" class="mini" type="number" step="any" inputmode="decimal" value="${escapeHtml(shot.designElev||"")}" />
+          </div>
+
+          <div>
+            <label>Setup HI (used for calc)</label>
+            <input class="mini" value="${escapeHtml(setup.hi||"")}" disabled />
+          </div>
+        </div>
+        <div class="hint">Edit IFS or ELEV, the other will auto-calc if HI is present.</div>
+      `;
+
+      panelActions.innerHTML = `
+        <button class="btn danger" id="pp_delete" type="button">Delete</button>
+        <button class="btn ghost" id="pp_cancel" type="button">Cancel</button>
+        <button class="btn primary" id="pp_save" type="button">Save</button>
+      `;
+
+      openOverlay();
+
+      const elPoint = document.getElementById("pp_point");
+      const elIFS = document.getElementById("pp_ifs");
+      const elElev = document.getElementById("pp_elev");
+      const elDesign = document.getElementById("pp_design");
+
+      setTimeout(() => { elElev.focus(); elElev.select(); }, 60);
+
+      document.getElementById("pp_notechips").addEventListener("click", (e) => {
+        const chip = e.target.closest("[data-panel-chip]");
+        if (!chip) return;
+        const val = chip.dataset.panelChip;
+        shot.note = (shot.note === val) ? "" : val;
+        document.querySelectorAll("#pp_notechips .chip").forEach(c => c.classList.remove("on"));
+        if (shot.note){ chip.classList.add("on"); }
+      });
+
+      function recalc(){
+        const H = parseNumber(setup.hi);
+        const I = parseNumber(elIFS.value);
+        const E = parseNumber(elElev.value);
+
+        if (Number.isFinite(H) && Number.isFinite(E) && !Number.isFinite(I)){
+          const autoI = computeIFS(H, E);
+          if (Number.isFinite(autoI)) elIFS.value = String(autoI);
+        } else if (Number.isFinite(H) && Number.isFinite(I) && !Number.isFinite(E)){
+          const autoE = computeElev(H, I);
+          if (Number.isFinite(autoE)) elElev.value = String(autoE);
+        }
+      }
+      elIFS.addEventListener("input", recalc);
+      elElev.addEventListener("input", recalc);
+
+      document.getElementById("pp_cancel").addEventListener("click", closeOverlay);
+
+      document.getElementById("pp_delete").addEventListener("click", () => {
+        if (!confirm("Delete this shot and its marker?")) return;
+
+        // remove shot
+        setup.shots = (setup.shots||[]).filter(x => x.id !== shot.id);
+        // remove marker
+        state.markers = state.markers.filter(m => m.id !== markerId);
+        // remove slope rows referencing it
+        state.slopeRows = state.slopeRows.filter(sr => sr.fromLabel !== shot.label && sr.toLabel !== shot.label);
+
+        closeOverlay();
+        renderShotsTable();
+        renderSlopes();
+        renderPlan();
+        saveMeta();
+        toast("Deleted");
+      });
+
+      document.getElementById("pp_save").addEventListener("click", () => {
+        const oldLabel = shot.label;
+        const newLabel = normalizeLabel(elPoint.value);
+        const ifs = String(elIFS.value||"").trim();
+        const elev = String(elElev.value||"").trim();
+        const des = String(elDesign.value||"").trim();
+
+        if (!newLabel){ alert("Point label is required."); return; }
+        if (!des){ alert("Design elevation is required."); return; }
+        if (!ifs && !elev){ alert("Enter either IFS or Field Elevation."); return; }
+
+        // ensure unique label (except this shot)
+        const exists = shotByLabel(newLabel);
+        if (exists && exists.shot.id !== shot.id){
+          alert("That point label already exists.");
+          return;
+        }
+
+        // compute missing if possible
+        const H = parseNumber(setup.hi);
+        let finalIFS = parseNumber(ifs);
+        let finalElev = parseNumber(elev);
+
+        if (Number.isFinite(H)){
+          if (Number.isFinite(finalElev) && !Number.isFinite(finalIFS)){
+            finalIFS = computeIFS(H, finalElev);
+          } else if (Number.isFinite(finalIFS) && !Number.isFinite(finalElev)){
+            finalElev = computeElev(H, finalIFS);
+          }
+        }
+
+        shot.label = newLabel;
+        shot.ifs = Number.isFinite(finalIFS)? String(finalIFS): ifs;
+        shot.elev = Number.isFinite(finalElev)? String(finalElev): elev;
+        shot.designElev = des;
+
+        if (oldLabel !== newLabel){
+          syncMarkerLabel(oldLabel, newLabel);
+        }
+
+        closeOverlay();
+        renderShotsTable();
+        renderSlopes();
+        renderPlan();
+        saveMeta();
+        toast("Saved");
+      });
+    }
+
+    // ---------------- Slopes table ----------------
+    function pointLabelOptions(){
+      const names = [];
+      for (const s of state.setups){
+        for (const sh of (s.shots||[])){
+          const v = String(sh.label||"").trim();
+          if (v) names.push(v);
+        }
+      }
       return Array.from(new Set(names));
     }
 
@@ -1622,366 +2327,67 @@
     }
 
     function renderSlopes(){
-      const options = pointNameOptions();
+      const options = pointLabelOptions();
       slopeBody.innerHTML = "";
 
       for (const r of state.slopeRows){
         const runM = parseNumber(r.distanceM);
-        const sAbs = slopePercentAbsFromPoints(r.fromPoint, r.toPoint, runM);
+        const sPct = slopePercentFromLabels(r.fromLabel, r.toLabel, runM);
 
         const tr = document.createElement("tr");
         tr.dataset.rowId = r.id;
         tr.innerHTML = `
           <td><input type="checkbox" class="slopeSel" data-id="${r.id}"></td>
           <td><input class="mini" data-type="slope" data-k="segment" data-id="${r.id}" value="${escapeHtml(r.segment||"")}" placeholder="e.g., Front swale" /></td>
-          <td>${selectHtml(r.id,"fromPoint",r.fromPoint,options)}</td>
-          <td>${selectHtml(r.id,"toPoint",r.toPoint,options)}</td>
+          <td>${selectHtml(r.id,"fromLabel",r.fromLabel,options)}</td>
+          <td>${selectHtml(r.id,"toLabel",r.toLabel,options)}</td>
           <td><input class="mini" type="number" step="any" inputmode="decimal" data-type="slope" data-k="distanceM" data-id="${r.id}" value="${escapeHtml(r.distanceM||"")}" placeholder="Run (m)" /></td>
-          <td><span class="delta na">${Number.isFinite(sAbs) ? fmtDash(sAbs,2) : "—"}</span></td>
+          <td><span class="delta na">${Number.isFinite(sPct) ? (Math.round(sPct*100)/100).toFixed(2) : "—"}</span></td>
         `;
         slopeBody.appendChild(tr);
       }
 
       drawPlanArrows();
-      saveToStorage();
+      saveMeta();
     }
 
-    // ---------- plot plan upload ----------
-    async function fileToArrayBuffer(file){
-      return new Promise((resolve, reject) => {
-        const fr = new FileReader();
-        fr.onerror = () => reject(new Error("Read failed"));
-        fr.onload = () => resolve(fr.result);
-        fr.readAsArrayBuffer(file);
+    // ---------------- Office Summary ----------------
+    function selectedNotesText(){
+      const picked = [];
+      NOTE_CHECKS.forEach((n, i) => {
+        if (state.noteChecks[i]) picked.push(`${n.title}: ${n.text}`);
       });
+      return picked;
     }
 
-    function compressImageToDataUrl(file, maxDim=1800, quality=0.88){
-      return new Promise((resolve, reject) => {
-        const fr = new FileReader();
-        fr.onerror = () => reject(new Error("File read failed"));
-        fr.onload = () => {
-          const img = new Image();
-          img.onload = () => {
-            const w = img.width, h = img.height;
-            const scale = Math.min(1, maxDim / Math.max(w, h));
-            const cw = Math.round(w * scale);
-            const ch = Math.round(h * scale);
-            const canvas = document.createElement("canvas");
-            canvas.width = cw; canvas.height = ch;
-            const ctx = canvas.getContext("2d", { alpha:false });
-            ctx.drawImage(img, 0, 0, cw, ch);
-            resolve(canvas.toDataURL("image/jpeg", quality));
-          };
-          img.onerror = () => reject(new Error("Image load failed"));
-          img.src = fr.result;
-        };
-        fr.readAsDataURL(file);
-      });
-    }
-
-    async function renderPdfFirstPageToDataUrl(file, maxWidth = 1200) {
-      if (!window.pdfjsLib) throw new Error("PDF.js did not load.");
-      const ab = await fileToArrayBuffer(file);
-      const loadingTask = pdfjsLib.getDocument({ data: ab, disableAutoFetch:true, disableStream:true });
-      const pdf = await loadingTask.promise;
-      const page = await pdf.getPage(1);
-
-      const viewport1 = page.getViewport({ scale: 1 });
-      const scale = Math.min(2.0, maxWidth / viewport1.width);
-      const viewport = page.getViewport({ scale });
-
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d", { alpha:false });
-      canvas.width = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
-      await page.render({ canvasContext: ctx, viewport }).promise;
-      return canvas.toDataURL("image/jpeg", 0.85);
-    }
-
-    async function setPlotPlanFromFile(file){
-      const isPdf = file.type === "application/pdf" || (file.name||"").toLowerCase().endsWith(".pdf");
-      let dataUrl = "", kind = "image";
-
-      if (isPdf){
-        kind = "pdf";
-        dataUrl = await renderPdfFirstPageToDataUrl(file, 1200);
-      } else if (file.type.startsWith("image/")){
-        kind = "image";
-        dataUrl = await compressImageToDataUrl(file, 1800, 0.88);
-      } else {
-        throw new Error("Unsupported file type");
-      }
-
-      state.plan = { name: file.name || "plot-plan", kind, dataUrl };
-      state.markers = [];
-      state.ui.slopePick = null;
-      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
-      renderPlan();
-      saveToStorage();
-    }
-
-    // ---------- Entry Panel ----------
-    const panelState = { mode: null, markerId: null, pendingMarker: null };
-
-    function openOverlay(){ overlay.style.display = "flex"; }
-    function closeOverlay(){
-      overlay.style.display = "none";
-      panelBody.innerHTML = "";
-      panelActions.innerHTML = "";
-      panelTitle.textContent = "Entry";
-      panelState.mode = null;
-      panelState.markerId = null;
-      panelState.pendingMarker = null;
-    }
-
-    document.getElementById("btnPanelClose").addEventListener("click", closeOverlay);
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
-
-    function pointNoteChipsHtml(selected){
-      return POINT_NOTE_CHIPS.map(c => {
-        const on = (selected||"") === c;
-        return `<span class="chip ${on ? "on":""}" data-panel-chip="${escapeHtml(c)}">${escapeHtml(c)}</span>`;
-      }).join("");
-    }
-
-    // UPDATED: pp_point allows any label (not numeric-only)
-    function openPointPanelNew(xPct, yPct){
-      const autoPoint = nextAutoPoint();
-
-      panelState.mode = "point-new";
-      panelState.pendingMarker = { id: uid(), xPct, yPct, labelXPct: xPct + 0.9, labelYPct: yPct, point: autoPoint, fieldElev:"", designElev:"", pointNote:"" };
-      panelTitle.textContent = `Point Entry`;
-
-      panelBody.innerHTML = `
-        <div class="panelGrid">
-          <div>
-            <label>Point Label</label>
-            <input id="pp_point" class="mini"
-              value="${escapeHtml(autoPoint)}"
-              inputmode="text"
-              autocomplete="off"
-              placeholder="e.g., 1, 1.1, 1A, TC-1, RMOW"
-            />
-          </div>
-          <div>
-            <label>Point Note</label>
-            <div class="chips" id="pp_notechips">${pointNoteChipsHtml("")}</div>
-          </div>
-
-          <div>
-            <label>Field Elevation</label>
-            <input id="pp_field" class="mini" type="number" step="any" inputmode="decimal" placeholder="e.g., 92.21 or 9221" />
-          </div>
-
-          <div>
-            <label>Design Elevation (Plot Plan)</label>
-            <input id="pp_design" class="mini" type="number" step="any" inputmode="decimal" placeholder="e.g., 92.15 or 9215" />
-          </div>
-        </div>
-        <div class="hint">Tip: panel is transparent so you can read design elevations off the plan.</div>
-      `;
-
-      panelActions.innerHTML = `
-        <button class="btn ghost" id="pp_cancel" type="button">Cancel</button>
-        <button class="btn primary" id="pp_save" type="button">Save Point</button>
-      `;
-
-      openOverlay();
-
-      const elPoint = document.getElementById("pp_point");
-      const elField = document.getElementById("pp_field");
-      const elDesign = document.getElementById("pp_design");
-
-      setTimeout(() => { elField.focus(); elField.select(); }, 60);
-
-      document.getElementById("pp_notechips").addEventListener("click", (e) => {
-        const chip = e.target.closest("[data-panel-chip]");
-        if (!chip) return;
-        const val = chip.dataset.panelChip;
-        panelState.pendingMarker.pointNote = (panelState.pendingMarker.pointNote === val) ? "" : val;
-        document.querySelectorAll("#pp_notechips .chip").forEach(c => c.classList.remove("on"));
-        if (panelState.pendingMarker.pointNote){ chip.classList.add("on"); }
-      });
-
-      document.getElementById("pp_cancel").addEventListener("click", () => {
-        undoAutoPoint();
-        closeOverlay();
-        renderPlan();
-      });
-
-      document.getElementById("pp_save").addEventListener("click", () => {
-        const p = String(elPoint.value||"").trim();
-        const f = String(elField.value||"").trim();
-        const d = String(elDesign.value||"").trim();
-
-        if (!p){ alert("Point label is required."); return; }
-        if (!f){ alert("Field elevation is required."); elField.focus(); return; }
-        if (!d){ alert("Design elevation is required."); elDesign.focus(); return; }
-
-        const existing = state.markers.find(m => String(m.point).trim() === p);
-        if (existing){ alert("That point label already exists on the plan."); return; }
-
-        const mk = panelState.pendingMarker;
-        mk.point = p;
-        mk.fieldElev = f;
-        mk.designElev = d;
-
-        state.markers.push(mk);
-        upsertElevRow(mk.point, mk.fieldElev, mk.designElev, mk.pointNote || "");
-        closeOverlay();
-
-        renderElevations();
-        renderSlopes();
-        renderPlan();
-        saveToStorage();
-        toast("Point saved");
-      });
-    }
-
-    function openPointPanelEdit(markerId){
-      const mk = state.markers.find(m => m.id === markerId);
-      if (!mk) return;
-
-      panelState.mode = "point-edit";
-      panelState.markerId = markerId;
-      panelTitle.textContent = `Edit Point`;
-
-      panelBody.innerHTML = `
-        <div class="panelGrid">
-          <div>
-            <label>Point Label</label>
-            <input id="pp_point" class="mini"
-              value="${escapeHtml(mk.point)}"
-              inputmode="text"
-              autocomplete="off"
-              placeholder="e.g., 1, 1.1, 1A, TC-1, RMOW"
-            />
-          </div>
-          <div>
-            <label>Point Note</label>
-            <div class="chips" id="pp_notechips">${pointNoteChipsHtml(mk.pointNote||"")}</div>
-          </div>
-
-          <div>
-            <label>Field Elevation</label>
-            <input id="pp_field" class="mini" type="number" step="any" inputmode="decimal" value="${escapeHtml(mk.fieldElev||"")}" />
-          </div>
-
-          <div>
-            <label>Design Elevation (Plot Plan)</label>
-            <input id="pp_design" class="mini" type="number" step="any" inputmode="decimal" value="${escapeHtml(mk.designElev||"")}" />
-          </div>
-        </div>
-      `;
-
-      panelActions.innerHTML = `
-        <button class="btn danger" id="pp_delete" type="button">Delete</button>
-        <button class="btn ghost" id="pp_cancel" type="button">Cancel</button>
-        <button class="btn primary" id="pp_save" type="button">Save Changes</button>
-      `;
-
-      openOverlay();
-
-      const elPoint = document.getElementById("pp_point");
-      const elField = document.getElementById("pp_field");
-      const elDesign = document.getElementById("pp_design");
-
-      setTimeout(() => { elField.focus(); elField.select(); }, 60);
-
-      document.getElementById("pp_notechips").addEventListener("click", (e) => {
-        const chip = e.target.closest("[data-panel-chip]");
-        if (!chip) return;
-        const val = chip.dataset.panelChip;
-        mk.pointNote = (mk.pointNote === val) ? "" : val;
-        document.querySelectorAll("#pp_notechips .chip").forEach(c => c.classList.remove("on"));
-        if (mk.pointNote){ chip.classList.add("on"); }
-      });
-
-      document.getElementById("pp_cancel").addEventListener("click", closeOverlay);
-
-      document.getElementById("pp_delete").addEventListener("click", () => {
-        if (!confirm("Delete this point from the plan?")) return;
-        state.markers = state.markers.filter(m => m.id !== markerId);
-        state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
-        closeOverlay();
-        renderPlan();
-        saveToStorage();
-        toast("Point deleted");
-      });
-
-      document.getElementById("pp_save").addEventListener("click", () => {
-        const newPoint = String(elPoint.value||"").trim();
-        const f = String(elField.value||"").trim();
-        const d = String(elDesign.value||"").trim();
-
-        if (!newPoint){ alert("Point label is required."); return; }
-        if (!f){ alert("Field elevation is required."); elField.focus(); return; }
-        if (!d){ alert("Design elevation is required."); elDesign.focus(); return; }
-
-        const collision = state.markers.find(m => m.id !== mk.id && String(m.point).trim() === newPoint);
-        if (collision){ alert("That point label already exists on the plan."); return; }
-
-        mk.point = newPoint;
-        mk.fieldElev = f;
-        mk.designElev = d;
-
-        upsertElevRow(mk.point, mk.fieldElev, mk.designElev, mk.pointNote || "");
-        state.meta.nextPoint = Math.max(state.meta.nextPoint, getMaxNumericPoint() + 1);
-
-        closeOverlay();
-        renderElevations();
-        renderSlopes();
-        renderPlan();
-        saveToStorage();
-        toast("Saved");
-      });
-    }
-
-    // ---------- slope mode toggle ----------
-    function setSlopeMode(on){
-      state.ui.slopeMode = !!on;
-      state.ui.slopePick = null;
-      btnSlopeMode.textContent = `Slope Mode: ${state.ui.slopeMode ? "ON" : "OFF"}`;
-      btnSlopeMode.classList.toggle("primary", state.ui.slopeMode);
-      btnSlopeMode.classList.toggle("ghost", !state.ui.slopeMode);
-
-      planHint.textContent = state.ui.slopeMode
-        ? "Slope Mode ON: tap Point A then Point B to add a slope (a panel will ask for run distance)."
-        : "Click the plan to add a point. Point label drops exactly where you tap, elevation tag sits beside it (blue pass, red fail).";
-
-      renderPlan();
-      saveToStorage();
-    }
-
-    // ---------- Office Summary ----------
     function buildOfficeSummaryText(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
-      let checked=0, fails=0, worstAbs=null, worst=null, worstPoint=null;
 
+      let checked=0, fails=0, worstAbs=null, worst=null, worstPoint=null;
       const failList = [];
-      for (const r of state.elevRows){
-        const f = normalizeElevToMeters(r.fieldElev);
-        const d = normalizeElevToMeters(r.designElev);
-        const cm = calcDeltaCm(f,d);
-        if (!Number.isFinite(cm)) continue;
-        checked++;
-        if (Math.abs(cm) > tol){
-          fails++;
-          failList.push(`${(r.pointName||"").trim()}: ${fmtDash(cm,1)} cm (${r.pointNote||"no note"})`);
-        }
-        const abs = Math.abs(cm);
-        if (worstAbs===null || abs>worstAbs){
-          worstAbs = abs; worst = cm; worstPoint = (r.pointName||"").trim();
+
+      for (const s of state.setups){
+        for (const sh of (s.shots||[])){
+          const delta = calcDeltaCm(sh.elev, sh.designElev);
+          if (!Number.isFinite(delta)) continue;
+          checked++;
+          if (Math.abs(delta) > tol){
+            fails++;
+            failList.push(`${(sh.label||"").trim()}: ${Math.round(delta*10)/10} cm (${sh.note||"no note"})`);
+          }
+          const abs = Math.abs(delta);
+          if (worstAbs===null || abs>worstAbs){
+            worstAbs = abs; worst = delta; worstPoint = (sh.label||"").trim();
+          }
         }
       }
 
       const slopeLines = [];
-      for (const s of state.slopeRows){
-        const run = parseNumber(s.distanceM);
-        const p = slopePercentAbsFromPoints(s.fromPoint, s.toPoint, run);
+      for (const sr of state.slopeRows){
+        const run = parseNumber(sr.distanceM);
+        const p = slopePercentFromLabels(sr.fromLabel, sr.toLabel, run);
         if (Number.isFinite(p)){
-          slopeLines.push(`${(s.segment||"Slope").trim()} (${(s.fromPoint||"").trim()}↔${(s.toPoint||"").trim()}): ${fmtDash(p,2)}% downhill`);
+          slopeLines.push(`${(sr.segment||"Slope").trim()} (${(sr.fromLabel||"").trim()}↔${(sr.toLabel||"").trim()}): ${(Math.round(p*100)/100).toFixed(2)}% downhill`);
         }
       }
 
@@ -1992,8 +2398,8 @@
 
       const lines = [];
       lines.push(`Tolerance ±${tol} cm (${state.meta.area}).`);
-      lines.push(`${checked} points checked, ${fails} out of tolerance.`);
-      if (worstPoint && worst!==null) lines.push(`Largest variance ${fmtDash(worst,1)} cm at Point ${worstPoint}.`);
+      lines.push(`${state.setups.length} setup(s), ${checked} shot(s) checked, ${fails} out of tolerance.`);
+      if (worstPoint && worst!==null) lines.push(`Largest variance ${Math.round(worst*10)/10} cm at Point ${worstPoint}.`);
       if (failList.length) lines.push(`Out-of-tolerance: ${failList.join("; ")}.`);
       if (slopeLines.length) lines.push(`Slopes: ${slopeLines.join("; ")}.`);
       if (notesPicked.length) lines.push(`Site notes: ${notesPicked.join(" | ")}.`);
@@ -2003,7 +2409,7 @@
       return lines.join("\n");
     }
 
-    // ---------- PDF export / share (same as previous build) ----------
+    // ---------------- PDF Export + Share ----------------
     function waitImagesLoaded(container){
       const imgs = Array.from(container.querySelectorAll("img"));
       if (!imgs.length) return Promise.resolve();
@@ -2017,20 +2423,51 @@
       })).then(() => undefined);
     }
 
-    function buildReportElement(){
+    async function buildExportPlanMarkup(container){
+      // container must have .planPrintStage and .planPrintOverlay
+      const stage = container.querySelector(".planPrintStage");
+      const overlayDiv = container.querySelector(".planPrintOverlay");
+      if (!stage || !overlayDiv) return;
+
+      // add markers + labels
+      overlayDiv.innerHTML = "";
+
+      for (const m of state.markers){
+        const cls = markerPassFail(m.pointLabel);
+
+        const a = document.createElement("div");
+        a.className = "mkAnchorPrint";
+        a.style.left = m.xPct + "%";
+        a.style.top  = m.yPct + "%";
+        a.innerHTML = `<span>${escapeHtml(m.pointLabel)}</span>`;
+        overlayDiv.appendChild(a);
+
+        const ref = shotByLabel(m.pointLabel);
+        const elevTxt = ref?.shot?.elev ? String(ref.shot.elev) : "";
+
+        const e = document.createElement("div");
+        e.className = "mkElevPrint";
+        e.style.left = (m.labelXPct ?? (m.xPct+0.9)) + "%";
+        e.style.top  = (m.labelYPct ?? m.yPct) + "%";
+        e.innerHTML = `<div class="el ${cls}">${escapeHtml(elevTxt)}</div>`;
+        overlayDiv.appendChild(e);
+      }
+    }
+
+    async function buildReportElement(){
       exportHost.innerHTML = "";
+
       const tol = tolByAreaCm[state.meta.area] ?? 15;
+      const summaryText = (officeSummary.value||"").trim() || buildOfficeSummaryText();
 
       const root = document.createElement("div");
       root.className = "report";
-
-      const summaryText = (officeSummary.value||"").trim() || buildOfficeSummaryText();
 
       root.innerHTML = `
         <div class="reportHeader">
           <div class="reportLogo"><img src="vista-geomatics.png" alt="Logo"/></div>
           <div>
-            <p class="reportTitle">VISTA GEOMATICS, Grading Check Report</p>
+            <p class="reportTitle">Vista Geomatics, Grading Check Report</p>
             <p class="reportSub">Tolerance: ±${tol} cm, Area: ${escapeHtml(state.meta.area)}</p>
           </div>
         </div>
@@ -2050,28 +2487,73 @@
         </div>
       `;
 
-      // Tables page only (kept minimal here; plan + photos can be re-added if you want the full export pages again)
+      // --- Plot Plan page ---
+      if (state.plan?.key){
+        const planBlob = await idbGet(state.plan.key);
+        if (planBlob){
+          const url = blobToObjectURL(planBlob);
+          const planPage = document.createElement("div");
+          planPage.className = "pageBreak";
+          planPage.innerHTML = `
+            <div class="reportSectionTitle">Plot Plan</div>
+            <div class="planPrintWrap">
+              <div class="planPrintStage">
+                <img src="${url}" alt="Plot Plan"/>
+                <div class="planPrintOverlay"></div>
+              </div>
+            </div>
+          `;
+          root.appendChild(planPage);
+
+          await new Promise(r => setTimeout(r, 0));
+          await buildExportPlanMarkup(planPage);
+        }
+      }
+
+      // --- Tables page ---
       const tables = document.createElement("div");
       tables.className = "pageBreak";
+
+      // setup + shots rows (flatten for export)
+      const rows = [];
+      for (const s of state.setups){
+        rows.push({ type:"SETUP", label:s.name, bs:s.bs, hi:s.hi, fs:s.fs, ifs:s.ifs, elev:s.elev, design:"", delta:"", status:"", note:"" });
+        for (const sh of (s.shots||[])){
+          const { delta, status } = calcShotStatus(s, sh);
+          rows.push({
+            type:"SHOT", label:sh.label, bs:"", hi:s.hi, fs:"", ifs:sh.ifs, elev:sh.elev,
+            design:sh.designElev,
+            delta: Number.isFinite(delta) ? (Math.round(delta*10)/10) : "",
+            status,
+            note: sh.note || ""
+          });
+        }
+      }
+
+
       tables.innerHTML = `
-        <div class="reportSectionTitle">Elevation Table</div>
+        <div class="reportSectionTitle">Setups & Shots</div>
         <table class="reportTable">
-          <thead><tr><th>Point</th><th>Field</th><th>Design</th><th>Δ (cm)</th><th>Status</th><th>Notes</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Type</th><th>STA / Point</th><th>BS</th><th>HI</th><th>FS</th><th>IFS</th><th>ELEV</th><th>Designed</th><th>Δ (cm)</th><th>Status</th><th>Notes</th>
+            </tr>
+          </thead>
           <tbody>
-            ${state.elevRows.map(r=>{
-              const tol = tolByAreaCm[state.meta.area] ?? 15;
-              const f = normalizeElevToMeters(r.fieldElev);
-              const d = normalizeElevToMeters(r.designElev);
-              const cm = calcDeltaCm(f,d);
-              const status = passFail(cm,tol);
-              const pill = status==="PASS" ? "pillSmall ok" : (status==="FAIL" ? "pillSmall bad" : "pillSmall");
+            ${rows.map(r=>{
+              const pill = r.status==="PASS" ? "pillSmall ok" : (r.status==="FAIL" ? "pillSmall bad" : "pillSmall");
               return `<tr>
-                <td>${escapeHtml(r.pointName||"")}</td>
-                <td>${escapeHtml(r.fieldElev||"")}</td>
-                <td>${escapeHtml(r.designElev||"")}</td>
-                <td>${escapeHtml(Number.isFinite(cm)?fmtDash(cm,1):"—")}</td>
-                <td><span class="${pill}">${escapeHtml(status)}</span></td>
-                <td>${escapeHtml(r.pointNote||"")}</td>
+                <td>${escapeHtml(r.type)}</td>
+                <td>${escapeHtml(r.label||"")}</td>
+                <td>${escapeHtml(r.bs||"")}</td>
+                <td>${escapeHtml(r.hi||"")}</td>
+                <td>${escapeHtml(r.fs||"")}</td>
+                <td>${escapeHtml(r.ifs||"")}</td>
+                <td>${escapeHtml(r.elev||"")}</td>
+                <td>${escapeHtml(r.design||"")}</td>
+                <td>${escapeHtml(String(r.delta||""))}</td>
+                <td>${r.status ? `<span class="${pill}">${escapeHtml(r.status)}</span>` : ""}</td>
+                <td>${escapeHtml(r.note||"")}</td>
               </tr>`;
             }).join("")}
           </tbody>
@@ -2079,13 +2561,43 @@
       `;
       root.appendChild(tables);
 
+      // --- Photos pages (4 per page) ---
+      if (state.sitePhotos.length){
+        const photosPage = document.createElement("div");
+        photosPage.className = "pageBreak";
+        photosPage.innerHTML = `<div class="reportSectionTitle">Site Photos</div>`;
+        root.appendChild(photosPage);
+
+        // chunk 4 per grid (2x2)
+        for (let i=0; i<state.sitePhotos.length; i+=4){
+          const chunk = state.sitePhotos.slice(i, i+4);
+          const grid = document.createElement("div");
+          grid.className = "photoGrid";
+          grid.style.marginTop = "10px";
+
+          for (const p of chunk){
+            const blob = await idbGet(p.key);
+            const url = blob ? blobToObjectURL(blob) : "";
+            const cap = (p.captionTag ? `${p.captionTag}, ` : "") + (p.name||"Photo");
+            const cell = document.createElement("div");
+            cell.className = "photoCell";
+            cell.innerHTML = `
+              <img src="${url}" alt="Photo"/>
+              <div class="pCap">${escapeHtml(cap)}</div>
+            `;
+            grid.appendChild(cell);
+          }
+          photosPage.appendChild(grid);
+        }
+      }
+
       exportHost.appendChild(root);
       return root;
     }
 
     async function exportPDF(){
       if (typeof html2pdf === "undefined"){ alert("PDF export library failed to load."); return; }
-      const reportEl = buildReportElement();
+      const reportEl = await buildReportElement();
       await waitImagesLoaded(reportEl);
 
       const filename = defaultFileName("pdf");
@@ -2110,11 +2622,10 @@
 
     async function sharePDF(){
       if (typeof html2pdf === "undefined"){ alert("Share requires the PDF export library."); return; }
-
-      const reportEl = buildReportElement();
+      const reportEl = await buildReportElement();
       await waitImagesLoaded(reportEl);
-      const filename = defaultFileName("pdf");
 
+      const filename = defaultFileName("pdf");
       btnShare.textContent = "Preparing...";
       btnShare.disabled = true;
 
@@ -2144,18 +2655,70 @@
       }
     }
 
-    // ---------- events ----------
+    // ---------------- Slope Mode Toggle ----------------
+    function setSlopeMode(on){
+      state.ui.slopeMode = !!on;
+      state.ui.slopePick = null;
+
+      btnSlopeMode.textContent = `Slope Mode: ${state.ui.slopeMode ? "ON" : "OFF"}`;
+      btnSlopeMode.classList.toggle("primary", state.ui.slopeMode);
+      btnSlopeMode.classList.toggle("ghost", !state.ui.slopeMode);
+
+      planHint.textContent = state.ui.slopeMode
+        ? "Slope Mode ON: tap Point A then Point B. Add a slope row, enter run (m), arrow + % show on plan."
+        : "Tap plan to add a shot (to the active setup). Tap point number to edit.";
+
+      renderPlan();
+      saveMeta();
+    }
+
+    // ---------------- Clear Form ----------------
+    async function clearAll(){
+      if (!confirm("Clear this grading check from this device? This removes plan/photos stored in IndexedDB too.")) return;
+
+      // delete plan + photos from idb
+      if (state.plan?.key) await idbDel(state.plan.key);
+      for (const p of state.sitePhotos){
+        await idbDel(p.key);
+      }
+
+      // reset state
+      localStorage.removeItem(STORAGE_KEY);
+      state.meta = { area:"calgary", jobNo:"", jobDate:todayISO(), community:"", address:"", lotBlockPlan:"", crewChief:"", officeSummary:"", nextPoint:1, activeSetupId:"" };
+      state.noteChecks = NOTE_CHECKS.map(() => false);
+      state.plan = null;
+      state.planObjectURL = null;
+      state.sitePhotos = [];
+      state.markers = [];
+      state.setups = [];
+      state.slopeRows = [];
+      state.ui = { slopeMode:false, slopePick:null };
+
+      initDefaults();
+      syncMetaToUI();
+      renderTolerance();
+      renderNotes();
+      await renderPhotos();
+      renderActiveSetupSelect();
+      renderShotsTable();
+      renderSlopes();
+      await renderPlan();
+      saveMeta();
+      toast("Cleared");
+    }
+
+    // ---------------- Event Wiring ----------------
     areaSelect.addEventListener("change", () => {
       state.meta.area = areaSelect.value;
       renderTolerance();
-      renderElevations();
+      renderShotsTable();
       renderSlopes();
       renderPlan();
-      saveToStorage();
+      saveMeta();
     });
 
     function bindMetaInput(el, key){
-      el.addEventListener("input", () => { state.meta[key] = el.value; saveToStorage(); });
+      el.addEventListener("input", () => { state.meta[key] = el.value; saveMeta(); });
     }
     bindMetaInput(jobNo,"jobNo");
     bindMetaInput(jobDate,"jobDate");
@@ -2164,37 +2727,17 @@
     bindMetaInput(lotBlockPlan,"lotBlockPlan");
     bindMetaInput(crewChief,"crewChief");
 
-    btnSave.addEventListener("click", () => saveToStorage(true));
+    btnSave.addEventListener("click", () => saveMeta(true));
+    btnResetTop.addEventListener("click", clearAll);
+    btnResetBottom.addEventListener("click", clearAll);
 
-    btnReset.addEventListener("click", () => {
-      if (!confirm("Clear this grading check from this device?")) return;
-      localStorage.removeItem(STORAGE_KEY);
-      state.meta = { area:"calgary", jobNo:"", jobDate:todayISO(), community:"", address:"", lotBlockPlan:"", crewChief:"", officeSummary:"", nextPoint:1 };
-      state.plan = null;
-      state.markers = [];
-      state.elevRows = [];
-      state.slopeRows = [];
-      state.sitePhotos = [];
-      state.noteChecks = NOTE_CHECKS.map(() => false);
-      state.ui = { slopeMode:false, slopePick:null };
-
-      syncMetaToUI();
-      renderTolerance();
-      renderNotes();
-      renderPhotos();
-      renderElevations();
-      renderSlopes();
-      renderPlan();
-      saveToStorage();
-    });
-
-    btnPDF.addEventListener("click", () => exportPDF());
-    btnShare.addEventListener("click", () => sharePDF());
+    btnPDF.addEventListener("click", exportPDF);
+    btnShare.addEventListener("click", sharePDF);
 
     btnGenSummary.addEventListener("click", () => {
       officeSummary.value = buildOfficeSummaryText();
       state.meta.officeSummary = officeSummary.value;
-      saveToStorage();
+      saveMeta();
       toast("Summary generated");
     });
 
@@ -2210,31 +2753,152 @@
 
     officeSummary.addEventListener("input", () => {
       state.meta.officeSummary = officeSummary.value;
-      saveToStorage();
+      saveMeta();
     });
 
-    // Notes checkbox changes
     noteList.addEventListener("change", (e) => {
       const cb = e.target;
       if (!cb || cb.type !== "checkbox") return;
       const idx = Number(cb.dataset.noteIdx);
       if (!Number.isFinite(idx)) return;
       state.noteChecks[idx] = cb.checked;
-      saveToStorage();
+      saveMeta();
     });
 
-    // Photos input
+    // setups
+    activeSetup.addEventListener("change", () => {
+      state.meta.activeSetupId = activeSetup.value;
+      saveMeta();
+    });
+
+    btnAddSetup.addEventListener("click", addSetup);
+    btnAddShot.addEventListener("click", () => addShotToActiveSetup(null));
+    btnRemoveSelectedShots.addEventListener("click", removeSelectedRows);
+
+    // handle chips + inputs in shots table
+    shotsBody.addEventListener("click", (e) => {
+      const chip = e.target.closest(".chip");
+      if (!chip) return;
+
+      const shotId = chip.dataset.row;
+      const val = chip.dataset.chip;
+
+      // find shot
+      for (const setup of state.setups){
+        const shot = (setup.shots||[]).find(sh => sh.id === shotId);
+        if (!shot) continue;
+
+        shot.note = val;
+        // toggle UI
+        shotsBody.querySelectorAll(`.chip[data-row="${CSS.escape(shotId)}"]`).forEach(c => c.classList.remove("on"));
+        chip.classList.add("on");
+
+        // sync note input
+        const noteInput = shotsBody.querySelector(`input[data-kind="shot"][data-k="note"][data-id="${CSS.escape(shotId)}"]`);
+        if (noteInput) noteInput.value = val;
+
+        renderShotsTable();
+        saveMeta();
+        toast("Note set");
+        break;
+      }
+    });
+
+    shotsBody.addEventListener("input", (e) => {
+      const t = e.target;
+      if (!t?.dataset) return;
+
+      const kind = t.dataset.kind;
+      if (kind === "setup"){
+        const setup = findSetupById(t.dataset.setup);
+        if (!setup) return;
+
+        const k = t.dataset.k;
+        const oldName = setup.name;
+        setup[k] = t.value;
+
+        // auto-calc setup fields
+        if (k === "bs" || k === "elev"){
+          const autoHI = computeHIFromBS(setup.bs, setup.elev);
+          if (Number.isFinite(autoHI) && !String(setup.hi||"").trim()){
+            setup.hi = String(autoHI);
+          }
+        }
+        if (k === "hi" || k === "bs"){
+          const autoElev = computeElevFromBS(setup.hi, setup.bs);
+          if (Number.isFinite(autoElev) && !String(setup.elev||"").trim()){
+            setup.elev = String(autoElev);
+          }
+        }
+
+        renderActiveSetupSelect();
+        // keep active setup selection stable
+        if (setup.id === state.meta.activeSetupId && oldName !== setup.name){
+          activeSetup.value = setup.id;
+        }
+        renderShotsTable();
+        renderPlan();
+        saveMeta();
+        return;
+      }
+
+      if (kind === "shot"){
+        const setupId = t.dataset.setup;
+        const shotId = t.dataset.id;
+        const found = findShot(setupId, shotId);
+        if (!found) return;
+
+        const { setup, shot } = found;
+        const k = t.dataset.k;
+        const oldLabel = shot.label;
+
+        shot[k] = t.value;
+
+        // auto-calc with HI when editing IFS/ELEV
+        const H = parseNumber(setup.hi);
+        if (Number.isFinite(H) && (k === "ifs" || k === "elev")){
+          const I = parseNumber(shot.ifs);
+          const E = parseNumber(shot.elev);
+
+          if (Number.isFinite(E) && !Number.isFinite(I) && String(shot.ifs||"").trim()===""){
+            const autoI = computeIFS(H, E);
+            if (Number.isFinite(autoI)) shot.ifs = String(autoI);
+          } else if (Number.isFinite(I) && !Number.isFinite(E) && String(shot.elev||"").trim()===""){
+            const autoE = computeElev(H, I);
+            if (Number.isFinite(autoE)) shot.elev = String(autoE);
+          }
+        }
+
+        if (k === "label"){
+          const newLabel = normalizeLabel(shot.label);
+          if (newLabel && newLabel !== oldLabel){
+            // if duplicate, revert
+            const exists = shotByLabel(newLabel);
+            if (exists && exists.shot.id !== shot.id){
+              shot.label = oldLabel;
+              t.value = oldLabel;
+              alert("That point label already exists.");
+              return;
+            }
+            shot.label = newLabel;
+            syncMarkerLabel(oldLabel, newLabel);
+          }
+        }
+
+        renderShotsTable();
+        renderSlopes();
+        renderPlan();
+        saveMeta();
+      }
+    });
+
+    // photos
     photoInput.addEventListener("change", async (e) => {
       const files = Array.from(e.target.files || []);
       if (!files.length) return;
-      try{
-        await addPhotos(files);
-        toast("Photos added");
-      }catch(err){
-        alert("Could not add photos. Try fewer photos or smaller sizes.");
-      }finally{
-        photoInput.value = "";
-      }
+      try{ await addPhotos(files); }
+      catch(err){ alert("Could not add photos. Try fewer photos or smaller sizes."); }
+      finally{ photoInput.value = ""; }
     });
 
     photoRow.addEventListener("click", (e) => {
@@ -2249,47 +2913,51 @@
       }
     });
 
-    btnClearPhotos.addEventListener("click", () => {
+    btnClearPhotos.addEventListener("click", async () => {
       if (!state.sitePhotos.length) return;
       if (!confirm("Clear all site photos?")) return;
+      for (const p of state.sitePhotos) await idbDel(p.key);
       state.sitePhotos = [];
-      renderPhotos();
-      saveToStorage();
+      await renderPhotos();
+      saveMeta();
+      toast("Photos cleared");
     });
 
-    // Plot plan upload
+    // plot plan upload
     planInput.addEventListener("change", async (e) => {
       const f = e.target.files && e.target.files[0];
       if (!f) return;
-      try{ await setPlotPlanFromFile(f); toast("Plot plan loaded"); }
+      try{ await setPlotPlanFromFile(f); }
       catch(err){ alert("Could not process that file. Try a smaller PDF or export it flattened."); }
       finally{ planInput.value = ""; }
     });
 
-    btnClearPlan.addEventListener("click", () => {
+    btnClearPlan.addEventListener("click", async () => {
       if (!state.plan) return;
       if (!confirm("Remove the attached plot plan?")) return;
+
+      if (state.plan?.key) await idbDel(state.plan.key);
       state.plan = null;
       state.markers = [];
       state.ui.slopePick = null;
-      renderPlan();
-      saveToStorage();
+      await renderPlan();
+      saveMeta();
+      toast("Removed");
     });
 
-    btnClearMarkers.addEventListener("click", () => {
+    btnClearMarkers.addEventListener("click", async () => {
       if (!state.markers.length) return;
       if (!confirm("Clear all points from the plot plan?")) return;
       state.markers = [];
       state.ui.slopePick = null;
-      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
-      renderPlan();
-      saveToStorage();
+      await renderPlan();
+      saveMeta();
+      toast("Points cleared");
     });
 
-    // Slope mode toggle
     btnSlopeMode.addEventListener("click", () => setSlopeMode(!state.ui.slopeMode));
 
-    // plan clicks (point add/edit + slope selection)
+    // plan interactions (add shot / edit / slope pick)
     planStage.addEventListener("click", (e) => {
       if (!state.plan) return;
 
@@ -2301,32 +2969,32 @@
           if (!state.ui.slopePick){
             state.ui.slopePick = point;
             renderPlan();
-            saveToStorage();
-            toast(`Slope: selected ${point}, tap the second point`);
+            saveMeta();
+            toast(`Slope: selected ${point}, tap second point`);
             return;
           }
           if (state.ui.slopePick === point){
             state.ui.slopePick = null;
             renderPlan();
-            saveToStorage();
+            saveMeta();
             toast("Slope: cleared");
             return;
           }
 
-          // quick-add slope row (run entered in table)
+          // add a slope row with the two points, run entered in table
           const from = state.ui.slopePick;
           const to = point;
           state.ui.slopePick = null;
 
-          state.slopeRows.push({ id: uid(), segment:`Slope ${from}-${to}`, fromPoint: from, toPoint: to, distanceM:"" });
+          state.slopeRows.push({ id: uid(), segment:`Slope ${from}-${to}`, fromLabel: from, toLabel: to, distanceM:"" });
           renderSlopes();
           renderPlan();
-          saveToStorage();
-          toast("Slope added (enter run)");
+          saveMeta();
+          toast("Slope row added, enter run");
           return;
         }
 
-        openPointPanelEdit(anchor.dataset.id);
+        openShotPanelEdit(anchor.dataset.id);
         return;
       }
 
@@ -2335,101 +3003,49 @@
         return;
       }
 
+      // add shot at click position
       const rect = planStage.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;
       const xPct = clamp(x * 100, 0, 100);
       const yPct = clamp(y * 100, 0, 100);
 
-      openPointPanelNew(xPct, yPct);
+      openShotPanelNew(xPct, yPct);
     });
 
-    // Elevation table handlers (chips + inputs)
-    elevBody.addEventListener("click", (e) => {
-      const chip = e.target.closest(".chip");
-      if (!chip) return;
-
-      const rowId = chip.dataset.row;
-      const val = chip.dataset.chip;
-
-      const r = state.elevRows.find(x => x.id === rowId);
-      if (!r) return;
-
-      r.pointNote = val;
-      elevBody.querySelectorAll(`.chip[data-row="${CSS.escape(rowId)}"]`).forEach(c => c.classList.remove("on"));
-      chip.classList.add("on");
-
-      const noteInput = elevBody.querySelector(`input[data-type="elev"][data-k="pointNote"][data-id="${CSS.escape(rowId)}"]`);
-      if (noteInput) noteInput.value = val;
-
-      saveToStorage();
-      toast("Note set");
-    });
-
-    elevBody.addEventListener("input", (e) => {
-      const t = e.target;
-      if (!t?.dataset?.id) return;
-      if (t.dataset.type !== "elev") return;
-
-      const row = state.elevRows.find(r => r.id === t.dataset.id);
-      if (!row) return;
-      row[t.dataset.k] = t.value;
-
-      if (t.dataset.k === "pointNote"){
-        const chips = elevBody.querySelectorAll(`.chip[data-row="${CSS.escape(row.id)}"]`);
-        chips.forEach(c => c.classList.remove("on"));
-        const match = Array.from(chips).find(c => c.dataset.chip === t.value.trim());
-        if (match) match.classList.add("on");
-      }
-
-      updateComputedRow(row.id);
-      renderSlopes();
-    });
-
-    btnAddRow.addEventListener("click", () => {
-      state.elevRows.push({ id: uid(), pointName:"", fieldElev:"", designElev:"", pointNote:"" });
-      renderElevations();
-      renderSlopes();
-      saveToStorage();
-    });
-
-    btnRemoveSelected.addEventListener("click", () => {
-      const ids = new Set(Array.from(document.querySelectorAll(".rowSel:checked")).map(x => x.dataset.id));
-      state.elevRows = state.elevRows.filter(r => !ids.has(r.id));
-      renderElevations();
-      renderSlopes();
-      saveToStorage();
-    });
-
-    // slopes table handlers
+    // slopes events
     slopeBody.addEventListener("input", (e) => {
       const t = e.target;
       if (!t?.dataset?.id) return;
       if (t.dataset.type !== "slope") return;
+
       const row = state.slopeRows.find(r => r.id === t.dataset.id);
       if (!row) return;
+
       row[t.dataset.k] = t.value;
       renderSlopes();
       renderPlan();
-      saveToStorage();
+      saveMeta();
     });
 
     slopeBody.addEventListener("change", (e) => {
       const t = e.target;
       if (!t?.dataset?.id) return;
       if (t.dataset.type !== "slope") return;
+
       const row = state.slopeRows.find(r => r.id === t.dataset.id);
       if (!row) return;
+
       row[t.dataset.k] = t.value;
       renderSlopes();
       renderPlan();
-      saveToStorage();
+      saveMeta();
     });
 
     btnAddSlope.addEventListener("click", () => {
-      state.slopeRows.push({ id: uid(), segment:"", fromPoint:"", toPoint:"", distanceM:"" });
+      state.slopeRows.push({ id: uid(), segment:"", fromLabel:"", toLabel:"", distanceM:"" });
       renderSlopes();
-      saveToStorage();
+      saveMeta();
     });
 
     btnRemoveSlopeSelected.addEventListener("click", () => {
@@ -2437,7 +3053,8 @@
       state.slopeRows = state.slopeRows.filter(r => !ids.has(r.id));
       renderSlopes();
       renderPlan();
-      saveToStorage();
+      saveMeta();
+      toast("Removed");
     });
 
     window.addEventListener("resize", () => {
@@ -2445,20 +3062,22 @@
       renderPlan();
     });
 
-    // ---------- init ----------
+    // ---------------- Init ----------------
     function initDefaults(){
       if (!state.meta.jobDate) state.meta.jobDate = todayISO();
-      if (!Number.isFinite(state.meta.nextPoint) || state.meta.nextPoint < 1) state.meta.nextPoint = 1;
-
       if (!Array.isArray(state.noteChecks) || state.noteChecks.length !== NOTE_CHECKS.length){
         state.noteChecks = NOTE_CHECKS.map(() => false);
       }
-
-      state.meta.nextPoint = Math.max(state.meta.nextPoint, getMaxNumericPoint()+1);
-
-      if (state.elevRows.length === 0){
-        state.elevRows.push({ id: uid(), pointName:"1", fieldElev:"", designElev:"", pointNote:"" });
+      if (!state.setups.length){
+        // default one setup like RMOW
+        const s = { id: uid(), name: "RMOW", bs:"", hi:"", fs:"", ifs:"", elev:"", shots: [] };
+        state.setups.push(s);
+        state.meta.activeSetupId = s.id;
       }
+      if (!state.meta.activeSetupId || !state.setups.find(s => s.id === state.meta.activeSetupId)){
+        state.meta.activeSetupId = state.setups[0].id;
+      }
+      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
     }
 
     function syncMetaToUI(){
@@ -2473,17 +3092,19 @@
       setSlopeMode(!!state.ui.slopeMode);
     }
 
-    function boot(){
-      loadFromStorage();
+    async function boot(){
+      loadMeta();
       initDefaults();
       syncMetaToUI();
       renderTolerance();
       renderNotes();
-      renderPhotos();
-      renderElevations();
+      renderActiveSetupSelect();
+      renderShotsTable();
       renderSlopes();
-      renderPlan();
-      saveToStorage();
+      await renderPhotos();
+      await renderPlan();
+      renderSummary();
+      saveMeta();
     }
 
     boot();
