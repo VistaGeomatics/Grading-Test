@@ -20,8 +20,8 @@
       --vista-blue-light:#2a7fa3;
       --vista-blue-dark:#0b3045;
 
-      --pass-blue:#1f9cf0;  /* blue */
-      --fail-red:#ef4444;   /* red */
+      --pass-blue:#1f9cf0;
+      --fail-red:#ef4444;
 
       --bg-body:#eef3f9;
       --bg-card:#ffffff;
@@ -200,7 +200,7 @@
       padding: 8px 8px;
       border-radius: 10px;
       font-size: 13px;
-      background: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.45); /* more transparent */
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
     }
@@ -223,6 +223,20 @@
     .delta.bad{ color: var(--bad); }
     .delta.na{ color:#475569; }
 
+    .badgeWarn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      white-space: nowrap;
+    }
+
     .summary{
       display:flex; gap: 12px; flex-wrap:wrap;
       align-items:center; justify-content:space-between;
@@ -235,7 +249,6 @@
     .summary .k{ font-size: 12px; color: var(--text-muted); }
     .summary .v{ font-weight: 900; font-size: 14px; }
 
-    /* Chips */
     .chips{ display:flex; gap:6px; flex-wrap:wrap; }
     .chip{
       border: 1px solid var(--border-soft);
@@ -256,7 +269,6 @@
       color:#0b3045;
     }
 
-    /* Notes checkboxes */
     .noteList{ display:grid; grid-template-columns: 1fr; gap:10px; margin-top:8px; }
     .noteItem{
       border: 1px solid var(--border-soft);
@@ -271,7 +283,7 @@
     .noteItem b{ display:block; font-size: 13px; margin-bottom:2px; }
     .noteItem span{ display:block; font-size: 12px; color: var(--text-muted); line-height: 1.25; }
 
-    /* Site photos thumbs */
+    /* Site photos */
     .photoRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
     .thumb{
       width: 170px;
@@ -316,7 +328,7 @@
     .thumb .photoChips .chips{ gap:6px; }
     .thumb .photoChips .chip{ font-size:11px; padding:5px 8px; }
 
-    /* Plot plan preview */
+    /* Plot plan */
     .planPreview{
       border: 1px solid var(--border-soft);
       border-radius: 14px;
@@ -341,15 +353,15 @@
       pointer-events:none;
     }
 
-    /* Point marker (small) */
+    /* Point marker smaller */
     .mkAnchor{
       position:absolute;
       transform: translate(-50%, -50%);
-      width: 12px;
-      height: 12px;
+      width: 11px;
+      height: 11px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.85);
-      background: rgba(22,95,125,0.25);
+      background: rgba(22,95,125,0.22);
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
       box-shadow: 0 3px 8px rgba(2,10,20,0.12);
@@ -370,14 +382,13 @@
       outline-offset: 2px;
     }
 
-    /* Elevation tag sits beside number (collision-adjusted) */
     .mkElev{
       position:absolute;
       transform: translate(0, -50%);
       padding: 1px 3px;
       border-radius: 7px;
       border: 1px solid rgba(255,255,255,0.85);
-      background: rgba(22,95,125,0.14);
+      background: rgba(22,95,125,0.10);
       backdrop-filter: blur(2px);
       -webkit-backdrop-filter: blur(2px);
       box-shadow: 0 3px 8px rgba(2,10,20,0.10);
@@ -407,7 +418,6 @@
       flex-wrap:wrap;
     }
 
-    /* Slope label small red */
     .slopeLabel{
       font-family:"Inter", sans-serif;
       font-weight: 900;
@@ -428,37 +438,45 @@
       padding: 8px 0 0;
     }
 
-    /* ---------- Entry Panel Overlay ---------- */
+    /* ---------- Entry Panel Overlay (draggable, very transparent) ---------- */
     .overlay{
       position: fixed;
       inset: 0;
-      background: rgba(2,10,20,0.25);
+      background: rgba(2,10,20,0.18);
       display: none;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: 18px;
       z-index: 9999;
     }
     .panel{
-      width: min(760px, 100%);
+      width: min(820px, 100%);
       border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.35);
-      background: rgba(255,255,255,0.35); /* transparent so crews can read plan */
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 18px 60px rgba(2,10,20,0.35);
+      border: 1px solid rgba(255,255,255,0.28);
+      background: rgba(255,255,255,0.18); /* very transparent */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(2,10,20,0.30);
       overflow: hidden;
+      position: relative;
+      transform: translate3d(0,0,0);
+      will-change: transform;
     }
     .panelH{
-      padding: 14px 16px;
+      padding: 12px 14px;
       background: linear-gradient(135deg, rgba(11,48,69,0.10), rgba(22,95,125,0.10));
-      border-bottom: 1px solid rgba(214,226,240,0.75);
+      border-bottom: 1px solid rgba(214,226,240,0.55);
       display:flex;
       gap:12px;
       justify-content:space-between;
       align-items:center;
       flex-wrap: wrap;
+      cursor: grab; /* drag handle */
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action: none; /* allow drag on iPad */
     }
+    .panelH:active{ cursor: grabbing; }
     .panelH h3{
       margin:0;
       font-size: 13px;
@@ -468,7 +486,7 @@
       font-weight:700;
       text-transform: uppercase;
     }
-    .panelB{ padding: 14px 16px 16px; }
+    .panelB{ padding: 14px 14px 14px; }
     .panelGrid{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -476,13 +494,13 @@
     }
     @media (max-width: 560px){ .panelGrid{ grid-template-columns: 1fr; } }
     .panelActions{
-      padding: 12px 16px 16px;
-      border-top: 1px solid rgba(214,226,240,0.75);
+      padding: 12px 14px 14px;
+      border-top: 1px solid rgba(214,226,240,0.55);
       display:flex;
       gap:10px;
       justify-content:flex-end;
       flex-wrap: wrap;
-      background: rgba(255,255,255,0.40);
+      background: rgba(255,255,255,0.20);
     }
 
     .toast{
@@ -501,7 +519,7 @@
       text-align:center;
     }
 
-    /* Export host (hidden) */
+    /* Export host */
     #exportHost{
       position: fixed;
       left: -99999px;
@@ -596,10 +614,10 @@
     .mkAnchorPrint{
       position:absolute;
       transform: translate(-50%, -50%);
-      width: 12px; height: 12px;
+      width: 11px; height: 11px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.85);
-      background: rgba(22,95,125,0.25);
+      background: rgba(22,95,125,0.22);
       box-shadow: 0 3px 8px rgba(2,10,20,0.12);
       display:flex; align-items:center; justify-content:center;
     }
@@ -615,7 +633,7 @@
       padding: 1px 3px;
       border-radius: 7px;
       border: 1px solid rgba(255,255,255,0.85);
-      background: rgba(22,95,125,0.14);
+      background: rgba(22,95,125,0.10);
       box-shadow: 0 3px 8px rgba(2,10,20,0.10);
       white-space: nowrap;
       text-align:center;
@@ -690,7 +708,7 @@
           <span id="tolLabel">±15 cm</span>
         </div>
 
-        <div class="versionTag">v1.6</div>
+        <div class="versionTag">v1.7</div>
       </div>
     </div>
 
@@ -740,7 +758,7 @@
           </div>
 
           <div class="hint">
-            Storage-limit issue fixed by saving Plot Plan + Photos in IndexedDB (not localStorage).
+            iPad keyboard fix: table no longer re-renders on every keystroke (prevents focus loss).
           </div>
         </div>
       </div>
@@ -763,7 +781,7 @@
         </div>
       </div>
 
-      <!-- Notes Section -->
+      <!-- Notes -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
           <h2>Field Notes (Consistent Checkboxes)</h2>
@@ -785,17 +803,15 @@
         </div>
         <div class="card-b">
           <div class="hint" style="margin-top:0;">
-            Works both ways: enter <b>HI + Elev → IFS auto</b>, or <b>HI + IFS → Elev auto</b>. Each shot uses the HI from its setup.
+            Workflow: crews can start by tapping the plan, the first tap can create the first setup and Point 1. New setups apply to all following points.
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px;">
             <div style="min-width:260px; flex: 0 0 auto;">
-              <label>Active Setup</label>
+              <label>Active Setup (points will be added here)</label>
               <select id="activeSetup"></select>
             </div>
-            <div class="hint" style="margin-top:18px;">
-              Plot plan clicks add shots to the active setup.
-            </div>
+            <div id="setupWarn" style="margin-top:18px;"></div>
           </div>
 
           <div style="margin-top:12px; overflow:auto;">
@@ -803,8 +819,8 @@
               <thead>
                 <tr>
                   <th style="width:44px;">Sel</th>
-                  <th style="min-width:120px;">Type</th>
-                  <th style="min-width:140px;">STA / Point</th>
+                  <th style="min-width:140px;">Type</th>
+                  <th style="min-width:160px;">STA / Point</th>
                   <th style="min-width:120px;">BS</th>
                   <th style="min-width:120px;">HI</th>
                   <th style="min-width:120px;">FS</th>
@@ -822,7 +838,7 @@
         </div>
       </div>
 
-      <!-- Site Photos -->
+      <!-- Photos -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-h">
           <h2>Site Photos (Thumbnails + Export)</h2>
@@ -835,9 +851,6 @@
           </div>
         </div>
         <div class="card-b">
-          <div class="hint" style="margin-top:0;">
-            Photos save to IndexedDB, export includes larger images 4 per page.
-          </div>
           <div class="photoRow" id="photoRow"></div>
         </div>
       </div>
@@ -858,7 +871,7 @@
         </div>
         <div class="card-b">
           <div class="hint" id="planHint" style="margin-top:0;">
-            Tap the plan to add a shot: point label drops at your tap, elevation displays beside it (blue pass, red fail).
+            Tap the plan to add Point 1. If no setup exists yet, you’ll be asked to create the first setup.
           </div>
 
           <div id="planEmpty" style="margin-top:12px; padding:14px; border:1px dashed var(--border-soft); border-radius:14px; background:#fbfdff; color:var(--text-muted);">
@@ -917,16 +930,13 @@
         </div>
       </div>
 
-      <!-- Bottom Buttons -->
+      <!-- Bottom -->
       <div class="card" style="grid-column: 1 / -1;">
         <div class="card-b">
           <div class="bottomActions">
             <button class="btn ghost" id="btnResetBottom" type="button">Clear Form</button>
             <button class="btn primary" id="btnPDF" type="button">Download PDF</button>
             <button class="btn primary" id="btnShare" type="button">Share PDF</button>
-          </div>
-          <div class="hint" style="text-align:right;">
-            Export includes separate pages: Check Report, Plot Plan, Tables, Photos.
           </div>
         </div>
       </div>
@@ -937,7 +947,7 @@
   <!-- Entry Panel Overlay -->
   <div class="overlay" id="overlay">
     <div class="panel" id="panel">
-      <div class="panelH">
+      <div class="panelH" id="panelHeader">
         <h3 id="panelTitle">Entry</h3>
         <div class="btnbar" style="justify-content:flex-end;">
           <button class="btn ghost" id="btnPanelClose" type="button">Close</button>
@@ -958,7 +968,7 @@
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
     }
 
-    // ---------------- IndexedDB (fixes storage limit) ----------------
+    // ---------------- IndexedDB ----------------
     const DB_NAME = "vista_grading_db";
     const DB_VER = 1;
     const STORE_FILES = "files";
@@ -1005,16 +1015,6 @@
       });
     }
 
-    async function idbClearAll(){
-      const db = await openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_FILES, "readwrite");
-        tx.objectStore(STORE_FILES).clear();
-        tx.oncomplete = () => { db.close(); resolve(); };
-        tx.onerror = () => { db.close(); reject(tx.error); };
-      });
-    }
-
     function blobToObjectURL(blob){
       if (!blob) return null;
       return URL.createObjectURL(blob);
@@ -1026,8 +1026,14 @@
     }
 
     // ---------------- App State ----------------
-    const STORAGE_KEY = "vista_grading_check_v16_meta";
+    const STORAGE_KEY = "vista_grading_check_v17_meta";
     const tolByAreaCm = { calgary: 15, chestermere: 15, airdrie: 10 };
+
+    const COMMON_SETUPS = [
+      { name: "RMOW", defaults: { bs:"", hi:"", fs:"", ifs:"", elev:"", lockHI:true } },
+      { name: "TP",   defaults: { bs:"", hi:"", fs:"", ifs:"", elev:"", lockHI:true } },
+      { name: "LMOW", defaults: { bs:"", hi:"", fs:"", ifs:"", elev:"", lockHI:true } }
+    ];
 
     const POINT_NOTE_CHIPS = ["OK","Low","High","Regrade","Verify","TC","Top of Concrete","Hold","Builder on site"];
     const PHOTO_CAPTION_CHIPS = ["Obstruction","Snow/Ice","Soft/Wet","Builder Activity","Out of Tolerance","Other"];
@@ -1046,23 +1052,18 @@
       meta: {
         area:"calgary", jobNo:"", jobDate:"", community:"", address:"", lotBlockPlan:"", crewChief:"",
         officeSummary:"",
-        nextPoint: 1,
         activeSetupId: ""
       },
       noteChecks: [],
+      plan: null, // { key, name, kind }
+      planObjectURL: null,
 
-      // Plot plan is stored in IndexedDB. meta only stores keys + kind.
-      plan: null, // { key, name, kind } (blob stored in idb as image/jpeg)
-      planObjectURL: null, // runtime URL
-
-      // site photos stored in IndexedDB, each photo stores key
       sitePhotos: [], // {id, name, key, captionTag}
 
-      // plan markers tied to shots
       markers: [], // {id, xPct, yPct, labelXPct, labelYPct, pointLabel, shotId}
 
       setups: [
-        // setup: { id, name, bs, hi, fs, elev, shots:[ {id, label, ifs, elev, designElev, note} ] }
+        // setup: { id, name, bs, hi, fs, ifs, elev, lockHI, shots:[ {id, label, ifs, elev, designElev, note} ] }
       ],
 
       slopeRows: [], // {id, segment, fromLabel, toLabel, distanceM}
@@ -1100,12 +1101,11 @@
       return Number.isFinite(n) ? n : null;
     }
 
-    // Elevations are treated as "cm-style" integers like 9221, 9267 (differences are in cm)
     function calcDeltaCm(field, design){
       const f = parseNumber(field);
       const d = parseNumber(design);
       if (!Number.isFinite(f) || !Number.isFinite(d)) return null;
-      return f - d; // cm
+      return f - d;
     }
 
     function passFail(deltaCmVal, tolCm){
@@ -1124,8 +1124,6 @@
     }
 
     // HI math (works both ways)
-    // If HI and Elev entered -> IFS = HI - Elev
-    // If HI and IFS entered -> Elev = HI - IFS
     function computeIFS(hi, elev){
       const H = parseNumber(hi), E = parseNumber(elev);
       if (!Number.isFinite(H) || !Number.isFinite(E)) return null;
@@ -1136,8 +1134,6 @@
       if (!Number.isFinite(H) || !Number.isFinite(I)) return null;
       return H - I;
     }
-
-    // Optional: BS + Elev -> HI, HI - BS -> Elev
     function computeHIFromBS(bs, elev){
       const B = parseNumber(bs), E = parseNumber(elev);
       if (!Number.isFinite(B) || !Number.isFinite(E)) return null;
@@ -1147,6 +1143,26 @@
       const H = parseNumber(hi), B = parseNumber(bs);
       if (!Number.isFinite(H) || !Number.isFinite(B)) return null;
       return H - B;
+    }
+
+    // ---- Point numbering: "last unused" = smallest missing integer starting at 1
+    function usedPointLabels(){
+      const set = new Set();
+      for (const setup of state.setups){
+        for (const sh of (setup.shots||[])){
+          const v = String(sh.label||"").trim();
+          if (v) set.add(v);
+        }
+      }
+      return set;
+    }
+    function nextSuggestedPoint(){
+      const used = usedPointLabels();
+      for (let i=1; i<5000; i++){
+        const s = String(i);
+        if (!used.has(s)) return s;
+      }
+      return "1";
     }
 
     // ---------------- Elements ----------------
@@ -1177,6 +1193,7 @@
 
     const noteList = document.getElementById("noteList");
 
+    const setupWarn = document.getElementById("setupWarn");
     const activeSetup = document.getElementById("activeSetup");
     const shotsBody = document.getElementById("shotsBody");
     const btnAddSetup = document.getElementById("btnAddSetup");
@@ -1208,6 +1225,8 @@
 
     // panel
     const overlay = document.getElementById("overlay");
+    const panel = document.getElementById("panel");
+    const panelHeader = document.getElementById("panelHeader");
     const panelTitle = document.getElementById("panelTitle");
     const panelBody = document.getElementById("panelBody");
     const panelActions = document.getElementById("panelActions");
@@ -1229,7 +1248,6 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
         if (showToast) toast("Saved");
       }catch(e){
-        // This should rarely happen now (no big base64 strings in localStorage)
         alert("Save failed (storage). If this persists, clear browser site data for this page.");
       }
     }
@@ -1278,15 +1296,38 @@
       });
     }
 
-    function shotsFlat(){
-      const out = [];
-      for (const s of state.setups){
-        out.push({ type:"setup", setupId:s.id, rowId:s.id });
-        for (const sh of (s.shots || [])){
-          out.push({ type:"shot", setupId:s.id, rowId:sh.id });
-        }
+    function findSetupById(id){ return state.setups.find(s => s.id === id) || null; }
+
+    function renderActiveSetupSelect(){
+      activeSetup.innerHTML = "";
+      if (!state.setups.length){
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No setups yet (tap plan to start)";
+        activeSetup.appendChild(opt);
+        state.meta.activeSetupId = "";
+        setupWarn.innerHTML = `<span class="badgeWarn">Setup required, tap plan to create Setup 1</span>`;
+        return;
       }
-      return out;
+
+      setupWarn.innerHTML = "";
+
+      for (const s of state.setups){
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = s.name || "Setup";
+        activeSetup.appendChild(opt);
+      }
+
+      if (!state.meta.activeSetupId || !state.setups.find(s => s.id === state.meta.activeSetupId)){
+        state.meta.activeSetupId = state.setups[0].id;
+      }
+      activeSetup.value = state.meta.activeSetupId;
+
+      const active = findSetupById(state.meta.activeSetupId);
+      if (active && !String(active.hi||"").trim()){
+        setupWarn.innerHTML = `<span class="badgeWarn">HI is blank, enter HI before IFS/ELEV calcs</span>`;
+      }
     }
 
     function calcShotStatus(setup, shot){
@@ -1319,99 +1360,63 @@
       sumWorst.textContent = worstSigned === null ? "—" : String(Math.round(worstSigned * 10) / 10);
     }
 
-    function renderActiveSetupSelect(){
-      activeSetup.innerHTML = "";
-      if (!state.setups.length){
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "No setups, add one";
-        activeSetup.appendChild(opt);
-        state.meta.activeSetupId = "";
-        return;
-      }
-
-      for (const s of state.setups){
-        const opt = document.createElement("option");
-        opt.value = s.id;
-        opt.textContent = s.name || "Setup";
-        activeSetup.appendChild(opt);
-      }
-
-      if (!state.meta.activeSetupId || !state.setups.find(s => s.id === state.meta.activeSetupId)){
-        state.meta.activeSetupId = state.setups[0].id;
-      }
-      activeSetup.value = state.meta.activeSetupId;
-    }
-
-    function fmt(n, d=0){
-      return Number.isFinite(n) ? n.toFixed(d) : "";
-    }
-
-    function pointNoteChips(selected, dataRow){
+    function pointNoteChips(selected, shotId){
       return POINT_NOTE_CHIPS.map(c => {
         const on = (selected||"") === c;
-        return `<span class="chip ${on ? "on":""}" data-chip="${escapeHtml(c)}" data-row="${dataRow}">${escapeHtml(c)}</span>`;
+        return `<span class="chip ${on ? "on":""}" data-chip="${escapeHtml(c)}" data-shot="${shotId}">${escapeHtml(c)}</span>`;
       }).join("");
     }
 
+    // ------- Table rendering ONLY on structural changes (prevents iPad keyboard drop)
     function renderShotsTable(){
       shotsBody.innerHTML = "";
 
       for (const setup of state.setups){
-        // setup row
+        const hiBlank = !String(setup.hi||"").trim();
+
         const trS = document.createElement("tr");
         trS.dataset.type = "setup";
         trS.dataset.setupId = setup.id;
 
-        const hi = parseNumber(setup.hi);
-        const bs = parseNumber(setup.bs);
-        const elev = parseNumber(setup.elev);
-
-        // if HI blank but BS+Elev exists -> compute HI
-        if (!Number.isFinite(hi)){
-          const autoHI = computeHIFromBS(setup.bs, setup.elev);
-          if (Number.isFinite(autoHI)) setup.hi = String(autoHI);
-        }
-        // if Elev blank but HI+BS exists -> compute Elev
-        if (!Number.isFinite(elev)){
-          const autoElev = computeElevFromBS(setup.hi, setup.bs);
-          if (Number.isFinite(autoElev)) setup.elev = String(autoElev);
-        }
-
         trS.innerHTML = `
           <td><input type="checkbox" class="selRow" data-kind="setup" data-setup="${setup.id}" data-id="${setup.id}"></td>
-          <td><span class="status na">SETUP</span></td>
-          <td><input class="mini" data-kind="setup" data-k="name" data-setup="${setup.id}" value="${escapeHtml(setup.name||"")}" placeholder="e.g., RMOW, TP, LMOW"/></td>
+          <td>
+            <span class="status na">SETUP</span>
+            ${hiBlank ? ` <span class="badgeWarn" style="margin-left:8px;">HI blank</span>` : ``}
+          </td>
+          <td>
+            <label style="margin:0 0 6px; font-size:11px; color:var(--text-muted);">Common setups</label>
+            <select class="mini" data-kind="setup" data-k="common" data-setup="${setup.id}">
+              <option value="">Custom…</option>
+              ${COMMON_SETUPS.map(c => `<option value="${escapeHtml(c.name)}" ${setup.name===c.name?"selected":""}>${escapeHtml(c.name)}</option>`).join("")}
+            </select>
+            <input class="mini" style="margin-top:6px;" data-kind="setup" data-k="name" data-setup="${setup.id}" value="${escapeHtml(setup.name||"")}" placeholder="Setup name"/>
+          </td>
           <td><input class="mini" data-kind="setup" data-k="bs" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.bs||"")}" placeholder="BS"/></td>
-          <td><input class="mini" data-kind="setup" data-k="hi" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.hi||"")}" placeholder="HI"/></td>
+          <td>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input class="mini" style="flex:1;" data-kind="setup" data-k="hi" data-setup="${setup.id}"
+                type="number" step="any" inputmode="decimal"
+                value="${escapeHtml(setup.hi||"")}" placeholder="HI" ${setup.lockHI ? "disabled" : ""}/>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+              <label style="display:flex; gap:8px; align-items:center; font-size:12px; margin:0; color:var(--text-muted);">
+                <input type="checkbox" data-kind="setup" data-k="lockHI" data-setup="${setup.id}" ${setup.lockHI ? "checked":""} style="width:auto;">
+                Lock HI
+              </label>
+            </div>
+          </td>
           <td><input class="mini" data-kind="setup" data-k="fs" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.fs||"")}" placeholder="FS"/></td>
           <td><input class="mini" data-kind="setup" data-k="ifs" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.ifs||"")}" placeholder="IFS"/></td>
           <td><input class="mini" data-kind="setup" data-k="elev" data-setup="${setup.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(setup.elev||"")}" placeholder="ELEV"/></td>
           <td></td>
           <td><span class="delta na">—</span></td>
           <td><span class="status na">—</span></td>
-          <td><div class="hint" style="margin:0;">BS/HI/IFS/ELEV auto-calc where possible</div></td>
+          <td><div class="hint" style="margin:0;">HI used for all following shots until next setup</div></td>
         `;
         shotsBody.appendChild(trS);
 
-        // shot rows
         for (const sh of (setup.shots || [])){
-          // enforce HI-based calc:
-          const H = parseNumber(setup.hi);
-          const I = parseNumber(sh.ifs);
-          const E = parseNumber(sh.elev);
-
-          // if HI & Elev -> compute IFS
-          if (Number.isFinite(H) && Number.isFinite(E) && !Number.isFinite(I)){
-            const autoI = computeIFS(H, E);
-            if (Number.isFinite(autoI)) sh.ifs = String(autoI);
-          }
-          // if HI & IFS -> compute Elev
-          if (Number.isFinite(H) && Number.isFinite(I) && !Number.isFinite(E)){
-            const autoE = computeElev(H, I);
-            if (Number.isFinite(autoE)) sh.elev = String(autoE);
-          }
-
           const { delta, status } = calcShotStatus(setup, sh);
           const deltaClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
           const statusClass = status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na");
@@ -1424,17 +1429,17 @@
           tr.innerHTML = `
             <td><input type="checkbox" class="selRow" data-kind="shot" data-setup="${setup.id}" data-id="${sh.id}"></td>
             <td><span class="status na">SHOT</span></td>
-            <td><input class="mini" data-kind="shot" data-k="label" data-setup="${setup.id}" data-id="${sh.id}" value="${escapeHtml(sh.label||"")}" placeholder="Point (auto)"/></td>
+            <td><input class="mini" data-kind="shot" data-k="label" data-setup="${setup.id}" data-id="${sh.id}" value="${escapeHtml(sh.label||"")}" placeholder="Point"/></td>
             <td></td>
             <td><span class="hint" style="margin:0; font-weight:900; color:#0b3045;">${escapeHtml(setup.hi||"")}</span></td>
             <td></td>
             <td><input class="mini" data-kind="shot" data-k="ifs" data-setup="${setup.id}" data-id="${sh.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(sh.ifs||"")}" placeholder="IFS"/></td>
             <td><input class="mini" data-kind="shot" data-k="elev" data-setup="${setup.id}" data-id="${sh.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(sh.elev||"")}" placeholder="ELEV"/></td>
             <td><input class="mini" data-kind="shot" data-k="designElev" data-setup="${setup.id}" data-id="${sh.id}" type="number" step="any" inputmode="decimal" value="${escapeHtml(sh.designElev||"")}" placeholder="Designed"/></td>
-            <td><span class="delta ${deltaClass}">${Number.isFinite(delta)? (Math.round(delta*10)/10) : "—"}</span></td>
-            <td><span class="status ${statusClass}">${status}</span></td>
+            <td><span class="delta ${deltaClass}" data-delta="${sh.id}">${Number.isFinite(delta)? (Math.round(delta*10)/10) : "—"}</span></td>
+            <td><span class="status ${statusClass}" data-status="${sh.id}">${status}</span></td>
             <td>
-              <div class="chips" data-chip-row="${sh.id}">
+              <div class="chips">
                 ${pointNoteChips(sh.note||"", sh.id)}
                 <input class="mini" style="margin-top:6px;" data-kind="shot" data-k="note" data-setup="${setup.id}" data-id="${sh.id}" value="${escapeHtml(sh.note||"")}" placeholder="Custom note (optional)" />
               </div>
@@ -1444,38 +1449,91 @@
         }
       }
 
+      renderActiveSetupSelect();
       renderSummary();
-      renderPlan(); // sync marker colors/elev display
+      renderPlan(); // sync marker colors/elev
       saveMeta();
     }
 
-    // ---------------- Auto point numbering ----------------
-    function getMaxNumericPoint(){
-      let maxN = 0;
-      for (const setup of state.setups){
-        for (const sh of (setup.shots || [])){
-          const s = String(sh.label||"").trim();
-          if (/^\d+$/.test(s)) maxN = Math.max(maxN, parseInt(s,10));
+    // ---------------- Minimal row updates (no full re-render while typing) ----------------
+    function updateShotDerivedUI(setupId, shotId){
+      const setup = findSetupById(setupId);
+      if (!setup) return;
+      const shot = (setup.shots||[]).find(s => s.id === shotId);
+      if (!shot) return;
+
+      // HI-based calc (but only if HI exists)
+      const H = parseNumber(setup.hi);
+      if (Number.isFinite(H)){
+        const I = parseNumber(shot.ifs);
+        const E = parseNumber(shot.elev);
+        if (Number.isFinite(E) && !Number.isFinite(I) && String(shot.ifs||"").trim()===""){
+          shot.ifs = String(computeIFS(H, E));
+          const ifsInput = shotsBody.querySelector(`input[data-kind="shot"][data-k="ifs"][data-id="${CSS.escape(shotId)}"]`);
+          if (ifsInput && document.activeElement !== ifsInput) ifsInput.value = shot.ifs;
+        } else if (Number.isFinite(I) && !Number.isFinite(E) && String(shot.elev||"").trim()===""){
+          shot.elev = String(computeElev(H, I));
+          const elevInput = shotsBody.querySelector(`input[data-kind="shot"][data-k="elev"][data-id="${CSS.escape(shotId)}"]`);
+          if (elevInput && document.activeElement !== elevInput) elevInput.value = shot.elev;
         }
       }
-      return maxN;
-    }
-    function nextAutoPoint(){
-      if (!Number.isFinite(state.meta.nextPoint) || state.meta.nextPoint < 1){
-        state.meta.nextPoint = getMaxNumericPoint() + 1;
-        if (state.meta.nextPoint < 1) state.meta.nextPoint = 1;
+
+      const { delta, status } = calcShotStatus(setup, shot);
+      const deltaEl = shotsBody.querySelector(`[data-delta="${CSS.escape(shotId)}"]`);
+      const statusEl = shotsBody.querySelector(`[data-status="${CSS.escape(shotId)}"]`);
+
+      if (deltaEl){
+        deltaEl.textContent = Number.isFinite(delta) ? (Math.round(delta*10)/10) : "—";
+        deltaEl.classList.remove("ok","bad","na");
+        deltaEl.classList.add(status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na"));
       }
-      const n = state.meta.nextPoint;
-      state.meta.nextPoint += 1;
-      saveMeta();
-      return String(n);
-    }
-    function undoAutoPoint(){
-      state.meta.nextPoint = Math.max(1, (state.meta.nextPoint || 2) - 1);
+      if (statusEl){
+        statusEl.textContent = status;
+        statusEl.classList.remove("ok","bad","na");
+        statusEl.classList.add(status==="PASS" ? "ok" : (status==="FAIL" ? "bad" : "na"));
+      }
+
+      renderSummary();
+      renderPlan();
       saveMeta();
     }
 
-    // ---------------- Site Photos (IndexedDB) ----------------
+    function updateSetupDerivedUI(setupId){
+      const setup = findSetupById(setupId);
+      if (!setup) return;
+
+      // only auto-calc HI if not locked and HI blank but BS+Elev exists
+      if (!setup.lockHI){
+        const hiVal = parseNumber(setup.hi);
+        if (!Number.isFinite(hiVal)){
+          const autoHI = computeHIFromBS(setup.bs, setup.elev);
+          if (Number.isFinite(autoHI)){
+            setup.hi = String(autoHI);
+            const hiInput = shotsBody.querySelector(`input[data-kind="setup"][data-k="hi"][data-setup="${CSS.escape(setupId)}"]`);
+            if (hiInput && document.activeElement !== hiInput) hiInput.value = setup.hi;
+          }
+        }
+      }
+
+      // update warn + active setup select label
+      renderActiveSetupSelect();
+
+      // refresh plan colors + summaries
+      renderSummary();
+      renderPlan();
+      saveMeta();
+    }
+
+    // ---------------- Notes ----------------
+    function selectedNotesText(){
+      const picked = [];
+      NOTE_CHECKS.forEach((n, i) => {
+        if (state.noteChecks[i]) picked.push(`${n.title}: ${n.text}`);
+      });
+      return picked;
+    }
+
+    // ---------------- Site Photos ----------------
     async function compressImageFileToDataUrl(file, maxDim=1100, quality=0.78){
       return new Promise((resolve, reject) => {
         const fr = new FileReader();
@@ -1547,19 +1605,16 @@
           <button class="x" type="button" data-photo-remove="${p.id}" title="Remove">×</button>
           <img src="${url}" alt="${escapeHtml(p.name)}"/>
           <div class="cap">${escapeHtml(p.name)}</div>
-          <div class="photoChips">
-            <div class="chips">${chipsHtml}</div>
-          </div>
+          <div class="photoChips"><div class="chips">${chipsHtml}</div></div>
         `;
         photoRow.appendChild(d);
 
-        // avoid URL leaks
         d.querySelector("img").addEventListener("load", () => URL.revokeObjectURL(url), { once:true });
         d.querySelector("img").addEventListener("error", () => URL.revokeObjectURL(url), { once:true });
       }
     }
 
-    // ---------------- Plot Plan (IndexedDB) ----------------
+    // ---------------- Plot Plan ----------------
     async function fileToArrayBuffer(file){
       return new Promise((resolve, reject) => {
         const fr = new FileReader();
@@ -1611,20 +1666,18 @@
       const key = "plan_" + uid();
       await idbPut(key, blob);
 
-      // cleanup old plan blob
       if (state.plan?.key) await idbDel(state.plan.key);
 
       state.plan = { key, name: file.name || "plot-plan", kind };
       state.markers = [];
       state.ui.slopePick = null;
-      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
 
       await renderPlan();
       saveMeta();
       toast("Plot plan loaded");
     }
 
-    // ---------------- Plan Markers + Collisions ----------------
+    // ---------------- Markers / collisions ----------------
     const LABEL_W_PX = 30;
     const LABEL_H_PX = 12;
     const LABEL_PAD_PX = 3;
@@ -1690,11 +1743,6 @@
     function clearPlanOverlay(){ planOverlay.innerHTML = ""; }
     function pctToOverlay(xPct, yPct){ return { x:(xPct/100)*1000, y:(yPct/100)*1000 }; }
 
-    function markerByLabel(label){
-      const p = String(label||"").trim();
-      return state.markers.find(m => String(m.pointLabel||"").trim() === p) || null;
-    }
-
     function shotByLabel(label){
       const p = String(label||"").trim();
       for (const setup of state.setups){
@@ -1703,6 +1751,11 @@
         }
       }
       return null;
+    }
+
+    function markerByLabel(label){
+      const p = String(label||"").trim();
+      return state.markers.find(m => String(m.pointLabel||"").trim() === p) || null;
     }
 
     function slopePercentFromLabels(fromLabel, toLabel, runM){
@@ -1715,7 +1768,6 @@
       const run = parseNumber(runM);
       if (!Number.isFinite(eA) || !Number.isFinite(eB) || !Number.isFinite(run) || run <= 0) return null;
 
-      // elev diff in cm, run in m -> slope% = |cm| / m
       return Math.abs(eB - eA) / run;
     }
 
@@ -1758,7 +1810,6 @@
         const eB = parseNumber(Bshot.shot.elev);
         if (!Number.isFinite(eA) || !Number.isFinite(eB)) continue;
 
-        // arrow points downhill: higher elev -> lower elev
         const highIsFrom = eA >= eB;
         const mkHigh = highIsFrom ? mkFrom : mkTo;
         const mkLow  = highIsFrom ? mkTo   : mkFrom;
@@ -1794,7 +1845,6 @@
       }
     }
 
-    // ---------------- Plan render ----------------
     function markerPassFail(label){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
       const ref = shotByLabel(label);
@@ -1814,7 +1864,6 @@
         return;
       }
 
-      // load plan blob from idb -> object URL for display
       const blob = await idbGet(state.plan.key);
       if (!blob){
         planWrap.style.display = "none";
@@ -1864,16 +1913,17 @@
       saveMeta();
     }
 
-    // ---------------- Setup & Shot add/remove ----------------
-    function addSetup(){
+    // ---------------- Setup + Shot creation ----------------
+    function addSetup(nameOverride=null){
       const s = {
         id: uid(),
-        name: "Setup",
+        name: nameOverride || "Setup",
         bs: "",
         hi: "",
         fs: "",
         ifs: "",
         elev: "",
+        lockHI: true,
         shots: []
       };
       state.setups.push(s);
@@ -1882,428 +1932,24 @@
       renderShotsTable();
       saveMeta();
       toast("Setup added");
+      return s;
     }
 
-    function addShotToActiveSetup(labelOverride=null){
-      const setup = state.setups.find(x => x.id === state.meta.activeSetupId) || state.setups[0];
-      if (!setup) { addSetup(); return; }
-
-      const label = labelOverride ? String(labelOverride).trim() : nextAutoPoint();
-      const sh = {
-        id: uid(),
-        label,
-        ifs: "",
-        elev: "",
-        designElev: "",
-        note: ""
-      };
+    function addShotToSetup(setup, label, xPct=null, yPct=null, designElev="", ifs="", elev="", note=""){
+      const sh = { id: uid(), label, ifs, elev, designElev, note };
       setup.shots.push(sh);
-      renderShotsTable();
-      saveMeta();
-      toast("Shot added");
-    }
 
-    function removeSelectedRows(){
-      const sels = Array.from(document.querySelectorAll(".selRow:checked"));
-      if (!sels.length) return;
-
-      // remove shots first, then setups
-      const toRemoveShots = sels.filter(x => x.dataset.kind === "shot").map(x => ({ setupId:x.dataset.setup, id:x.dataset.id }));
-      const toRemoveSetups = sels.filter(x => x.dataset.kind === "setup").map(x => x.dataset.setup);
-
-      // remove shots + related markers
-      for (const r of toRemoveShots){
-        const setup = state.setups.find(s => s.id === r.setupId);
-        if (!setup) continue;
-
-        const shot = (setup.shots||[]).find(sh => sh.id === r.id);
-        const label = shot?.label;
-
-        setup.shots = (setup.shots||[]).filter(sh => sh.id !== r.id);
-
-        if (label){
-          state.markers = state.markers.filter(m => String(m.pointLabel||"") !== String(label));
-        }
-      }
-
-      // remove setups + their shots + markers
-      for (const sid of toRemoveSetups){
-        const setup = state.setups.find(s => s.id === sid);
-        if (!setup) continue;
-
-        const labels = new Set((setup.shots||[]).map(sh => String(sh.label||"")));
-        state.markers = state.markers.filter(m => !labels.has(String(m.pointLabel||"")));
-        state.setups = state.setups.filter(s => s.id !== sid);
-      }
-
-      // reset active setup if missing
-      if (state.setups.length){
-        if (!state.setups.find(s => s.id === state.meta.activeSetupId)){
-          state.meta.activeSetupId = state.setups[0].id;
-        }
-      } else {
-        state.meta.activeSetupId = "";
-      }
-
-      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
-      renderActiveSetupSelect();
-      renderShotsTable();
-      renderSlopes();
-      renderPlan();
-      saveMeta();
-      toast("Removed");
-    }
-
-    // ---------------- Editing + auto-calc behavior ----------------
-    function findSetupById(id){ return state.setups.find(s => s.id === id) || null; }
-    function findShot(setupId, shotId){
-      const setup = findSetupById(setupId);
-      if (!setup) return null;
-      const shot = (setup.shots||[]).find(sh => sh.id === shotId) || null;
-      return { setup, shot };
-    }
-
-    function normalizeLabel(label){
-      return String(label||"").trim();
-    }
-
-    // Keep marker label in sync if label changed
-    function syncMarkerLabel(oldLabel, newLabel){
-      for (const m of state.markers){
-        if (String(m.pointLabel||"") === String(oldLabel)){
-          m.pointLabel = newLabel;
-        }
-      }
-      // slope rows reference labels too
-      for (const sr of state.slopeRows){
-        if (sr.fromLabel === oldLabel) sr.fromLabel = newLabel;
-        if (sr.toLabel === oldLabel) sr.toLabel = newLabel;
-      }
-    }
-
-    // ---------------- Plot plan point panel ----------------
-    const panelState = { mode:null, markerId:null, pending:null };
-
-    function openOverlay(){ overlay.style.display = "flex"; }
-    function closeOverlay(){
-      overlay.style.display = "none";
-      panelBody.innerHTML = "";
-      panelActions.innerHTML = "";
-      panelTitle.textContent = "Entry";
-      panelState.mode = null;
-      panelState.markerId = null;
-      panelState.pending = null;
-    }
-    btnPanelClose.addEventListener("click", closeOverlay);
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
-
-    function openShotPanelNew(xPct, yPct){
-      const setup = state.setups.find(s => s.id === state.meta.activeSetupId);
-      if (!setup){
-        addSetup();
-        return openShotPanelNew(xPct, yPct);
-      }
-
-      const autoPoint = nextAutoPoint();
-      panelState.mode = "shot-new";
-      panelState.pending = { xPct, yPct, labelXPct: xPct + 0.9, labelYPct: yPct, pointLabel:autoPoint, ifs:"", elev:"", designElev:"", note:"" };
-
-      panelTitle.textContent = `Add Shot to ${setup.name || "Setup"}`;
-
-      panelBody.innerHTML = `
-        <div class="panelGrid">
-          <div>
-            <label>Point Label</label>
-            <input id="pp_point" class="mini" value="${escapeHtml(autoPoint)}" inputmode="text" autocomplete="off"
-              placeholder="e.g., 1, 1.1, 1A, TC-1" />
-          </div>
-          <div>
-            <label>Point Note</label>
-            <div class="chips" id="pp_notechips">${POINT_NOTE_CHIPS.map(c => `<span class="chip" data-panel-chip="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("")}</div>
-          </div>
-
-          <div>
-            <label>IFS (optional)</label>
-            <input id="pp_ifs" class="mini" type="number" step="any" inputmode="decimal" placeholder="IFS" />
-          </div>
-
-          <div>
-            <label>Field Elevation (optional)</label>
-            <input id="pp_elev" class="mini" type="number" step="any" inputmode="decimal" placeholder="ELEV" />
-          </div>
-
-          <div>
-            <label>Design Elevation (required)</label>
-            <input id="pp_design" class="mini" type="number" step="any" inputmode="decimal" placeholder="Designed" />
-          </div>
-
-          <div>
-            <label>Setup HI (used for calc)</label>
-            <input class="mini" value="${escapeHtml(setup.hi||"")}" disabled />
-          </div>
-        </div>
-        <div class="hint">Enter either IFS or ELEV (one is enough). With HI, the form will compute the other.</div>
-      `;
-
-      panelActions.innerHTML = `
-        <button class="btn ghost" id="pp_cancel" type="button">Cancel</button>
-        <button class="btn primary" id="pp_save" type="button">Save Shot</button>
-      `;
-
-      openOverlay();
-
-      const elPoint = document.getElementById("pp_point");
-      const elIFS = document.getElementById("pp_ifs");
-      const elElev = document.getElementById("pp_elev");
-      const elDesign = document.getElementById("pp_design");
-
-      // focus to design (they read from plan), but keep numeric keypad for elevs
-      setTimeout(() => { elDesign.focus(); elDesign.select(); }, 60);
-
-      // chips
-      document.getElementById("pp_notechips").addEventListener("click", (e) => {
-        const chip = e.target.closest("[data-panel-chip]");
-        if (!chip) return;
-        const val = chip.dataset.panelChip;
-        panelState.pending.note = (panelState.pending.note === val) ? "" : val;
-        document.querySelectorAll("#pp_notechips .chip").forEach(c => c.classList.remove("on"));
-        if (panelState.pending.note){ chip.classList.add("on"); }
-      });
-
-      // auto-calc as user types (HI-based)
-      function recalc(){
-        const H = parseNumber(setup.hi);
-        const I = parseNumber(elIFS.value);
-        const E = parseNumber(elElev.value);
-
-        if (Number.isFinite(H) && Number.isFinite(E) && !Number.isFinite(I)){
-          const autoI = computeIFS(H, E);
-          if (Number.isFinite(autoI)) elIFS.value = String(autoI);
-        } else if (Number.isFinite(H) && Number.isFinite(I) && !Number.isFinite(E)){
-          const autoE = computeElev(H, I);
-          if (Number.isFinite(autoE)) elElev.value = String(autoE);
-        }
-      }
-      elIFS.addEventListener("input", recalc);
-      elElev.addEventListener("input", recalc);
-
-      document.getElementById("pp_cancel").addEventListener("click", () => {
-        undoAutoPoint();
-        closeOverlay();
-      });
-
-      document.getElementById("pp_save").addEventListener("click", () => {
-        const p = normalizeLabel(elPoint.value);
-        const ifs = String(elIFS.value||"").trim();
-        const elev = String(elElev.value||"").trim();
-        const des = String(elDesign.value||"").trim();
-
-        if (!p){ alert("Point label is required."); return; }
-        if (!des){ alert("Design elevation is required."); elDesign.focus(); return; }
-
-        // require either ifs or elev
-        if (!ifs && !elev){
-          alert("Enter either IFS or Field Elevation.");
-          return;
-        }
-
-        // ensure unique point label across all shots
-        const exists = shotByLabel(p);
-        if (exists){ alert("That point label already exists."); return; }
-
-        // compute missing if possible
-        const H = parseNumber(setup.hi);
-        let finalIFS = parseNumber(ifs);
-        let finalElev = parseNumber(elev);
-
-        if (Number.isFinite(H)){
-          if (Number.isFinite(finalElev) && !Number.isFinite(finalIFS)){
-            finalIFS = computeIFS(H, finalElev);
-          } else if (Number.isFinite(finalIFS) && !Number.isFinite(finalElev)){
-            finalElev = computeElev(H, finalIFS);
-          }
-        }
-
-        const sh = { id: uid(), label: p, ifs: Number.isFinite(finalIFS)? String(finalIFS): (ifs||""), elev: Number.isFinite(finalElev)? String(finalElev): (elev||""), designElev: des, note: panelState.pending.note || "" };
-        setup.shots.push(sh);
-
-        // add marker tied to shot
+      if (Number.isFinite(xPct) && Number.isFinite(yPct)){
         state.markers.push({
           id: uid(),
-          xPct: panelState.pending.xPct,
-          yPct: panelState.pending.yPct,
-          labelXPct: panelState.pending.labelXPct,
-          labelYPct: panelState.pending.labelYPct,
-          pointLabel: p,
+          xPct, yPct,
+          labelXPct: clamp(xPct + 0.9, 0, 100),
+          labelYPct: yPct,
+          pointLabel: label,
           shotId: sh.id
         });
-
-        closeOverlay();
-        renderShotsTable();
-        renderSlopes();
-        renderPlan();
-        saveMeta();
-        toast("Shot saved");
-      });
-    }
-
-    function openShotPanelEdit(markerId){
-      const mk = state.markers.find(m => m.id === markerId);
-      if (!mk) return;
-
-      const found = shotByLabel(mk.pointLabel);
-      if (!found) return;
-
-      const { setup, shot } = found;
-      panelState.mode = "shot-edit";
-      panelState.markerId = markerId;
-
-      panelTitle.textContent = `Edit Shot (${setup.name || "Setup"})`;
-
-      panelBody.innerHTML = `
-        <div class="panelGrid">
-          <div>
-            <label>Point Label</label>
-            <input id="pp_point" class="mini" value="${escapeHtml(shot.label||"")}" inputmode="text" autocomplete="off" />
-          </div>
-
-          <div>
-            <label>Point Note</label>
-            <div class="chips" id="pp_notechips">
-              ${POINT_NOTE_CHIPS.map(c => `<span class="chip ${shot.note===c?"on":""}" data-panel-chip="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("")}
-            </div>
-          </div>
-
-          <div>
-            <label>IFS</label>
-            <input id="pp_ifs" class="mini" type="number" step="any" inputmode="decimal" value="${escapeHtml(shot.ifs||"")}" />
-          </div>
-
-          <div>
-            <label>Field Elevation</label>
-            <input id="pp_elev" class="mini" type="number" step="any" inputmode="decimal" value="${escapeHtml(shot.elev||"")}" />
-          </div>
-
-          <div>
-            <label>Design Elevation</label>
-            <input id="pp_design" class="mini" type="number" step="any" inputmode="decimal" value="${escapeHtml(shot.designElev||"")}" />
-          </div>
-
-          <div>
-            <label>Setup HI (used for calc)</label>
-            <input class="mini" value="${escapeHtml(setup.hi||"")}" disabled />
-          </div>
-        </div>
-        <div class="hint">Edit IFS or ELEV, the other will auto-calc if HI is present.</div>
-      `;
-
-      panelActions.innerHTML = `
-        <button class="btn danger" id="pp_delete" type="button">Delete</button>
-        <button class="btn ghost" id="pp_cancel" type="button">Cancel</button>
-        <button class="btn primary" id="pp_save" type="button">Save</button>
-      `;
-
-      openOverlay();
-
-      const elPoint = document.getElementById("pp_point");
-      const elIFS = document.getElementById("pp_ifs");
-      const elElev = document.getElementById("pp_elev");
-      const elDesign = document.getElementById("pp_design");
-
-      setTimeout(() => { elElev.focus(); elElev.select(); }, 60);
-
-      document.getElementById("pp_notechips").addEventListener("click", (e) => {
-        const chip = e.target.closest("[data-panel-chip]");
-        if (!chip) return;
-        const val = chip.dataset.panelChip;
-        shot.note = (shot.note === val) ? "" : val;
-        document.querySelectorAll("#pp_notechips .chip").forEach(c => c.classList.remove("on"));
-        if (shot.note){ chip.classList.add("on"); }
-      });
-
-      function recalc(){
-        const H = parseNumber(setup.hi);
-        const I = parseNumber(elIFS.value);
-        const E = parseNumber(elElev.value);
-
-        if (Number.isFinite(H) && Number.isFinite(E) && !Number.isFinite(I)){
-          const autoI = computeIFS(H, E);
-          if (Number.isFinite(autoI)) elIFS.value = String(autoI);
-        } else if (Number.isFinite(H) && Number.isFinite(I) && !Number.isFinite(E)){
-          const autoE = computeElev(H, I);
-          if (Number.isFinite(autoE)) elElev.value = String(autoE);
-        }
       }
-      elIFS.addEventListener("input", recalc);
-      elElev.addEventListener("input", recalc);
-
-      document.getElementById("pp_cancel").addEventListener("click", closeOverlay);
-
-      document.getElementById("pp_delete").addEventListener("click", () => {
-        if (!confirm("Delete this shot and its marker?")) return;
-
-        // remove shot
-        setup.shots = (setup.shots||[]).filter(x => x.id !== shot.id);
-        // remove marker
-        state.markers = state.markers.filter(m => m.id !== markerId);
-        // remove slope rows referencing it
-        state.slopeRows = state.slopeRows.filter(sr => sr.fromLabel !== shot.label && sr.toLabel !== shot.label);
-
-        closeOverlay();
-        renderShotsTable();
-        renderSlopes();
-        renderPlan();
-        saveMeta();
-        toast("Deleted");
-      });
-
-      document.getElementById("pp_save").addEventListener("click", () => {
-        const oldLabel = shot.label;
-        const newLabel = normalizeLabel(elPoint.value);
-        const ifs = String(elIFS.value||"").trim();
-        const elev = String(elElev.value||"").trim();
-        const des = String(elDesign.value||"").trim();
-
-        if (!newLabel){ alert("Point label is required."); return; }
-        if (!des){ alert("Design elevation is required."); return; }
-        if (!ifs && !elev){ alert("Enter either IFS or Field Elevation."); return; }
-
-        // ensure unique label (except this shot)
-        const exists = shotByLabel(newLabel);
-        if (exists && exists.shot.id !== shot.id){
-          alert("That point label already exists.");
-          return;
-        }
-
-        // compute missing if possible
-        const H = parseNumber(setup.hi);
-        let finalIFS = parseNumber(ifs);
-        let finalElev = parseNumber(elev);
-
-        if (Number.isFinite(H)){
-          if (Number.isFinite(finalElev) && !Number.isFinite(finalIFS)){
-            finalIFS = computeIFS(H, finalElev);
-          } else if (Number.isFinite(finalIFS) && !Number.isFinite(finalElev)){
-            finalElev = computeElev(H, finalIFS);
-          }
-        }
-
-        shot.label = newLabel;
-        shot.ifs = Number.isFinite(finalIFS)? String(finalIFS): ifs;
-        shot.elev = Number.isFinite(finalElev)? String(finalElev): elev;
-        shot.designElev = des;
-
-        if (oldLabel !== newLabel){
-          syncMarkerLabel(oldLabel, newLabel);
-        }
-
-        closeOverlay();
-        renderShotsTable();
-        renderSlopes();
-        renderPlan();
-        saveMeta();
-        toast("Saved");
-      });
+      return sh;
     }
 
     // ---------------- Slopes table ----------------
@@ -2352,14 +1998,6 @@
     }
 
     // ---------------- Office Summary ----------------
-    function selectedNotesText(){
-      const picked = [];
-      NOTE_CHECKS.forEach((n, i) => {
-        if (state.noteChecks[i]) picked.push(`${n.title}: ${n.text}`);
-      });
-      return picked;
-    }
-
     function buildOfficeSummaryText(){
       const tol = tolByAreaCm[state.meta.area] ?? 15;
 
@@ -2409,7 +2047,7 @@
       return lines.join("\n");
     }
 
-    // ---------------- PDF Export + Share ----------------
+    // ---------------- Export / Share ----------------
     function waitImagesLoaded(container){
       const imgs = Array.from(container.querySelectorAll("img"));
       if (!imgs.length) return Promise.resolve();
@@ -2424,12 +2062,8 @@
     }
 
     async function buildExportPlanMarkup(container){
-      // container must have .planPrintStage and .planPrintOverlay
-      const stage = container.querySelector(".planPrintStage");
       const overlayDiv = container.querySelector(".planPrintOverlay");
-      if (!stage || !overlayDiv) return;
-
-      // add markers + labels
+      if (!overlayDiv) return;
       overlayDiv.innerHTML = "";
 
       for (const m of state.markers){
@@ -2487,7 +2121,6 @@
         </div>
       `;
 
-      // --- Plot Plan page ---
       if (state.plan?.key){
         const planBlob = await idbGet(state.plan.key);
         if (planBlob){
@@ -2510,14 +2143,12 @@
         }
       }
 
-      // --- Tables page ---
       const tables = document.createElement("div");
       tables.className = "pageBreak";
 
-      // setup + shots rows (flatten for export)
       const rows = [];
       for (const s of state.setups){
-        rows.push({ type:"SETUP", label:s.name, bs:s.bs, hi:s.hi, fs:s.fs, ifs:s.ifs, elev:s.elev, design:"", delta:"", status:"", note:"" });
+        rows.push({ type:"SETUP", label:s.name, bs:s.bs, hi:s.hi, fs:s.fs, ifs:s.ifs, elev:s.elev, design:"", delta:"", status:"", note:`LockHI:${s.lockHI?"Yes":"No"}` });
         for (const sh of (s.shots||[])){
           const { delta, status } = calcShotStatus(s, sh);
           rows.push({
@@ -2529,7 +2160,6 @@
           });
         }
       }
-
 
       tables.innerHTML = `
         <div class="reportSectionTitle">Setups & Shots</div>
@@ -2561,14 +2191,12 @@
       `;
       root.appendChild(tables);
 
-      // --- Photos pages (4 per page) ---
       if (state.sitePhotos.length){
         const photosPage = document.createElement("div");
         photosPage.className = "pageBreak";
         photosPage.innerHTML = `<div class="reportSectionTitle">Site Photos</div>`;
         root.appendChild(photosPage);
 
-        // chunk 4 per grid (2x2)
         for (let i=0; i<state.sitePhotos.length; i+=4){
           const chunk = state.sitePhotos.slice(i, i+4);
           const grid = document.createElement("div");
@@ -2666,7 +2294,7 @@
 
       planHint.textContent = state.ui.slopeMode
         ? "Slope Mode ON: tap Point A then Point B. Add a slope row, enter run (m), arrow + % show on plan."
-        : "Tap plan to add a shot (to the active setup). Tap point number to edit.";
+        : "Tap plan to add a point. Tap point number to edit.";
 
       renderPlan();
       saveMeta();
@@ -2676,15 +2304,11 @@
     async function clearAll(){
       if (!confirm("Clear this grading check from this device? This removes plan/photos stored in IndexedDB too.")) return;
 
-      // delete plan + photos from idb
       if (state.plan?.key) await idbDel(state.plan.key);
-      for (const p of state.sitePhotos){
-        await idbDel(p.key);
-      }
+      for (const p of state.sitePhotos) await idbDel(p.key);
 
-      // reset state
       localStorage.removeItem(STORAGE_KEY);
-      state.meta = { area:"calgary", jobNo:"", jobDate:todayISO(), community:"", address:"", lotBlockPlan:"", crewChief:"", officeSummary:"", nextPoint:1, activeSetupId:"" };
+      state.meta = { area:"calgary", jobNo:"", jobDate:todayISO(), community:"", address:"", lotBlockPlan:"", crewChief:"", officeSummary:"", activeSetupId:"" };
       state.noteChecks = NOTE_CHECKS.map(() => false);
       state.plan = null;
       state.planObjectURL = null;
@@ -2694,7 +2318,6 @@
       state.slopeRows = [];
       state.ui = { slopeMode:false, slopePick:null };
 
-      initDefaults();
       syncMetaToUI();
       renderTolerance();
       renderNotes();
@@ -2707,7 +2330,407 @@
       toast("Cleared");
     }
 
-    // ---------------- Event Wiring ----------------
+    // ---------------- Overlay Panel (draggable) ----------------
+    const panelState = { mode:null, pending:null };
+
+    function openOverlay(){ overlay.style.display = "flex"; }
+    function closeOverlay(){
+      overlay.style.display = "none";
+      panelBody.innerHTML = "";
+      panelActions.innerHTML = "";
+      panelTitle.textContent = "Entry";
+      panelState.mode = null;
+      panelState.pending = null;
+      // reset position each time
+      panel.style.transform = "translate3d(0,0,0)";
+      panel._dx = 0; panel._dy = 0;
+    }
+    btnPanelClose.addEventListener("click", closeOverlay);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeOverlay(); });
+
+    // drag (pointer)
+    (function setupDrag(){
+      let dragging = false;
+      let startX=0, startY=0, baseX=0, baseY=0;
+
+      panel._dx = 0; panel._dy = 0;
+
+      panelHeader.addEventListener("pointerdown", (e) => {
+        // don’t start drag if they tapped button
+        if (e.target.closest("button")) return;
+        dragging = true;
+        panelHeader.setPointerCapture(e.pointerId);
+        startX = e.clientX; startY = e.clientY;
+        baseX = panel._dx || 0; baseY = panel._dy || 0;
+      });
+
+      panelHeader.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        const dx = (e.clientX - startX);
+        const dy = (e.clientY - startY);
+        panel._dx = baseX + dx;
+        panel._dy = baseY + dy;
+        panel.style.transform = `translate3d(${panel._dx}px, ${panel._dy}px, 0)`;
+      });
+
+      panelHeader.addEventListener("pointerup", (e) => {
+        dragging = false;
+        try{ panelHeader.releasePointerCapture(e.pointerId); }catch(_){}
+      });
+      panelHeader.addEventListener("pointercancel", () => { dragging=false; });
+    })();
+
+    // ---------------- Point + Setup Entry Workflow ----------------
+    function openPointEntryAt(xPct, yPct){
+      panelState.mode = "point";
+      const needFirstSetup = state.setups.length === 0;
+
+      const suggestedPoint = nextSuggestedPoint();
+
+      panelTitle.textContent = needFirstSetup ? "Create Setup 1 + Point" : "Add Point";
+
+      const commonSetupOptions = COMMON_SETUPS.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join("");
+
+      panelBody.innerHTML = `
+        <div class="panelGrid">
+          <div style="grid-column: 1 / -1;">
+            ${needFirstSetup ? `<div class="badgeWarn">Setup required, create Setup 1 now.</div>` : ``}
+          </div>
+
+          <div>
+            <label>Point Number / Label (auto-suggested, editable)</label>
+            <input id="pp_point" class="mini" value="${escapeHtml(suggestedPoint)}" inputmode="text" autocomplete="off"
+              placeholder="e.g., 1, 1.1, 1A, TC-1" />
+            <div class="hint">Auto-suggests the next unused integer starting at 1, you can type anything.</div>
+          </div>
+
+          <div>
+            <label>Point Note (one tap)</label>
+            <div class="chips" id="pp_notechips">
+              ${POINT_NOTE_CHIPS.map(c => `<span class="chip" data-panel-chip="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("")}
+            </div>
+          </div>
+
+          <div>
+            <label>IFS (optional)</label>
+            <input id="pp_ifs" class="mini" type="number" step="any" inputmode="decimal" placeholder="IFS" />
+          </div>
+
+          <div>
+            <label>Field Elevation (optional)</label>
+            <input id="pp_elev" class="mini" type="number" step="any" inputmode="decimal" placeholder="ELEV" />
+          </div>
+
+          <div>
+            <label>Design Elevation (required)</label>
+            <input id="pp_design" class="mini" type="number" step="any" inputmode="decimal" placeholder="Designed" />
+          </div>
+
+          <div>
+            <label>Active Setup</label>
+            <select id="pp_setupSelect" class="mini" ${needFirstSetup ? "disabled" : ""}>
+              ${state.setups.map(s => `<option value="${escapeHtml(s.id)}" ${s.id===state.meta.activeSetupId?"selected":""}>${escapeHtml(s.name||"Setup")}</option>`).join("")}
+            </select>
+            <div class="hint">${needFirstSetup ? "Setup will be created below." : "Points will be added under this setup until you create a new one."}</div>
+          </div>
+
+          <div style="grid-column: 1 / -1; border-top:1px solid rgba(214,226,240,0.55); padding-top:12px;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+              <div style="font-weight:900; color:#0b3045;">Setup Tools</div>
+              <button class="btn ghost" id="pp_addSetup" type="button">Add New Setup</button>
+            </div>
+            <div class="hint" style="margin-top:6px;">Use this if you move to a new setup. All following points will use the new setup.</div>
+          </div>
+
+          <div style="grid-column: 1 / -1; display:${needFirstSetup ? "block" : "none"};">
+            <div class="badgeWarn">Create Setup 1 required</div>
+          </div>
+
+          <div style="grid-column: 1 / -1; display:${needFirstSetup ? "block" : "none"};">
+            <label>Common setups</label>
+            <select id="pp_commonSetup" class="mini">
+              <option value="">Select…</option>
+              ${commonSetupOptions}
+            </select>
+          </div>
+
+          <div style="display:${needFirstSetup ? "block" : "none"};">
+            <label>Setup Name</label>
+            <input id="pp_setupName" class="mini" placeholder="e.g., RMOW" />
+          </div>
+
+          <div style="display:${needFirstSetup ? "block" : "none"};">
+            <label>Lock HI</label>
+            <label style="display:flex; gap:10px; align-items:center; margin:0;">
+              <input id="pp_lockHI" type="checkbox" checked style="width:auto;">
+              <span style="font-size:13px; font-weight:900; color:#0b3045;">Lock HI (recommended)</span>
+            </label>
+          </div>
+
+          <div style="display:${needFirstSetup ? "block" : "none"};">
+            <label>BS</label>
+            <input id="pp_bs" class="mini" type="number" step="any" inputmode="decimal" placeholder="BS" />
+          </div>
+
+          <div style="display:${needFirstSetup ? "block" : "none"};">
+            <label>HI</label>
+            <input id="pp_hi" class="mini" type="number" step="any" inputmode="decimal" placeholder="HI" />
+          </div>
+
+          <div style="display:${needFirstSetup ? "block" : "none"};">
+            <label>FS</label>
+            <input id="pp_fs" class="mini" type="number" step="any" inputmode="decimal" placeholder="FS" />
+          </div>
+
+          <div style="display:${needFirstSetup ? "block" : "none"};">
+            <label>Setup Elev (BM)</label>
+            <input id="pp_setupElev" class="mini" type="number" step="any" inputmode="decimal" placeholder="ELEV" />
+          </div>
+        </div>
+
+        <div class="hint">
+          Tip: enter either IFS or Field Elevation for the point. With HI present, the other is calculated.
+        </div>
+      `;
+
+      panelActions.innerHTML = `
+        <button class="btn ghost" id="pp_cancel" type="button">Cancel</button>
+        <button class="btn primary" id="pp_savePoint" type="button">${needFirstSetup ? "Create Setup 1 + Save Point" : "Save Point"}</button>
+      `;
+
+      openOverlay();
+
+      const elPoint  = document.getElementById("pp_point");
+      const elIFS    = document.getElementById("pp_ifs");
+      const elElev   = document.getElementById("pp_elev");
+      const elDesign = document.getElementById("pp_design");
+
+      setTimeout(() => { elDesign.focus(); elDesign.select(); }, 60);
+
+      panelState.pending = { xPct, yPct, note:"" };
+
+      // note chips
+      document.getElementById("pp_notechips").addEventListener("click", (e) => {
+        const chip = e.target.closest("[data-panel-chip]");
+        if (!chip) return;
+        const val = chip.dataset.panelChip;
+        panelState.pending.note = (panelState.pending.note === val) ? "" : val;
+        document.querySelectorAll("#pp_notechips .chip").forEach(c => c.classList.remove("on"));
+        if (panelState.pending.note){ chip.classList.add("on"); }
+      });
+
+      // recalc (only visual convenience)
+      function recalcWithActiveHI(){
+        const setupId = (document.getElementById("pp_setupSelect")?.value || state.meta.activeSetupId);
+        const setup = findSetupById(setupId);
+        const H = parseNumber(setup?.hi);
+
+        const I = parseNumber(elIFS.value);
+        const E = parseNumber(elElev.value);
+
+        if (Number.isFinite(H) && Number.isFinite(E) && !Number.isFinite(I)){
+          const autoI = computeIFS(H, E);
+          if (Number.isFinite(autoI)) elIFS.value = String(autoI);
+        } else if (Number.isFinite(H) && Number.isFinite(I) && !Number.isFinite(E)){
+          const autoE = computeElev(H, I);
+          if (Number.isFinite(autoE)) elElev.value = String(autoE);
+        }
+      }
+      elIFS.addEventListener("input", recalcWithActiveHI);
+      elElev.addEventListener("input", recalcWithActiveHI);
+
+      document.getElementById("pp_cancel").addEventListener("click", closeOverlay);
+
+      // Add new setup button inside panel
+      document.getElementById("pp_addSetup").addEventListener("click", () => {
+        openSetupCreatePanel(() => {
+          // after creating setup, keep the point panel open and set active setup to the new one
+          const sel = document.getElementById("pp_setupSelect");
+          if (sel){
+            sel.innerHTML = state.setups.map(s => `<option value="${escapeHtml(s.id)}" ${s.id===state.meta.activeSetupId?"selected":""}>${escapeHtml(s.name||"Setup")}</option>`).join("");
+            sel.disabled = false;
+            sel.value = state.meta.activeSetupId;
+          }
+          toast("Setup added");
+        });
+      });
+
+      // Save
+      document.getElementById("pp_savePoint").addEventListener("click", () => {
+        const pointLabel = String(elPoint.value||"").trim();
+        const ifs = String(elIFS.value||"").trim();
+        const elev = String(elElev.value||"").trim();
+        const design = String(elDesign.value||"").trim();
+
+        if (!pointLabel){ alert("Point label is required."); elPoint.focus(); return; }
+        if (!design){ alert("Design elevation is required."); elDesign.focus(); return; }
+        if (!ifs && !elev){ alert("Enter either IFS or Field Elevation."); return; }
+
+        // unique label
+        if (shotByLabel(pointLabel)){
+          alert("That point label already exists.");
+          elPoint.focus();
+          return;
+        }
+
+        // ensure setup exists
+        const needFirstSetup = state.setups.length === 0;
+        let setup = null;
+
+        if (needFirstSetup){
+          const setupName = String(document.getElementById("pp_setupName").value || "").trim() || "RMOW";
+          const commonName = String(document.getElementById("pp_commonSetup").value || "").trim();
+          const lockHI = !!document.getElementById("pp_lockHI").checked;
+          const bs = String(document.getElementById("pp_bs").value || "").trim();
+          const hi = String(document.getElementById("pp_hi").value || "").trim();
+          const fs = String(document.getElementById("pp_fs").value || "").trim();
+          const se = String(document.getElementById("pp_setupElev").value || "").trim();
+
+          setup = addSetup(commonName || setupName);
+
+          setup.lockHI = lockHI;
+
+          setup.bs = bs;
+          setup.hi = hi;
+          setup.fs = fs;
+          setup.elev = se;
+
+          // if lockHI is on but HI blank, warn (still allow save)
+          if (setup.lockHI && !String(setup.hi||"").trim()){
+            toast("HI blank, enter HI ASAP");
+          }
+        } else {
+          const setupId = document.getElementById("pp_setupSelect").value || state.meta.activeSetupId;
+          setup = findSetupById(setupId) || findSetupById(state.meta.activeSetupId) || state.setups[0];
+          state.meta.activeSetupId = setup.id;
+        }
+
+        // HI-based compute missing
+        const H = parseNumber(setup.hi);
+        let finalIFS = parseNumber(ifs);
+        let finalElev = parseNumber(elev);
+
+        if (Number.isFinite(H)){
+          if (Number.isFinite(finalElev) && !Number.isFinite(finalIFS)){
+            finalIFS = computeIFS(H, finalElev);
+          } else if (Number.isFinite(finalIFS) && !Number.isFinite(finalElev)){
+            finalElev = computeElev(H, finalIFS);
+          }
+        } else {
+          // If HI missing, we still store raw values, but warn.
+          toast("HI missing, IFS/ELEV not auto-calculated");
+        }
+
+        addShotToSetup(
+          setup,
+          pointLabel,
+          panelState.pending.xPct,
+          panelState.pending.yPct,
+          design,
+          Number.isFinite(finalIFS) ? String(finalIFS) : ifs,
+          Number.isFinite(finalElev) ? String(finalElev) : elev,
+          panelState.pending.note || ""
+        );
+
+        closeOverlay();
+        renderShotsTable();   // structural update
+        renderSlopes();
+        renderPlan();
+        saveMeta();
+        toast("Point saved");
+      });
+    }
+
+    function openSetupCreatePanel(onDone){
+      panelTitle.textContent = "Add New Setup";
+      panelBody.innerHTML = `
+        <div class="panelGrid">
+          <div style="grid-column: 1 / -1;">
+            <label>Common setups</label>
+            <select id="su_common" class="mini">
+              <option value="">Select…</option>
+              ${COMMON_SETUPS.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join("")}
+            </select>
+            <div class="hint">Selecting a common setup will auto-name it.</div>
+          </div>
+
+          <div>
+            <label>Setup Name</label>
+            <input id="su_name" class="mini" placeholder="e.g., RMOW" />
+          </div>
+
+          <div>
+            <label>Lock HI</label>
+            <label style="display:flex; gap:10px; align-items:center; margin:0;">
+              <input id="su_lockHI" type="checkbox" checked style="width:auto;">
+              <span style="font-size:13px; font-weight:900; color:#0b3045;">Lock HI</span>
+            </label>
+          </div>
+
+          <div>
+            <label>BS</label>
+            <input id="su_bs" class="mini" type="number" step="any" inputmode="decimal" placeholder="BS" />
+          </div>
+
+          <div>
+            <label>HI</label>
+            <input id="su_hi" class="mini" type="number" step="any" inputmode="decimal" placeholder="HI" />
+          </div>
+
+          <div>
+            <label>FS</label>
+            <input id="su_fs" class="mini" type="number" step="any" inputmode="decimal" placeholder="FS" />
+          </div>
+
+          <div>
+            <label>Setup Elev (BM)</label>
+            <input id="su_elev" class="mini" type="number" step="any" inputmode="decimal" placeholder="ELEV" />
+          </div>
+        </div>
+        <div class="hint">After adding a setup, all following points will use it until you add another.</div>
+      `;
+
+      panelActions.innerHTML = `
+        <button class="btn ghost" id="su_cancel" type="button">Cancel</button>
+        <button class="btn primary" id="su_save" type="button">Add Setup</button>
+      `;
+
+      openOverlay();
+
+      const common = document.getElementById("su_common");
+      const name = document.getElementById("su_name");
+
+      common.addEventListener("change", () => {
+        const v = String(common.value||"").trim();
+        if (!v) return;
+        name.value = v;
+      });
+
+      document.getElementById("su_cancel").addEventListener("click", () => {
+        closeOverlay();
+        if (typeof onDone === "function") onDone();
+      });
+
+      document.getElementById("su_save").addEventListener("click", () => {
+        const setupName = String(name.value||"").trim() || "Setup";
+        const lockHI = !!document.getElementById("su_lockHI").checked;
+        const bs = String(document.getElementById("su_bs").value||"").trim();
+        const hi = String(document.getElementById("su_hi").value||"").trim();
+        const fs = String(document.getElementById("su_fs").value||"").trim();
+        const elev = String(document.getElementById("su_elev").value||"").trim();
+
+        const s = addSetup(setupName);
+        s.lockHI = lockHI;
+        s.bs = bs; s.hi = hi; s.fs = fs; s.elev = elev;
+
+        closeOverlay();
+        renderShotsTable();
+        saveMeta();
+        if (typeof onDone === "function") onDone();
+      });
+    }
+
+    // ---------------- Events ----------------
     areaSelect.addEventListener("change", () => {
       state.meta.area = areaSelect.value;
       renderTolerance();
@@ -2765,130 +2788,195 @@
       saveMeta();
     });
 
-    // setups
     activeSetup.addEventListener("change", () => {
       state.meta.activeSetupId = activeSetup.value;
+      renderActiveSetupSelect();
       saveMeta();
     });
 
-    btnAddSetup.addEventListener("click", addSetup);
-    btnAddShot.addEventListener("click", () => addShotToActiveSetup(null));
-    btnRemoveSelectedShots.addEventListener("click", removeSelectedRows);
+    btnAddSetup.addEventListener("click", () => openSetupCreatePanel(() => {}));
 
-    // handle chips + inputs in shots table
+    btnAddShot.addEventListener("click", () => {
+      if (!state.setups.length){
+        toast("Tap plan to create Setup 1");
+        return;
+      }
+      // adds a shot without plan location (table-only)
+      const setup = findSetupById(state.meta.activeSetupId) || state.setups[0];
+      const label = nextSuggestedPoint();
+      addShotToSetup(setup, label, null, null, "", "", "", "");
+      renderShotsTable();
+      saveMeta();
+      toast("Shot added");
+    });
+
+    btnRemoveSelectedShots.addEventListener("click", () => {
+      const sels = Array.from(document.querySelectorAll(".selRow:checked"));
+      if (!sels.length) return;
+
+      const toRemoveShots = sels.filter(x => x.dataset.kind === "shot").map(x => ({ setupId:x.dataset.setup, id:x.dataset.id }));
+      const toRemoveSetups = sels.filter(x => x.dataset.kind === "setup").map(x => x.dataset.setup);
+
+      for (const r of toRemoveShots){
+        const setup = findSetupById(r.setupId);
+        if (!setup) continue;
+        const shot = (setup.shots||[]).find(sh => sh.id === r.id);
+        const label = shot?.label;
+        setup.shots = (setup.shots||[]).filter(sh => sh.id !== r.id);
+        if (label){
+          state.markers = state.markers.filter(m => String(m.pointLabel||"") !== String(label));
+        }
+      }
+
+      for (const sid of toRemoveSetups){
+        const setup = findSetupById(sid);
+        if (!setup) continue;
+        const labels = new Set((setup.shots||[]).map(sh => String(sh.label||"")));
+        state.markers = state.markers.filter(m => !labels.has(String(m.pointLabel||"")));
+        state.setups = state.setups.filter(s => s.id !== sid);
+      }
+
+      if (state.setups.length){
+        if (!findSetupById(state.meta.activeSetupId)) state.meta.activeSetupId = state.setups[0].id;
+      } else {
+        state.meta.activeSetupId = "";
+      }
+
+      renderShotsTable();
+      renderSlopes();
+      renderPlan();
+      saveMeta();
+      toast("Removed");
+    });
+
+    // ---- Chips in table
     shotsBody.addEventListener("click", (e) => {
       const chip = e.target.closest(".chip");
       if (!chip) return;
-
-      const shotId = chip.dataset.row;
+      const shotId = chip.dataset.shot;
       const val = chip.dataset.chip;
 
-      // find shot
       for (const setup of state.setups){
         const shot = (setup.shots||[]).find(sh => sh.id === shotId);
         if (!shot) continue;
 
-        shot.note = val;
-        // toggle UI
-        shotsBody.querySelectorAll(`.chip[data-row="${CSS.escape(shotId)}"]`).forEach(c => c.classList.remove("on"));
-        chip.classList.add("on");
+        shot.note = (shot.note === val) ? "" : val;
 
-        // sync note input
+        // update chip UI without rerender
+        shotsBody.querySelectorAll(`.chip[data-shot="${CSS.escape(shotId)}"]`).forEach(c => c.classList.remove("on"));
+        if (shot.note) chip.classList.add("on");
+
+        // update note input
         const noteInput = shotsBody.querySelector(`input[data-kind="shot"][data-k="note"][data-id="${CSS.escape(shotId)}"]`);
-        if (noteInput) noteInput.value = val;
+        if (noteInput) noteInput.value = shot.note;
 
-        renderShotsTable();
         saveMeta();
+        renderSummary();
         toast("Note set");
-        break;
+        return;
       }
     });
 
+    // ---- Inputs in table (NO full rerender on each keystroke)
     shotsBody.addEventListener("input", (e) => {
       const t = e.target;
       if (!t?.dataset) return;
-
       const kind = t.dataset.kind;
+
       if (kind === "setup"){
         const setup = findSetupById(t.dataset.setup);
         if (!setup) return;
-
         const k = t.dataset.k;
-        const oldName = setup.name;
-        setup[k] = t.value;
 
-        // auto-calc setup fields
-        if (k === "bs" || k === "elev"){
-          const autoHI = computeHIFromBS(setup.bs, setup.elev);
-          if (Number.isFinite(autoHI) && !String(setup.hi||"").trim()){
-            setup.hi = String(autoHI);
+        if (k === "common"){
+          const v = String(t.value||"").trim();
+          if (v){
+            setup.name = v;
+            const nameInput = shotsBody.querySelector(`input[data-kind="setup"][data-k="name"][data-setup="${CSS.escape(setup.id)}"]`);
+            if (nameInput) nameInput.value = setup.name;
           }
-        }
-        if (k === "hi" || k === "bs"){
-          const autoElev = computeElevFromBS(setup.hi, setup.bs);
-          if (Number.isFinite(autoElev) && !String(setup.elev||"").trim()){
-            setup.elev = String(autoElev);
-          }
+          renderActiveSetupSelect();
+          saveMeta();
+          return;
         }
 
-        renderActiveSetupSelect();
-        // keep active setup selection stable
-        if (setup.id === state.meta.activeSetupId && oldName !== setup.name){
-          activeSetup.value = setup.id;
+        if (k === "name" || k === "bs" || k === "hi" || k === "fs" || k === "ifs" || k === "elev"){
+          setup[k] = t.value;
+          updateSetupDerivedUI(setup.id);
+          return;
         }
-        renderShotsTable();
-        renderPlan();
-        saveMeta();
-        return;
       }
 
       if (kind === "shot"){
         const setupId = t.dataset.setup;
         const shotId = t.dataset.id;
-        const found = findShot(setupId, shotId);
-        if (!found) return;
+        const setup = findSetupById(setupId);
+        if (!setup) return;
+        const shot = (setup.shots||[]).find(sh => sh.id === shotId);
+        if (!shot) return;
 
-        const { setup, shot } = found;
         const k = t.dataset.k;
         const oldLabel = shot.label;
 
+        if (k === "label"){
+          // allow any string, but must be unique
+          const newLabel = String(t.value||"").trim();
+          if (!newLabel) return;
+          const exists = shotByLabel(newLabel);
+          if (exists && exists.shot.id !== shot.id){
+            // revert without rerender
+            t.value = oldLabel;
+            toast("Point label already exists");
+            return;
+          }
+          shot.label = newLabel;
+
+          // sync marker labels
+          for (const m of state.markers){
+            if (String(m.pointLabel||"") === String(oldLabel)){
+              m.pointLabel = newLabel;
+            }
+          }
+          // sync slope label references
+          for (const sr of state.slopeRows){
+            if (sr.fromLabel === oldLabel) sr.fromLabel = newLabel;
+            if (sr.toLabel === oldLabel) sr.toLabel = newLabel;
+          }
+
+          renderPlan();
+          renderSlopes();
+          saveMeta();
+          return;
+        }
+
         shot[k] = t.value;
 
-        // auto-calc with HI when editing IFS/ELEV
-        const H = parseNumber(setup.hi);
-        if (Number.isFinite(H) && (k === "ifs" || k === "elev")){
-          const I = parseNumber(shot.ifs);
-          const E = parseNumber(shot.elev);
-
-          if (Number.isFinite(E) && !Number.isFinite(I) && String(shot.ifs||"").trim()===""){
-            const autoI = computeIFS(H, E);
-            if (Number.isFinite(autoI)) shot.ifs = String(autoI);
-          } else if (Number.isFinite(I) && !Number.isFinite(E) && String(shot.elev||"").trim()===""){
-            const autoE = computeElev(H, I);
-            if (Number.isFinite(autoE)) shot.elev = String(autoE);
+        // warn if HI missing on active setup and they type IFS/ELEV
+        if ((k === "ifs" || k === "elev") && !String(setup.hi||"").trim()){
+          // don't spam
+          if (!updateShotDerivedUI._warned){
+            updateShotDerivedUI._warned = true;
+            toast("HI blank on setup, calcs limited");
+            setTimeout(() => updateShotDerivedUI._warned = false, 1200);
           }
         }
 
-        if (k === "label"){
-          const newLabel = normalizeLabel(shot.label);
-          if (newLabel && newLabel !== oldLabel){
-            // if duplicate, revert
-            const exists = shotByLabel(newLabel);
-            if (exists && exists.shot.id !== shot.id){
-              shot.label = oldLabel;
-              t.value = oldLabel;
-              alert("That point label already exists.");
-              return;
-            }
-            shot.label = newLabel;
-            syncMarkerLabel(oldLabel, newLabel);
-          }
-        }
+        updateShotDerivedUI(setupId, shotId);
+      }
+    });
 
+    shotsBody.addEventListener("change", (e) => {
+      const t = e.target;
+      if (!t?.dataset) return;
+      if (t.dataset.kind === "setup" && t.dataset.k === "lockHI"){
+        const setup = findSetupById(t.dataset.setup);
+        if (!setup) return;
+        setup.lockHI = !!t.checked;
+
+        // enable/disable HI input (structural change within row: easiest to re-render table once)
         renderShotsTable();
-        renderSlopes();
-        renderPlan();
         saveMeta();
+        toast(setup.lockHI ? "HI locked" : "HI unlocked");
       }
     });
 
@@ -2903,14 +2991,9 @@
 
     photoRow.addEventListener("click", (e) => {
       const removeBtn = e.target.closest("button[data-photo-remove]");
-      if (removeBtn){
-        removePhoto(removeBtn.dataset.photoRemove);
-        return;
-      }
+      if (removeBtn){ removePhoto(removeBtn.dataset.photoRemove); return; }
       const chip = e.target.closest("[data-photo-chip]");
-      if (chip){
-        setPhotoCaption(chip.dataset.photoId, chip.dataset.photoChip);
-      }
+      if (chip){ setPhotoCaption(chip.dataset.photoId, chip.dataset.photoChip); }
     });
 
     btnClearPhotos.addEventListener("click", async () => {
@@ -2957,7 +3040,7 @@
 
     btnSlopeMode.addEventListener("click", () => setSlopeMode(!state.ui.slopeMode));
 
-    // plan interactions (add shot / edit / slope pick)
+    // plan interactions
     planStage.addEventListener("click", (e) => {
       if (!state.plan) return;
 
@@ -2981,7 +3064,6 @@
             return;
           }
 
-          // add a slope row with the two points, run entered in table
           const from = state.ui.slopePick;
           const to = point;
           state.ui.slopePick = null;
@@ -2994,7 +3076,8 @@
           return;
         }
 
-        openShotPanelEdit(anchor.dataset.id);
+        // edit flow: just highlight and instruct to edit in table (simple)
+        toast(`Edit Point ${point} in the table (or delete + re-add).`);
         return;
       }
 
@@ -3003,17 +3086,17 @@
         return;
       }
 
-      // add shot at click position
       const rect = planStage.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;
       const xPct = clamp(x * 100, 0, 100);
       const yPct = clamp(y * 100, 0, 100);
 
-      openShotPanelNew(xPct, yPct);
+      // Start workflow: create setup if none exists, and add point under active setup
+      openPointEntryAt(xPct, yPct);
     });
 
-    // slopes events
+    // slopes
     slopeBody.addEventListener("input", (e) => {
       const t = e.target;
       if (!t?.dataset?.id) return;
@@ -3057,29 +3140,9 @@
       toast("Removed");
     });
 
-    window.addEventListener("resize", () => {
-      if (!state.plan) return;
-      renderPlan();
-    });
+    window.addEventListener("resize", () => { if (state.plan) renderPlan(); });
 
     // ---------------- Init ----------------
-    function initDefaults(){
-      if (!state.meta.jobDate) state.meta.jobDate = todayISO();
-      if (!Array.isArray(state.noteChecks) || state.noteChecks.length !== NOTE_CHECKS.length){
-        state.noteChecks = NOTE_CHECKS.map(() => false);
-      }
-      if (!state.setups.length){
-        // default one setup like RMOW
-        const s = { id: uid(), name: "RMOW", bs:"", hi:"", fs:"", ifs:"", elev:"", shots: [] };
-        state.setups.push(s);
-        state.meta.activeSetupId = s.id;
-      }
-      if (!state.meta.activeSetupId || !state.setups.find(s => s.id === state.meta.activeSetupId)){
-        state.meta.activeSetupId = state.setups[0].id;
-      }
-      state.meta.nextPoint = Math.max(1, getMaxNumericPoint() + 1);
-    }
-
     function syncMetaToUI(){
       areaSelect.value = state.meta.area || "calgary";
       jobNo.value = state.meta.jobNo || "";
@@ -3094,7 +3157,11 @@
 
     async function boot(){
       loadMeta();
-      initDefaults();
+      if (!state.meta.jobDate) state.meta.jobDate = todayISO();
+      if (!Array.isArray(state.noteChecks) || state.noteChecks.length !== NOTE_CHECKS.length){
+        state.noteChecks = NOTE_CHECKS.map(() => false);
+      }
+
       syncMetaToUI();
       renderTolerance();
       renderNotes();
