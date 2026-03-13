@@ -1629,36 +1629,62 @@
       return await dataUrlToBlob(dataUrl);
     }
 
-    async function renderPdfFirstPageToBlob(file, maxWidth = 1000) {
+    async function renderPdfFirstPageToBlob(file, maxWidth = 900) {
       if (!window.pdfjsLib) throw new Error("PDF.js did not load.");
-      const ab = await fileToArrayBuffer(file);
-      const loadingTask = pdfjsLib.getDocument({ data: ab, disableAutoFetch:true, disableStream:true });
-      const pdf = await loadingTask.promise;
-      const page = await pdf.getPage(1);
 
-      const viewport1 = page.getViewport({ scale: 1 });
-      const scale = Math.min(2.0, maxWidth / viewport1.width);
-      const viewport = page.getViewport({ scale });
+      // Read in chunks via a Blob URL instead of a full ArrayBuffer load —
+      // avoids holding the entire file in memory on iPad.
+      const blobUrl = URL.createObjectURL(file);
+      let loadingTask;
+      try {
+        loadingTask = pdfjsLib.getDocument({
+          url: blobUrl,
+          disableAutoFetch: true,
+          disableStream: false,   // allow streaming to reduce peak memory
+          cMapPacked: true,
+        });
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
 
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d", { alpha:false });
-      canvas.width = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
-      await page.render({ canvasContext: ctx, viewport }).promise;
+        const viewport1 = page.getViewport({ scale: 1 });
+        // Cap scale at 1.5 (was 2.0) — halves canvas memory on large A0/A1 drawings
+        const scale = Math.min(1.5, maxWidth / viewport1.width);
+        const viewport = page.getViewport({ scale });
 
-      return await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.80));
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d", { alpha: false });
+        canvas.width  = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        // Use 0.72 quality (was 0.80) — plot plans are line drawings, minimal quality loss
+        return await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.72));
+      } finally {
+        URL.revokeObjectURL(blobUrl);
+      }
     }
 
+    // Max file size for plot plans: 40 MB — above this PDF.js will likely crash on iPad
+    const PLAN_MAX_BYTES = 40 * 1024 * 1024;
+
     async function setPlotPlanFromFile(file){
+      if (file.size > PLAN_MAX_BYTES) {
+        const mb = (file.size / 1024 / 1024).toFixed(1);
+        alert(`This file is ${mb} MB. Please export a flattened or lower-resolution version under 40 MB and try again.`);
+        return;
+      }
+
       const isPdf = file.type === "application/pdf" || (file.name||"").toLowerCase().endsWith(".pdf");
       let blob, kind = "image";
 
       if (isPdf){
         kind = "pdf";
-        blob = await renderPdfFirstPageToBlob(file, 1000);
+        // Lower maxWidth (900 vs 1000) to reduce canvas memory footprint on iPad
+        blob = await renderPdfFirstPageToBlob(file, 900);
       } else if (file.type.startsWith("image/")){
         kind = "image";
-        blob = await compressImageToBlob(file, 1500, 0.78);
+        // Reduced from 1500 → 1200px to keep stored blob smaller
+        blob = await compressImageToBlob(file, 1200, 0.75);
       } else {
         throw new Error("Unsupported file type");
       }
@@ -3010,8 +3036,14 @@
     planInput.addEventListener("change", async (e) => {
       const f = e.target.files && e.target.files[0];
       if (!f) return;
-      try{ await setPlotPlanFromFile(f); }
-      catch(err){ alert("Could not process that file. Try a smaller PDF or export it flattened."); }
+      try{
+        toast("Processing plot plan…");
+        await setPlotPlanFromFile(f);
+      }
+      catch(err){
+        console.error("Plot plan error:", err);
+        alert("Could not process that file.\n\nTips:\n• Export the PDF as a flattened single-page PDF\n• Reduce resolution to 150 DPI or lower\n• Try saving as JPEG or PNG instead of PDF\n• Keep the file under 40 MB");
+      }
       finally{ planInput.value = ""; }
     });
 
