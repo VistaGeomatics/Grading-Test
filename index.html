@@ -647,7 +647,152 @@
     .mkElevPrint .el.fail{ color: var(--fail-red); }
     .mkElevPrint .el.na{ color: rgba(255,255,255,0.92); }
 
-    .photoGrid{
+    /* ---- Outdoor / High-Contrast Mode ---- */
+    body.outdoor-mode{
+      background: #ffffff !important;
+      --bg-body: #ffffff;
+      --bg-card: #ffffff;
+      --text-main: #000000;
+      --text-muted: #333333;
+      --border-soft: #999999;
+    }
+    body.outdoor-mode .topbar{
+      background: #000000 !important;
+    }
+    body.outdoor-mode input,
+    body.outdoor-mode select,
+    body.outdoor-mode textarea{
+      font-size: 16px !important;
+      border: 2px solid #333 !important;
+      background: #ffffff !important;
+      color: #000 !important;
+    }
+    body.outdoor-mode .mini{
+      font-size: 15px !important;
+      padding: 12px 10px !important;
+    }
+    body.outdoor-mode tbody td{
+      padding: 14px 10px !important;
+    }
+    body.outdoor-mode .btn{
+      font-size: 15px !important;
+      padding: 13px 16px !important;
+    }
+    body.outdoor-mode .status, body.outdoor-mode .delta{
+      font-size: 14px !important;
+    }
+    body.outdoor-mode .card-h h2{
+      font-size: 17px !important;
+    }
+
+    /* ---- Form Lock Overlay ---- */
+    #formLockOverlay{
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2,10,20,0.55);
+      z-index: 8888;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+    #formLockOverlay.active{ display: flex; }
+    #formLockOverlay .lock-box{
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 40px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(2,10,20,0.35);
+    }
+    #formLockOverlay .lock-icon{ font-size: 52px; line-height: 1; }
+    #formLockOverlay .lock-msg{ font-size: 18px; font-weight: 700; color: #0b3045; margin-top: 12px; }
+    #formLockOverlay .lock-sub{ font-size: 13px; color: #5b6777; margin-top: 6px; }
+    #btnUnlockForm{
+      margin-top: 20px;
+      background: linear-gradient(135deg, #165f7d, #2a7fa3);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 36px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: "Inter", sans-serif;
+    }
+
+    /* ---- Pass/Fail Flash ---- */
+    #passfailFlash{
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    #passfailFlash.active{ display: flex; }
+    #passfailFlash .pf-inner{
+      border-radius: 24px;
+      padding: 36px 60px;
+      text-align: center;
+      animation: pfPop 0.15s ease;
+    }
+    #passfailFlash.pass .pf-inner{ background: #15803d; }
+    #passfailFlash.fail .pf-inner{ background: #b91c1c; }
+    #passfailFlash .pf-word{
+      font-size: 64px;
+      font-weight: 900;
+      color: #fff;
+      font-family: "Montserrat", sans-serif;
+      letter-spacing: 2px;
+    }
+    #passfailFlash .pf-delta{
+      font-size: 22px;
+      color: rgba(255,255,255,0.88);
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    @keyframes pfPop{
+      0%{ transform: scale(0.72); opacity: 0; }
+      100%{ transform: scale(1); opacity: 1; }
+    }
+
+    /* ---- Larger tap targets in table (iPad) ---- */
+    tbody td{ padding: 12px 10px; }
+    .mini{ padding: 11px 10px; min-height: 44px; }
+    thead th{ padding: 12px 10px; }
+
+    /* ---- Swipe-to-delete on shot rows ---- */
+    .shot-row-wrap{
+      position: relative;
+      overflow: hidden;
+    }
+    tr.shot-row-swipe-active td:first-child::after{
+      content: "🗑 Delete";
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      background: #ef4444;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      padding: 0 22px;
+      pointer-events: none;
+      border-radius: 8px 0 0 8px;
+    }
+
+    /* Plan pinch-zoom container */
+    #planZoomWrap{
+      overflow: hidden;
+      touch-action: none;
+      position: relative;
+    }
+    #planZoomInner{
+      transform-origin: 0 0;
+      will-change: transform;
+    }
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
@@ -708,7 +853,10 @@
           <span id="tolLabel">±15 cm</span>
         </div>
 
-        <div class="versionTag">v1.9</div>
+        <div class="versionTag">v2.0</div>
+        <div id="lastSavedPill" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);padding:8px 12px;border-radius:999px;font-size:12px;opacity:0.9;white-space:nowrap;">Not saved yet</div>
+        <button id="btnLockForm" type="button" class="btn ghost" style="background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);color:#fff;font-size:13px;padding:8px 14px;">🔓 Lock</button>
+        <button id="btnContrastToggle" type="button" class="btn ghost" style="background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);color:#fff;font-size:13px;padding:8px 14px;">☀️ Outdoor</button>
       </div>
     </div>
 
@@ -844,6 +992,10 @@
           <h2>Site Photos (Thumbnails + Export)</h2>
           <div class="btnbar">
             <label class="btn ghost" style="cursor:pointer;">
+              📷 Take Photo
+              <input id="photoCameraInput" type="file" accept="image/*" capture="environment" style="display:none;">
+            </label>
+            <label class="btn ghost" style="cursor:pointer;">
               Upload Photos
               <input id="photoInput" type="file" accept="image/*" multiple style="display:none;">
             </label>
@@ -880,9 +1032,13 @@
 
           <div id="planWrap" style="margin-top:12px; display:none;">
             <div class="planPreview">
-              <div class="planStage" id="planStage" title="Tap on the plan to add a point">
-                <img id="planImg" alt="Marked up plot plan preview" />
-                <svg class="planOverlay" id="planOverlay" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
+              <div id="planZoomWrap">
+                <div id="planZoomInner">
+                  <div class="planStage" id="planStage" title="Tap on the plan to add a point">
+                    <img id="planImg" alt="Marked up plot plan preview" />
+                    <svg class="planOverlay" id="planOverlay" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
+                  </div>
+                </div>
               </div>
               <div class="planMeta">
                 <div>
@@ -960,6 +1116,24 @@
 
   <div class="toast" id="toast">Saved</div>
   <div id="exportHost" aria-hidden="true"></div>
+
+  <!-- Form Lock Overlay -->
+  <div id="formLockOverlay">
+    <div class="lock-box">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-msg">Form Locked</div>
+      <div class="lock-sub">Tap below to unlock and continue editing</div>
+      <button id="btnUnlockForm" type="button">Unlock Form</button>
+    </div>
+  </div>
+
+  <!-- Pass/Fail Flash -->
+  <div id="passfailFlash">
+    <div class="pf-inner">
+      <div class="pf-word" id="pfWord">PASS</div>
+      <div class="pf-delta" id="pfDelta"></div>
+    </div>
+  </div>
 
   <script>
     // ---------------- PDF.js worker ----------------
@@ -3215,6 +3389,242 @@
       renderSummary();
       saveMeta();
     }
+
+    // ===============================================================
+    // NEW v2.0 FEATURES
+    // ===============================================================
+
+    // ---- Last Saved Indicator ----
+    const lastSavedPill = document.getElementById("lastSavedPill");
+    function updateLastSaved(){
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,"0");
+      const m = String(now.getMinutes()).padStart(2,"0");
+      const s = String(now.getSeconds()).padStart(2,"0");
+      if (lastSavedPill) lastSavedPill.textContent = `Saved ${h}:${m}:${s}`;
+    }
+    // Patch saveMeta to also update the pill
+    const _origSaveMeta = saveMeta;
+    // We already defined saveMeta above; hook into it by wrapping btnSave + auto-save calls
+    // Instead: update pill every time localStorage write succeeds — patch via setItem wrapper
+    const _origSetItem = localStorage.setItem.bind(localStorage);
+    localStorage.setItem = function(key, val){
+      _origSetItem(key, val);
+      if (key === STORAGE_KEY) updateLastSaved();
+    };
+
+    // ---- Form Lock ----
+    const formLockOverlay = document.getElementById("formLockOverlay");
+    const btnLockForm = document.getElementById("btnLockForm");
+    const btnUnlockForm = document.getElementById("btnUnlockForm");
+    let formLocked = false;
+
+    function setFormLock(locked){
+      formLocked = locked;
+      if (locked){
+        formLockOverlay.classList.add("active");
+        btnLockForm.textContent = "🔒 Locked";
+      } else {
+        formLockOverlay.classList.remove("active");
+        btnLockForm.textContent = "🔓 Lock";
+      }
+    }
+    btnLockForm.addEventListener("click", () => setFormLock(true));
+    btnUnlockForm.addEventListener("click", () => setFormLock(false));
+
+    // ---- Outdoor / High-Contrast Mode ----
+    const btnContrastToggle = document.getElementById("btnContrastToggle");
+    let outdoorMode = false;
+    btnContrastToggle.addEventListener("click", () => {
+      outdoorMode = !outdoorMode;
+      document.body.classList.toggle("outdoor-mode", outdoorMode);
+      btnContrastToggle.textContent = outdoorMode ? "🌙 Normal" : "☀️ Outdoor";
+    });
+
+    // ---- Pass/Fail Flash ----
+    const passfailFlash = document.getElementById("passfailFlash");
+    const pfWord = document.getElementById("pfWord");
+    const pfDelta = document.getElementById("pfDelta");
+
+    function showPassFailFlash(status, delta){
+      if (status === "N/A") return;
+      passfailFlash.classList.remove("pass","fail","active");
+      pfWord.textContent = status;
+      pfDelta.textContent = Number.isFinite(delta) ? `Δ ${Math.round(delta*10)/10} cm` : "";
+      passfailFlash.classList.add(status === "PASS" ? "pass" : "fail");
+      passfailFlash.classList.add("active");
+      clearTimeout(passfailFlash._tm);
+      passfailFlash._tm = setTimeout(() => passfailFlash.classList.remove("active"), 1600);
+    }
+
+    // ---- Camera Capture Input ----
+    const photoCameraInput = document.getElementById("photoCameraInput");
+    photoCameraInput.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      try { await addPhotos(files); }
+      catch(err){ alert("Could not add photo. Try again."); }
+      finally { photoCameraInput.value = ""; }
+    });
+
+    // ---- Swipe-to-Delete on shot rows ----
+    (function setupSwipeDelete(){
+      let touchStartX = 0, touchTarget = null, swiped = false;
+      const THRESHOLD = 90;
+
+      shotsBody.addEventListener("touchstart", (e) => {
+        const tr = e.target.closest("tr[data-type='shot']");
+        if (!tr) return;
+        touchTarget = tr;
+        touchStartX = e.touches[0].clientX;
+        swiped = false;
+      }, { passive: true });
+
+      shotsBody.addEventListener("touchmove", (e) => {
+        if (!touchTarget) return;
+        const dx = touchStartX - e.touches[0].clientX;
+        if (dx > 30){
+          touchTarget.style.transform = `translateX(${Math.min(-dx, -THRESHOLD)}px)`;
+          touchTarget.style.transition = "none";
+          touchTarget.style.background = dx > THRESHOLD ? "#fff1f2" : "";
+          swiped = dx > THRESHOLD;
+        }
+      }, { passive: true });
+
+      shotsBody.addEventListener("touchend", () => {
+        if (!touchTarget) return;
+        if (swiped){
+          // confirm delete
+          const setupId = touchTarget.dataset.setupId;
+          const shotId = touchTarget.dataset.shotId;
+          const setup = findSetupById(setupId);
+          if (setup){
+            const shot = (setup.shots||[]).find(sh => sh.id === shotId);
+            const label = shot?.label;
+            setup.shots = (setup.shots||[]).filter(sh => sh.id !== shotId);
+            if (label) state.markers = state.markers.filter(m => String(m.pointLabel||"") !== String(label));
+            renderShotsTable();
+            renderSlopes();
+            renderPlan();
+            saveMeta();
+            toast(`Point ${label || ""} deleted`);
+          }
+        } else {
+          touchTarget.style.transform = "";
+          touchTarget.style.transition = "transform 0.2s ease";
+          touchTarget.style.background = "";
+        }
+        touchTarget = null;
+      });
+    })();
+
+    // ---- Pinch-to-Zoom on Plot Plan ----
+    (function setupPinchZoom(){
+      const wrap = document.getElementById("planZoomWrap");
+      const inner = document.getElementById("planZoomInner");
+      if (!wrap || !inner) return;
+
+      let scale = 1, lastScale = 1;
+      let panX = 0, panY = 0;
+      let lastPanX = 0, lastPanY = 0;
+      let startDist = 0, startMidX = 0, startMidY = 0;
+      let isPinching = false, isPanning = false;
+      let lastTouchX = 0, lastTouchY = 0;
+
+      function applyTransform(){
+        inner.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+      }
+
+      function dist(t){ return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+      function mid(t){ return { x:(t[0].clientX+t[1].clientX)/2, y:(t[0].clientY+t[1].clientY)/2 }; }
+
+      wrap.addEventListener("touchstart", (e) => {
+        if (e.touches.length === 2){
+          isPinching = true; isPanning = false;
+          startDist = dist(e.touches);
+          const m = mid(e.touches);
+          const rect = wrap.getBoundingClientRect();
+          startMidX = m.x - rect.left;
+          startMidY = m.y - rect.top;
+          lastPanX = panX; lastPanY = panY; lastScale = scale;
+        } else if (e.touches.length === 1 && scale > 1){
+          isPanning = true; isPinching = false;
+          lastTouchX = e.touches[0].clientX;
+          lastTouchY = e.touches[0].clientY;
+          lastPanX = panX; lastPanY = panY;
+        }
+      }, { passive: true });
+
+      wrap.addEventListener("touchmove", (e) => {
+        if (isPinching && e.touches.length === 2){
+          e.preventDefault();
+          const newDist = dist(e.touches);
+          const newScale = Math.min(Math.max(lastScale * (newDist / startDist), 1), 5);
+          const scaleChange = newScale / lastScale;
+          panX = startMidX - scaleChange*(startMidX - lastPanX);
+          panY = startMidY - scaleChange*(startMidY - lastPanY);
+          scale = newScale;
+          applyTransform();
+        } else if (isPanning && e.touches.length === 1 && scale > 1){
+          e.preventDefault();
+          const dx = e.touches[0].clientX - lastTouchX;
+          const dy = e.touches[0].clientY - lastTouchY;
+          panX = lastPanX + dx;
+          panY = lastPanY + dy;
+          applyTransform();
+        }
+      }, { passive: false });
+
+      wrap.addEventListener("touchend", (e) => {
+        if (e.touches.length < 2) isPinching = false;
+        if (e.touches.length === 0){
+          isPanning = false;
+          // snap back if zoomed out below 1
+          if (scale < 1){ scale = 1; panX = 0; panY = 0; applyTransform(); }
+        }
+      }, { passive: true });
+
+      // Double-tap to reset
+      let lastTap = 0;
+      wrap.addEventListener("touchend", (e) => {
+        const now = Date.now();
+        if (now - lastTap < 300){
+          scale = 1; panX = 0; panY = 0;
+          inner.style.transition = "transform 0.2s ease";
+          applyTransform();
+          setTimeout(() => inner.style.transition = "", 200);
+        }
+        lastTap = now;
+      }, { passive: true });
+    })();
+
+    // ---- Hook pass/fail flash into point save ----
+    // We patch it by watching for the save button click in openPointEntryAt.
+    // The flash is triggered right after addShotToSetup — we override the save handler
+    // by wrapping the existing panelActions save button click after panel renders.
+    // Since openPointEntryAt wires its own listener, we hook at the renderShotsTable level:
+    // easiest: wrap updateShotDerivedUI to flash whenever a complete result exists.
+    const _origUpdateShot = updateShotDerivedUI;
+    // We can't reassign a declared function; instead listen for the save in panel.
+    // Hook: intercept pp_savePoint click and flash after save completes.
+    panelActions.addEventListener("click", (e) => {
+      if (e.target && e.target.id === "pp_savePoint"){
+        // read design + elev/ifs from panel fields right before save
+        setTimeout(() => {
+          // After save, find the newest shot and flash its status
+          const allShots = [];
+          for (const s of state.setups) for (const sh of s.shots) allShots.push({ setup: s, shot: sh });
+          if (!allShots.length) return;
+          const last = allShots[allShots.length - 1];
+          const { delta, status } = calcShotStatus(last.setup, last.shot);
+          showPassFailFlash(status, delta);
+        }, 80);
+      }
+    });
+
+    // ===============================================================
+    // END NEW FEATURES
+    // ===============================================================
 
     boot();
   </script>
