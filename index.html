@@ -708,7 +708,7 @@
           <span id="tolLabel">±15 cm</span>
         </div>
 
-        <div class="versionTag">v1.8</div>
+        <div class="versionTag">v1.9</div>
       </div>
     </div>
 
@@ -1629,12 +1629,12 @@
       return await dataUrlToBlob(dataUrl);
     }
 
-    async function renderPdfFirstPageToBlob(file, maxWidth = 900) {
+    async function renderPdfFirstPageToBlob(file, maxWidth = 2400) {
       if (!window.pdfjsLib) throw new Error("PDF.js did not load. Please reload the page.");
 
-      // iPad Safari has a hard canvas memory limit (~256 MB).
-      // We cap total pixels to stay well inside that limit.
-      const MAX_CANVAS_PIXELS = 2800 * 2000; // ~5.6 MP
+      // iPad Safari canvas memory limit ~256 MB. At 4 bytes/px:
+      // 4000×3000 = 48 MP = ~192 MB — safe ceiling for A1 plot plans
+      const MAX_CANVAS_PIXELS = 4000 * 3000;
 
       // Use ArrayBuffer instead of blob URL — more reliable on iPad Safari
       const ab = await fileToArrayBuffer(file);
@@ -1646,8 +1646,8 @@
 
         const viewport1 = page.getViewport({ scale: 1 });
 
-        // Scale to fit maxWidth, but never exceed MAX_CANVAS_PIXELS
-        let scale = Math.min(1.5, maxWidth / viewport1.width);
+        // Scale up to maxWidth for high-res render, cap at MAX_CANVAS_PIXELS
+        let scale = maxWidth / viewport1.width;
         const w = Math.floor(viewport1.width  * scale);
         const h = Math.floor(viewport1.height * scale);
         if (w * h > MAX_CANVAS_PIXELS) {
@@ -1662,7 +1662,8 @@
 
         await page.render({ canvasContext: ctx, viewport }).promise;
 
-        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.72));
+        // High quality JPEG — plot plans need sharp text and fine lines
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.92));
 
         // Free canvas memory immediately
         canvas.width = 1; canvas.height = 1;
@@ -1688,11 +1689,10 @@
 
       if (isPdf){
         kind = "pdf";
-        blob = await renderPdfFirstPageToBlob(file, 700);
+        blob = await renderPdfFirstPageToBlob(file); // uses default 2400px maxWidth
       } else if (file.type.startsWith("image/")){
         kind = "image";
-        // Reduced from 1500 → 1200px to keep stored blob smaller
-        blob = await compressImageToBlob(file, 1200, 0.75);
+        blob = await compressImageToBlob(file, 3200, 0.92);
       } else {
         throw new Error("Unsupported file type");
       }
