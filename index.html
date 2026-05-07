@@ -12,7 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <!-- PDF Upload Preview -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
     :root{
@@ -708,7 +708,7 @@
           <span id="tolLabel">±15 cm</span>
         </div>
 
-        <div class="versionTag">v1.7</div>
+        <div class="versionTag">v1.8</div>
       </div>
     </div>
 
@@ -965,7 +965,7 @@
     // ---------------- PDF.js worker ----------------
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     }
 
     // ---------------- IndexedDB ----------------
@@ -1629,30 +1629,25 @@
       return await dataUrlToBlob(dataUrl);
     }
 
-    async function renderPdfFirstPageToBlob(file, maxWidth = 700) {
-      if (!window.pdfjsLib) throw new Error("PDF.js did not load.");
+    async function renderPdfFirstPageToBlob(file, maxWidth = 900) {
+      if (!window.pdfjsLib) throw new Error("PDF.js did not load. Please reload the page.");
 
       // iPad Safari has a hard canvas memory limit (~256 MB).
-      // A1 plot plans at 150 DPI can be 8000×5600 px = ~180 MB uncompressed.
-      // We cap total pixels to keep well inside that limit.
-      const MAX_CANVAS_PIXELS = 2800 * 2000; // ~5.6 MP — safe on all iPads
+      // We cap total pixels to stay well inside that limit.
+      const MAX_CANVAS_PIXELS = 2800 * 2000; // ~5.6 MP
 
-      const blobUrl = URL.createObjectURL(file);
+      // Use ArrayBuffer instead of blob URL — more reliable on iPad Safari
+      const ab = await fileToArrayBuffer(file);
       let pdf = null;
       try {
-        const loadingTask = pdfjsLib.getDocument({
-          url: blobUrl,
-          disableAutoFetch: true,
-          disableStream: false,
-          cMapPacked: true,
-        });
+        const loadingTask = pdfjsLib.getDocument({ data: ab, cMapPacked: true });
         pdf = await loadingTask.promise;
         const page = await pdf.getPage(1);
 
         const viewport1 = page.getViewport({ scale: 1 });
 
         // Scale to fit maxWidth, but never exceed MAX_CANVAS_PIXELS
-        let scale = Math.min(1.2, maxWidth / viewport1.width);
+        let scale = Math.min(1.5, maxWidth / viewport1.width);
         const w = Math.floor(viewport1.width  * scale);
         const h = Math.floor(viewport1.height * scale);
         if (w * h > MAX_CANVAS_PIXELS) {
@@ -1667,14 +1662,13 @@
 
         await page.render({ canvasContext: ctx, viewport }).promise;
 
-        // 0.65 quality is plenty for line-drawing plot plans and keeps the blob small
-        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.65));
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.72));
 
-        // Free canvas memory immediately before returning
+        // Free canvas memory immediately
         canvas.width = 1; canvas.height = 1;
+        if (!blob) throw new Error("Canvas failed to produce image — try a smaller or simpler PDF.");
         return blob;
       } finally {
-        URL.revokeObjectURL(blobUrl);
         if (pdf) { try { pdf.destroy(); } catch(_){} }
       }
     }
